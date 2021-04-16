@@ -4,10 +4,11 @@ import java.util.UUID
 
 data class Watch(
     val id: UUID,
-    internal val platformId: String,
+    val platformId: String,
     val name: String,
     val platform: String
 ) {
+
     override fun equals(other: Any?): Boolean {
         if (other !is Watch) return super.equals(other)
         return other.id == id &&
