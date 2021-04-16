@@ -21,3 +21,10 @@ android {
         useIR = true
     }
 }
+
+dependencies {
+    implementation(project(":core"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3")
+    implementation("com.google.android.gms:play-services-wearable:17.0.0")
+}
