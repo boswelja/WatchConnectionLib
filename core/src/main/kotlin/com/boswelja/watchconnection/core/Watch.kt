@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class Watch(
     val id: UUID,
+    internal val platformId: String,
     val name: String,
     val platform: String
 ) {
