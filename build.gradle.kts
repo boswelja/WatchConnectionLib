@@ -2,6 +2,7 @@ buildscript {
     val kotlinVersion = "1.4.32"
 
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {
