@@ -1,1 +1,1 @@
-include(":connection-core")
+include(":core", ":wearos")
