@@ -67,3 +67,8 @@ ext["signing.secretKeyRingFile"] = Publishing.signingSecretKeyring
 signing {
     sign(publishing.publications)
 }
+
+// Make publish task depend on assembleRelease
+tasks.named("publishReleasePublicationToSonatypeRepository") {
+    dependsOn("assembleRelease")
+}
