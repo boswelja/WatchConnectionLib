@@ -17,7 +17,9 @@ object Publishing {
 
     private val localProps: Properties by lazy {
         Properties().apply {
-            load(FileInputStream(localPropsFile))
+            try {
+                load(FileInputStream(localPropsFile))
+            } catch (e: Exception) { }
         }
     }
 
