@@ -19,12 +19,19 @@ allprojects {
 }
 
 plugins {
-    id("io.codearte.nexus-staging") version "0.30.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
 }
 
-nexusStaging {
-    packageGroup = Publishing.groupId
-    stagingProfileId = Publishing.stagingProfileId
-    username = Publishing.ossrhUsername
-    password = Publishing.ossrhPassword
+group = Publishing.groupId
+version = Publishing.version
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username.set(Publishing.ossrhUsername)
+            password.set(Publishing.ossrhPassword)
+        }
+    }
 }

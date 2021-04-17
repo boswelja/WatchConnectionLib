@@ -22,6 +22,10 @@ object Publishing {
         }
     }
 
+    val version: String by lazy {
+        localProps["version"]?.toString() ?: System.getenv("VERSION")
+    }
+
     val ossrhUsername: String by lazy {
         localProps["ossrhUsername"]?.toString() ?: System.getenv("OSSRH_USERNAME")
     }
@@ -88,7 +92,7 @@ object Publishing {
         configuration()
         this.groupId = this@Publishing.groupId
         this.artifactId = artifactId
-        version = localProps["version"]?.toString() ?: System.getenv("VERSION")
+        version = version
 
         pom {
             name.set(artifactId)
