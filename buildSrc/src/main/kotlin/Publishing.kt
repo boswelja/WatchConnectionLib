@@ -32,17 +32,6 @@ object Publishing {
     val signingSecretKeyring: String by lazy {
         localProps["signing.secretKeyRingFile"]?.toString() ?: System.getenv("SIGNING_SECRET_KEY_RING_FILE")
     }
-//    val ossrhUsername: String
-//    val ossrhPassword: String
-//    val sonatypeStagingProfileId: String
-//
-//    init {
-//        localProps.load(FileInputStream(File("local.properties")))
-//
-//        ossrhUsername = localProps["ossrhUsername"]?.toString() ?: System.getenv("OSSRH_USERNAME")
-//        ossrhPassword = localProps["ossrhPassword"]?.toString() ?: System.getenv("OSSRH_PASSWORD")
-//        sonatypeStagingProfileId = localProps["sonatypeStagingProfileId"]?.toString() ?: System.getenv("SONATYPE_STAGING_PROFILE_ID")
-//    }
 
     val scm: Action<MavenPomScm> = Action {
         connection.set("scm:git:github.com/boswelja/WatchConnectionLib.git")
@@ -77,37 +66,35 @@ object Publishing {
         }
     }
 
-    fun PublicationContainer.configureMavenPublication(
+    fun configureMavenPublication(
         artifactId: String,
         description: String,
         url: String,
         dependencySet: DependencySet,
         configuration: MavenPublication.() -> Unit
-    ): MavenPublication.() -> Unit {
-        return {
-            configuration()
-            groupId = "io.github.boswelja.watchconnection"
-            this.artifactId = artifactId
-            version = "0.1.0" // TODO Plug version in
+    ): MavenPublication.() -> Unit = {
+        configuration()
+        groupId = "io.github.boswelja.watchconnection"
+        this.artifactId = artifactId
+        version = localProps["version"]?.toString() ?: System.getenv("VERSION")
 
-            pom {
-                name.set(artifactId)
-                this.description.set(description)
-                this.url.set(url)
+        pom {
+            name.set(artifactId)
+            this.description.set(description)
+            this.url.set(url)
 
-                licenses(licenses)
-                developers(developers)
-                scm(scm)
+            licenses(licenses)
+            developers(developers)
+            scm(scm)
 
-                withXml {
-                    val dependenciesNode = asNode().appendNode("dependencies")
+            withXml {
+                val dependenciesNode = asNode().appendNode("dependencies")
 
-                    dependencySet.forEach {
-                        val dependencyNode = dependenciesNode.appendNode("dependency")
-                        dependencyNode.appendNode("groupId", it.group)
-                        dependencyNode.appendNode("artifactId", it.name)
-                        dependencyNode.appendNode("version", it.version)
-                    }
+                dependencySet.forEach {
+                    val dependencyNode = dependenciesNode.appendNode("dependency")
+                    dependencyNode.appendNode("groupId", it.group)
+                    dependencyNode.appendNode("artifactId", it.name)
+                    dependencyNode.appendNode("version", it.version)
                 }
             }
         }
