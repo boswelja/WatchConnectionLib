@@ -17,11 +17,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-// Create a new task to publish all releases
-tasks.register("publishRelease") {
-    dependsOn(
-        ":core:publishReleasePublicationToSonatypeRepository",
-        ":wearos:publishReleasePublicationToSonatypeRepository"
-    )
-}
