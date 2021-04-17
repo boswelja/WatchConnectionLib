@@ -22,7 +22,7 @@ interface WatchConnectionInterface {
      * @param message The message to send.
      * @param data The data to send with the message, if any.
      */
-    suspend fun sendMessage(watchId: String, message: String, data: ByteArray? = null)
+    suspend fun sendMessage(watchId: String, message: String, data: ByteArray? = null): Result
 
     /**
      * Register a new [MessageListener].
@@ -40,5 +40,5 @@ interface WatchConnectionInterface {
     /**
      * Manually refresh info such as watch status and available watches.
      */
-    suspend fun refreshData()
+    suspend fun refreshData(): Result
 }
