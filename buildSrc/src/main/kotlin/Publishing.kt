@@ -92,7 +92,7 @@ object Publishing {
         configuration()
         this.groupId = this@Publishing.groupId
         this.artifactId = artifactId
-        version = version
+        version = this@Publishing.version
 
         pom {
             name.set(artifactId)
