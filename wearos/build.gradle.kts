@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation("io.github.boswelja.watchconnection:core:0.1.0")
+    implementation(project(":core"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3")
     implementation("com.google.android.gms:play-services-wearable:17.0.0")
