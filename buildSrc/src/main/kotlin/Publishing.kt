@@ -22,6 +22,15 @@ object Publishing {
         }
     }
 
+    val ossrhUsername: String by lazy {
+        localProps["ossrhUsername"]?.toString() ?: System.getenv("OSSRH_USERNAME")
+    }
+    val ossrhPassword: String by lazy {
+        localProps["ossrhPassword"]?.toString() ?: System.getenv("OSSRH_PASSWORD")
+    }
+
+    val groupId = "io.github.boswelja.watchconnection"
+
     val signingKeyId: String by lazy {
         localProps["signing.keyId"]?.toString() ?: System.getenv("SIGNING_KEY_ID")
     }
@@ -30,6 +39,10 @@ object Publishing {
     }
     val signingSecretKeyring: String by lazy {
         localProps["signing.secretKeyRingFile"]?.toString() ?: System.getenv("SIGNING_SECRET_KEY_RING_FILE")
+    }
+
+    val stagingProfileId: String by lazy {
+        localProps["sonatypeStagingProfileId"]?.toString() ?: System.getenv("SONATYPE_STAGING_PROFILE_ID")
     }
 
     val scm: Action<MavenPomScm> = Action {
@@ -59,8 +72,8 @@ object Publishing {
             name = "sonatype"
             url = URI("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
-                username = localProps["ossrhUsername"]?.toString() ?: System.getenv("OSSRH_USERNAME")
-                password = localProps["ossrhPassword"]?.toString() ?: System.getenv("OSSRH_PASSWORD")
+                username = ossrhUsername
+                password = ossrhPassword
             }
         }
     }
@@ -73,7 +86,7 @@ object Publishing {
         configuration: MavenPublication.() -> Unit
     ): MavenPublication.() -> Unit = {
         configuration()
-        groupId = "io.github.boswelja.watchconnection"
+        this.groupId = this@Publishing.groupId
         this.artifactId = artifactId
         version = localProps["version"]?.toString() ?: System.getenv("VERSION")
 

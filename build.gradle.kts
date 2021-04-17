@@ -17,3 +17,14 @@ allprojects {
         mavenCentral()
     }
 }
+
+plugins {
+    id("io.codearte.nexus-staging") version "0.30.0"
+}
+
+nexusStaging {
+    packageGroup = Publishing.groupId
+    stagingProfileId = Publishing.stagingProfileId
+    username = Publishing.ossrhUsername
+    password = Publishing.ossrhPassword
+}
