@@ -20,7 +20,7 @@ class WearOSConnectionHandler internal constructor(
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,
     private val capabilityClient: CapabilityClient
-) : PlatformConnectionHandler() {
+) : PlatformConnectionHandler {
 
     /**
      * A [PlatformConnectionHandler] with support for Wear OS via Google's Wearable Support Library.
