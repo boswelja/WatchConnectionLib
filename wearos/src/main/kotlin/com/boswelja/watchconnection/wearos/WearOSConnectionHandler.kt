@@ -81,7 +81,7 @@ class WearOSConnectionHandler internal constructor(
         }
     }
 
-    override suspend fun registerMessageListener(listener: MessageListener) {
+    override fun registerMessageListener(listener: MessageListener) {
         val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
             idMap[it.sourceNodeId]?.let { id ->
                 listener.onMessageReceived(id, it.path, it.data)
@@ -92,7 +92,7 @@ class WearOSConnectionHandler internal constructor(
         messageListeners[listener] = onMessageReceiveListener
     }
 
-    override suspend fun unregisterMessageListener(listener: MessageListener) {
+    override fun unregisterMessageListener(listener: MessageListener) {
         // Look up listener and remove it from both the map and messageClient
         messageListeners.remove(listener)?.let {
             messageClient.removeListener(it)

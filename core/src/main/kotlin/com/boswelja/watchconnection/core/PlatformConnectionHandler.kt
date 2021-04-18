@@ -11,7 +11,7 @@ abstract class PlatformConnectionHandler {
      * Returns a unique string to identify this platform. This will be used to map watches to the
      * correct platform as needed.
      */
-    protected abstract val platformIdentifier: String
+    abstract val platformIdentifier: String
 
     /**
      * A flow of all available watches for this platform.
@@ -39,12 +39,12 @@ abstract class PlatformConnectionHandler {
      * Register a new [MessageListener].
      * @param listener The [MessageListener] to register.
      */
-    abstract suspend fun registerMessageListener(listener: MessageListener)
+    abstract fun registerMessageListener(listener: MessageListener)
 
     /**
      * Unregister a [MessageListener]. This will do nothing if the provided listener is not
      * registered.
      * @param listener The [MessageListener] to unregister.
      */
-    abstract suspend fun unregisterMessageListener(listener: MessageListener)
+    abstract fun unregisterMessageListener(listener: MessageListener)
 }
