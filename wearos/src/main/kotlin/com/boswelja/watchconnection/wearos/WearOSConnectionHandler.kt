@@ -4,7 +4,7 @@ import android.content.Context
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Result
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchConnectionInterface
+import com.boswelja.watchconnection.core.PlatformConnectionHandler
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
@@ -12,12 +12,14 @@ import com.google.android.gms.wearable.Wearable
 import java.util.UUID
 import kotlinx.coroutines.tasks.await
 
-class WearOSConnectionInterface internal constructor(
+class WearOSConnectionHandler internal constructor(
+    context: Context,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient
-) : WatchConnectionInterface {
+) : PlatformConnectionHandler(context) {
 
     constructor(context: Context) : this(
+        context,
         Wearable.getNodeClient(context),
         Wearable.getMessageClient(context)
     )
