@@ -1,4 +1,4 @@
-name: Publish Release
+name: Publish Modules
 
 on:
   workflow_dispatch:
@@ -44,10 +44,3 @@ jobs:
           SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
           VERSION: ${{ steps.version.outputs.version }}
-
-      - name: Create GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          commit: ${{ env.GITHUB_SHA }}
-          tag: ${{ steps.version.outputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}

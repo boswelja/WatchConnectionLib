@@ -27,10 +27,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3")
-    implementation("com.google.android.gms:play-services-wearable:17.0.0")
+    api(project(":core"))
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3")
+    api("com.google.android.gms:play-services-wearable:17.0.0")
 }
 
 // Bundle sources with binaries
