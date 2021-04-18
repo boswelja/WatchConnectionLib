@@ -1,6 +1,6 @@
 # Watch Connection Library
 
-An Android library to provide a shared API for multiple smartwatch platforms.
+A kotlin-first Android library to provide a shared API for multiple smartwatch platforms. You can find the latest version from the [Releases section](https://github.com/boswelja/WatchConnectionLib/releases)
 
 ## Modules
 
@@ -9,3 +9,22 @@ An Android library to provide a shared API for multiple smartwatch platforms.
 ### [Wear OS](https://github.com/boswelja/WatchConnectionLib/blob/main/wearos)
 
 ### More coming soon
+
+## Usage
+
+### This library is still in development, APIs are subject to change without notice
+
+Add module dependencies for platforms you want to support:
+```kotlin
+dependencies {
+    // Wear OS support
+    implementation("io.github.boswelja.watchconnection:wearos:$watchConnectionVersion")
+}
+```
+
+Next, you'll want to create an instance of `WatchConnectionClient` and pass in all your desired `PlatformConnectionHandler`s provided by your selected modules (see each modules documentation for more info in creating their respective platform handlers). The result should look something like this:
+```kotlin
+val connectionClient = WatchConnectionClient(
+    wearOSConnectionHandler
+)
+```
