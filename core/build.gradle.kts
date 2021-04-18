@@ -26,6 +26,10 @@ android {
     }
 }
 
+dependencies {
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+}
+
 // Bundle sources with binaries
 val androidSourcesJar by tasks.registering(Jar::class) {
     archiveClassifier.set("sources")

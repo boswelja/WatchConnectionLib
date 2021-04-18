@@ -1,22 +1,27 @@
 package com.boswelja.watchconnection.core
 
-import android.content.Context
+import kotlinx.coroutines.flow.Flow
 
 /**
  * The base connection handler to be implemented by supported platforms.
  */
-abstract class PlatformConnectionHandler(context: Context) {
-    
-    /**
-     * A list of all available watches for this platform.
-     */
-    abstract val availableWatches: List<Watch>
+abstract class PlatformConnectionHandler {
 
     /**
      * Returns a unique string to identify this platform. This will be used to map watches to the
      * correct platform as needed.
      */
-    abstract val platformIdentifier: String
+    protected abstract val platformIdentifier: String
+
+    /**
+     * A flow of all available watches for this platform.
+     */
+    abstract fun allWatches(): Flow<Watch>
+
+    /**
+     * A flow of all available watches with the companion app installed for this platform.
+     */
+    abstract fun watchesWithApp(): Flow<Watch>
 
     /**
      * Send a message to a watch with the given ID.
@@ -42,9 +47,4 @@ abstract class PlatformConnectionHandler(context: Context) {
      * @param listener The [MessageListener] to unregister.
      */
     abstract suspend fun unregisterMessageListener(listener: MessageListener)
-
-    /**
-     * Manually refresh info such as watch status and available watches.
-     */
-    abstract suspend fun refreshData(): Result
 }

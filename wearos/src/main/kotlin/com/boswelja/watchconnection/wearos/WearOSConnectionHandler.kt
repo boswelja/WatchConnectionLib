@@ -6,30 +6,70 @@ import com.boswelja.watchconnection.core.Result
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.PlatformConnectionHandler
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.util.UUID
 import kotlinx.coroutines.tasks.await
 
 class WearOSConnectionHandler internal constructor(
-    context: Context,
+    private val appCapability: String,
     private val nodeClient: NodeClient,
-    private val messageClient: MessageClient
-) : PlatformConnectionHandler(context) {
+    private val messageClient: MessageClient,
+    private val capabilityClient: CapabilityClient
+) : PlatformConnectionHandler() {
 
-    constructor(context: Context) : this(
-        context,
+    /**
+     * A [PlatformConnectionHandler] with support for Wear OS via Google's Wearable Support Library.
+     * @param context The [Context] to initialize [Wearable] components with.
+     * @param appCapability The capability string to use when searching for watches with the
+     * companion app installed.
+     */
+    constructor(
+        context: Context,
+        appCapability: String
+    ) : this(
+        appCapability,
         Wearable.getNodeClient(context),
-        Wearable.getMessageClient(context)
+        Wearable.getMessageClient(context),
+        Wearable.getCapabilityClient(context)
     )
 
+    private val idMap = HashMap<String, UUID>()
+
     private val messageListeners = mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
-    private val _availableWatches = ArrayList<Watch>()
 
     override val platformIdentifier = PLATFORM
 
-    override val availableWatches: List<Watch> = _availableWatches
+    override fun allWatches(): Flow<Watch> = flow {
+        nodeClient.connectedNodes.await().forEach {
+            emit(
+                Watch(
+                    getOrCreateID(it.id),
+                    it.displayName,
+                    it.id,
+                    PLATFORM
+                )
+            )
+        }
+    }
+
+    override fun watchesWithApp(): Flow<Watch> = flow {
+        capabilityClient.getCapability(appCapability, CapabilityClient.FILTER_ALL).await().nodes
+            .forEach {
+                emit(
+                    Watch(
+                        getOrCreateID(it.id),
+                        it.displayName,
+                        it.id,
+                        PLATFORM
+                    )
+                )
+            }
+    }
 
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Result {
         // Either sendMessage is successful, or ApiException is thrown
@@ -43,10 +83,8 @@ class WearOSConnectionHandler internal constructor(
 
     override suspend fun registerMessageListener(listener: MessageListener) {
         val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
-            _availableWatches.firstOrNull { watch ->
-                watch.platformId == it.sourceNodeId
-            }?.let { watch ->
-                listener.onMessageReceived(watch.id, it.path, it.data)
+            idMap[it.sourceNodeId]?.let { id ->
+                listener.onMessageReceived(id, it.path, it.data)
             }
         }
         messageClient.addListener(onMessageReceiveListener)
@@ -61,21 +99,19 @@ class WearOSConnectionHandler internal constructor(
         }
     }
 
-    override suspend fun refreshData(): Result {
-        refreshConnectedNodes()
-        return Result.SUCCESS
-    }
-
-    private suspend fun refreshConnectedNodes() {
-        val result = nodeClient.connectedNodes.await()
-        result.filter { _availableWatches.any { watch -> watch.platformId == it.id} }.forEach {
-            val newWatch = Watch(
-                UUID.randomUUID(),
-                it.id,
-                it.displayName,
-                PLATFORM
-            )
-            _availableWatches.add(newWatch)
+    /**
+     * Attempts to get a [UUID] from [idMap], or creates one if it wasn't found
+     * @param nodeId The ID of the Node to look up a UUID for.
+     * @return An existing [UUID], or a new one if none were found.
+     */
+    private fun getOrCreateID(nodeId: String): UUID {
+        val id = idMap[nodeId]
+        return if (id != null) {
+            id
+        } else {
+            val newUuid = UUID.randomUUID()
+            idMap[nodeId] = newUuid
+            newUuid
         }
     }
 
