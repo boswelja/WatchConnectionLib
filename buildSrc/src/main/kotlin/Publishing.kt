@@ -9,25 +9,25 @@ import java.net.URI
 
 object Publishing {
 
-    val version: String
-        get() = System.getenv("VERSION")!!
+    val version: String?
+        get() = System.getenv("VERSION")
 
-    val ossrhUsername: String
-        get() = System.getenv("OSSRH_USERNAME")!!
-    val ossrhPassword: String
-        get() = System.getenv("OSSRH_PASSWORD")!!
+    val ossrhUsername: String?
+        get() = System.getenv("OSSRH_USERNAME")
+    val ossrhPassword: String?
+        get() = System.getenv("OSSRH_PASSWORD")
 
     val groupId = "io.github.boswelja.watchconnection"
 
-    val signingKeyId: String
-        get() = System.getenv("SIGNING_KEY_ID")!!
-    val signingPassword: String
-        get() = System.getenv("SIGNING_PASSWORD")!!
-    val signingSecretKeyring: String
-        get() = System.getenv("SIGNING_SECRET_KEY_RING_FILE")!!
+    val signingKeyId: String?
+        get() = System.getenv("SIGNING_KEY_ID")
+    val signingPassword: String?
+        get() = System.getenv("SIGNING_PASSWORD")
+    val signingSecretKeyring: String?
+        get() = System.getenv("SIGNING_SECRET_KEY_RING_FILE")
 
-    val stagingProfileId: String
-        get() = System.getenv("SONATYPE_STAGING_PROFILE_ID")!!
+    val stagingProfileId: String?
+        get() = System.getenv("SONATYPE_STAGING_PROFILE_ID")
 
     val scm: Action<MavenPomScm> = Action {
         connection.set("scm:git:github.com/boswelja/WatchConnectionLib.git")
