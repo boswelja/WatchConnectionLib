@@ -5,49 +5,29 @@ import org.gradle.api.publish.maven.MavenPomDeveloperSpec
 import org.gradle.api.publish.maven.MavenPomLicenseSpec
 import org.gradle.api.publish.maven.MavenPomScm
 import org.gradle.api.publish.maven.MavenPublication
-import java.io.File
-import java.io.FileInputStream
 import java.net.URI
-import java.util.Properties
 
 object Publishing {
 
-    private val localPropsFile = File("local.properties")
+    val version: String
+        get() = System.getenv("VERSION")!!
 
-    private val localProps: Properties by lazy {
-        Properties().apply {
-            try {
-                load(FileInputStream(localPropsFile))
-            } catch (e: Exception) { }
-        }
-    }
-
-    val version: String by lazy {
-        localProps["version"]?.toString() ?: System.getenv("VERSION")
-    }
-
-    val ossrhUsername: String by lazy {
-        localProps["ossrhUsername"]?.toString() ?: System.getenv("OSSRH_USERNAME")
-    }
-    val ossrhPassword: String by lazy {
-        localProps["ossrhPassword"]?.toString() ?: System.getenv("OSSRH_PASSWORD")
-    }
+    val ossrhUsername: String
+        get() = System.getenv("OSSRH_USERNAME")!!
+    val ossrhPassword: String
+        get() = System.getenv("OSSRH_PASSWORD")!!
 
     val groupId = "io.github.boswelja.watchconnection"
 
-    val signingKeyId: String by lazy {
-        localProps["signing.keyId"]?.toString() ?: System.getenv("SIGNING_KEY_ID")
-    }
-    val signingPassword: String by lazy {
-        localProps["signing.password"]?.toString() ?: System.getenv("SIGNING_PASSWORD")
-    }
-    val signingSecretKeyring: String by lazy {
-        localProps["signing.secretKeyRingFile"]?.toString() ?: System.getenv("SIGNING_SECRET_KEY_RING_FILE")
-    }
+    val signingKeyId: String
+        get() = System.getenv("SIGNING_KEY_ID")!!
+    val signingPassword: String
+        get() = System.getenv("SIGNING_PASSWORD")!!
+    val signingSecretKeyring: String
+        get() = System.getenv("SIGNING_SECRET_KEY_RING_FILE")!!
 
-    val stagingProfileId: String by lazy {
-        localProps["sonatypeStagingProfileId"]?.toString() ?: System.getenv("SONATYPE_STAGING_PROFILE_ID")
-    }
+    val stagingProfileId: String
+        get() = System.getenv("SONATYPE_STAGING_PROFILE_ID")!!
 
     val scm: Action<MavenPomScm> = Action {
         connection.set("scm:git:github.com/boswelja/WatchConnectionLib.git")
