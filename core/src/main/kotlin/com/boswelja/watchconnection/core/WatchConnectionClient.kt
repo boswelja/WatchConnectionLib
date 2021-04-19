@@ -37,7 +37,7 @@ class WatchConnectionClient(
         connectionHandlers.values.map { it.watchesWithApp() }.merge()
 
     /**
-     * Send a message to a specified [Watch].
+     * Send a message to a number of [Watch]es.
      * @param to The [Watch]es to send the message to.
      * @param message The message to send.
      * @param data The data to send with the message, if any.
@@ -46,6 +46,15 @@ class WatchConnectionClient(
         to.forEach { watch ->
             connectionHandlers[watch.platform]?.sendMessage(watch.platformId, message, data)
         }
+    }
+
+    /**
+     * Get a flow of capabilities found for a given [Watch].
+     * @param watch See [Watch].
+     * @return A [Flow] of capability strings declared by the watch.
+     */
+    suspend fun getCapabilitiesFor(watch: Watch): Flow<String>? {
+        return connectionHandlers[watch.platform]?.getCapabilitiesFor(watch.platformId)
     }
 
     /**
