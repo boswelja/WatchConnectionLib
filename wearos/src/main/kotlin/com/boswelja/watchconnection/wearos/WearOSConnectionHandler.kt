@@ -72,20 +72,16 @@ class WearOSConnectionHandler internal constructor(
             }
     }
 
-    override suspend fun getCapabilitiesFor(watchId: String): Array<String> {
-        val watchCapabilities = ArrayList<String>()
-
+    override suspend fun getCapabilitiesFor(watchId: String): Flow<String> = flow {
         // Get all capabilities
         val capabilities = capabilityClient
             .getAllCapabilities(CapabilityClient.FILTER_REACHABLE).await()
         capabilities.forEach { capability ->
             // If capability has a node with the same ID as the watch we want, add it
             if (capability.value.nodes.any { it.id == watchId }) {
-                watchCapabilities.add(capability.key)
+                emit(capability.key)
             }
         }
-
-        return watchCapabilities.toTypedArray()
     }
 
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Result {
