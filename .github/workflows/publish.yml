@@ -21,7 +21,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Git Version
-        uses: codacy/git-version@2.4.0
+        uses: codacy/git-version@2.5.2
         id: version
         with:
           release-branch: main
@@ -44,3 +44,10 @@ jobs:
 #           SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
 #           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
 #           VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          commit: ${{ env.GITHUB_SHA }}
+          tag: ${{ steps.version.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}

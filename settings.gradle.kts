@@ -1,1 +1,1 @@
-include(":core", ":wearos")
+include(":core", ":wearos", ":tizen")
