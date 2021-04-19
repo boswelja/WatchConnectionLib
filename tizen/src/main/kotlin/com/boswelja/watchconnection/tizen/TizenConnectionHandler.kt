@@ -58,38 +58,32 @@ class TizenConnectionHandler internal constructor(
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
             if (peerAgent == null) return
             val id = idMap[peerAgent.accessory.accessoryId] ?: return
-            var messageBytes = emptyArray<Byte>()
-            var bytes = emptyArray<Byte>()
-            var hasMessage = false
-            data?.forEach {
-                if (!hasMessage) {
-                    if (it == messageDelimiter) {
-                        hasMessage = true
+            data?.indexOfFirst { it == messageDelimiter.toByte() }?.let { delimiterIndex ->
+                if (delimiterIndex > -1) {
+                    val message = String(data.copyOfRange(0, delimiterIndex), Charsets.UTF_8)
+                    if (message == CAPABILITY_MESSAGE) {
+                        // Capability message, assume we have data
+                        coroutineScope.launch(Dispatchers.IO + capabilityJob) {
+                            val messageData = data.copyOfRange(delimiterIndex + 1, data.size)
+                            capabilityMap[peerAgent.accessory.accessoryId]?.let { flow ->
+                                if (flow is MutableStateFlow) {
+                                    flow.emit(String(messageData, Charsets.UTF_8))
+                                }
+                            }
+                        }
                     } else {
-                        messageBytes += it
-                    }
-                } else {
-                    bytes += it
-                }
-            }
-            val message = String(messageBytes.toByteArray(), Charsets.UTF_8)
-            if (message == CAPABILITY_MESSAGE) {
-                // Handle capability message
-                coroutineScope.launch(Dispatchers.IO + capabilityJob) {
-                    capabilityMap[peerAgent.accessory.accessoryId]?.let { flow ->
-                        if (flow is MutableStateFlow) {
-                            flow.emit(String(bytes.toByteArray(), Charsets.UTF_8))
+                        val messageData =
+                            if (data.size > delimiterIndex + 1)
+                                data.copyOfRange(delimiterIndex + 1, data.size)
+                            else null
+                        messageListeners.forEach { listener ->
+                            listener.onMessageReceived(
+                                id,
+                                message,
+                                messageData
+                            )
                         }
                     }
-                }
-            } else {
-                // Pass message on
-                messageListeners.forEach { listener ->
-                    listener.onMessageReceived(
-                        id,
-                        message,
-                        bytes.toByteArray()
-                    )
                 }
             }
         }
@@ -152,7 +146,7 @@ class TizenConnectionHandler internal constructor(
         val targetAgent = peerMap[watchId] ?: return Result.FAILED
         val bytes = withContext(Dispatchers.Default) {
             return@withContext if (data != null) {
-                message.toByteArray(Charsets.UTF_8) + messageDelimiter + data
+                message.toByteArray(Charsets.UTF_8) + messageDelimiter.toByte() + data
             } else {
                 message.toByteArray(Charsets.UTF_8)
             }
@@ -212,7 +206,7 @@ class TizenConnectionHandler internal constructor(
 
     companion object {
         private const val TAG = "TizenConnectionHandler"
-        private const val messageDelimiter = Byte.MAX_VALUE
+        private const val messageDelimiter = '|'
         private const val OPERATION_TIMEOUT = 1000L
 
         const val CAPABILITY_MESSAGE = "/request_capabilities"

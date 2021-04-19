@@ -41,3 +41,5 @@ Find out more via [Samsung's programming guide](https://developer.samsung.com/ga
 You'll still want to use Samsung's Accessory SDK in your Tizen app. Currently, this module only supports `SAMessage`, as well as getting watches via `findPeerAgents()`.
 
 This module does not currently support differentiating between watches with and without your app installed. Both `allWatches()` and `watchesWithApp()` return the same Flow.
+
+To support messages, you'll need to prefix anything you send from your watch app with a string to identify it, followed by `|` to indicate where the identifier ends and the data starts.
