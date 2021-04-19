@@ -18,6 +18,17 @@ data class Watch(
     val platform: String
 ) {
 
+    constructor(
+        name: String,
+        platformId: String,
+        platform: String
+    ) : this(
+        createUUID(platform, platformId),
+        name,
+        platformId,
+        platform
+    )
+
     override fun equals(other: Any?): Boolean {
         if (other !is Watch) return super.equals(other)
         return other.id == id &&
@@ -30,5 +41,16 @@ data class Watch(
         result = 31 * result + name.hashCode()
         result = 31 * result + platform.hashCode()
         return result
+    }
+
+    companion object {
+
+        /**
+         * Gets a reproducible [UUID] from the provided info.
+         * @param platform See [PlatformConnectionHandler.platformIdentifier].
+         * @param platformId See [Watch.platformId].
+         */
+        fun createUUID(platform: String, platformId: String) =
+            UUID.nameUUIDFromBytes((platform + platformId).toByteArray(Charsets.UTF_8))
     }
 }
