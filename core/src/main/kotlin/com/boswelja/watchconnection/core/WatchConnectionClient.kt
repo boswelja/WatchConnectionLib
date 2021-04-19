@@ -26,7 +26,7 @@ class WatchConnectionClient(
      * Get a [Flow] of all [Watch]es found by all [PlatformConnectionHandler]s.
      */
     @ExperimentalCoroutinesApi
-    fun allWatches(): Flow<Watch> =connectionHandlers.values.map { it.allWatches() }.merge()
+    fun allWatches(): Flow<Watch> = connectionHandlers.values.map { it.allWatches() }.merge()
 
     /**
      * Get a [Flow] of all [Watch]es determined to have the companion app installed from all

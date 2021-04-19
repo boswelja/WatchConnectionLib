@@ -2,17 +2,17 @@ package com.boswelja.watchconnection.wearos
 
 import android.content.Context
 import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.PlatformConnectionHandler
 import com.boswelja.watchconnection.core.Result
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.PlatformConnectionHandler
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.util.UUID
 import kotlinx.coroutines.tasks.await
 
 class WearOSConnectionHandler internal constructor(

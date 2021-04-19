@@ -1,3 +1,4 @@
+import java.net.URI
 import org.gradle.api.Action
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -5,7 +6,6 @@ import org.gradle.api.publish.maven.MavenPomDeveloperSpec
 import org.gradle.api.publish.maven.MavenPomLicenseSpec
 import org.gradle.api.publish.maven.MavenPomScm
 import org.gradle.api.publish.maven.MavenPublication
-import java.net.URI
 
 object Publishing {
 
