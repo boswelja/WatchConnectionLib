@@ -38,6 +38,7 @@ class TizenConnectionHandler internal constructor(
         SA()
     )
 
+    private val capabilityJob = Job()
     private val findPeerJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -49,6 +50,9 @@ class TizenConnectionHandler internal constructor(
 
     // Keep a map of channels to message IDs to
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
+
+    // Keep a map of peer agents to their capabilities
+    private val capabilityMap = HashMap<String, Flow<String?>>()
 
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
@@ -68,12 +72,25 @@ class TizenConnectionHandler internal constructor(
                     bytes += it
                 }
             }
-            messageListeners.forEach { listener ->
-                listener.onMessageReceived(
-                    id,
-                    String(messageBytes.toByteArray(), Charsets.UTF_8),
-                    bytes.toByteArray()
-                )
+            val message = String(messageBytes.toByteArray(), Charsets.UTF_8)
+            if (message == CAPABILITY_MESSAGE) {
+                // Handle capability message
+                coroutineScope.launch(Dispatchers.IO + capabilityJob) {
+                    capabilityMap[peerAgent.accessory.accessoryId]?.let { flow ->
+                        if (flow is MutableStateFlow) {
+                            flow.emit(String(bytes.toByteArray(), Charsets.UTF_8))
+                        }
+                    }
+                }
+            } else {
+                // Pass message on
+                messageListeners.forEach { listener ->
+                    listener.onMessageReceived(
+                        id,
+                        message,
+                        bytes.toByteArray()
+                    )
+                }
             }
         }
 
@@ -111,9 +128,22 @@ class TizenConnectionHandler internal constructor(
     @ExperimentalCoroutinesApi
     override fun watchesWithApp(): Flow<Watch> = allWatches()
 
-    override suspend fun getCapabilitiesFor(watchId: String): Array<String> {
-        // TODO("Not yet implemented")
-        return emptyArray()
+    @ExperimentalCoroutinesApi
+    override suspend fun getCapabilitiesFor(watchId: String): Flow<String> {
+        var flow = capabilityMap[watchId]
+        if (flow == null) {
+            // Flow doesn't already exist, create a new one
+            flow = MutableStateFlow(null)
+            capabilityMap[watchId] = flow
+        } else if (flow is MutableStateFlow) {
+            // Reset replay cache if possible
+            flow.resetReplayCache()
+        }
+
+        // Request capability stream
+        sendMessage(watchId, CAPABILITY_MESSAGE)
+
+        return flow.mapNotNull { it }
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -185,6 +215,7 @@ class TizenConnectionHandler internal constructor(
         private const val messageDelimiter = Byte.MAX_VALUE
         private const val OPERATION_TIMEOUT = 1000L
 
+        const val CAPABILITY_MESSAGE = "/request_capabilities"
         const val PLATFORM = "TIZEN"
     }
 }
