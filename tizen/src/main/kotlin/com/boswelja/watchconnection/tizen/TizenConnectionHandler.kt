@@ -15,11 +15,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.receiveOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 class TizenConnectionHandler internal constructor(
     context: Context,
@@ -43,6 +46,9 @@ class TizenConnectionHandler internal constructor(
     private val idMap = HashMap<String, UUID>()
     private val peerMap = HashMap<String, SAPeerAgent>()
     private val messageListeners = ArrayList<MessageListener>()
+
+    // Keep a map of channels to message IDs to
+    private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
 
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
@@ -71,12 +77,12 @@ class TizenConnectionHandler internal constructor(
             }
         }
 
-        override fun onSent(peerAgent: SAPeerAgent?, data: Int) {
-            // TODO("Not yet implemented")
+        override fun onSent(peerAgent: SAPeerAgent?, id: Int) {
+            messageChannelMap[id]?.offer(true)
         }
 
         override fun onError(peerAgent: SAPeerAgent?, id: Int, errorCode: Int) {
-            // TODO("Not yet implemented")
+            messageChannelMap[id]?.offer(false)
         }
     }
 
@@ -121,8 +127,18 @@ class TizenConnectionHandler internal constructor(
                 message.toByteArray(Charsets.UTF_8)
             }
         }
-        saMessage.secureSend(targetAgent, bytes)
-        return Result.SUCCESS
+
+        // Create channel and map message ID to it
+        val channel = Channel<Boolean>(capacity = 1)
+        val id = saMessage.secureSend(targetAgent, bytes)
+        messageChannelMap[id] = channel
+
+        // If channel has sent true, return success
+        return if (withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true) {
+            Result.SUCCESS
+        } else {
+            Result.FAILED
+        }
     }
 
     override fun registerMessageListener(listener: MessageListener) {
@@ -167,6 +183,7 @@ class TizenConnectionHandler internal constructor(
     companion object {
         private const val TAG = "TizenConnectionHandler"
         private const val messageDelimiter = Byte.MAX_VALUE
+        private const val OPERATION_TIMEOUT = 1000L
 
         const val PLATFORM = "TIZEN"
     }
