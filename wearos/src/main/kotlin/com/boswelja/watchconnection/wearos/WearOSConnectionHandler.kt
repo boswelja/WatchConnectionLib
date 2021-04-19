@@ -10,7 +10,6 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -38,8 +37,6 @@ class WearOSConnectionHandler internal constructor(
         Wearable.getCapabilityClient(context)
     )
 
-    private val idMap = HashMap<String, UUID>()
-
     private val messageListeners =
         mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
 
@@ -49,7 +46,6 @@ class WearOSConnectionHandler internal constructor(
         nodeClient.connectedNodes.await().forEach {
             emit(
                 Watch(
-                    getOrCreateID(it.id),
                     it.displayName,
                     it.id,
                     PLATFORM
@@ -63,7 +59,6 @@ class WearOSConnectionHandler internal constructor(
             .forEach {
                 emit(
                     Watch(
-                        getOrCreateID(it.id),
                         it.displayName,
                         it.id,
                         PLATFORM
@@ -96,9 +91,8 @@ class WearOSConnectionHandler internal constructor(
 
     override fun registerMessageListener(listener: MessageListener) {
         val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
-            idMap[it.sourceNodeId]?.let { id ->
-                listener.onMessageReceived(id, it.path, it.data)
-            }
+            val id = Watch.createUUID(PLATFORM, it.sourceNodeId)
+            listener.onMessageReceived(id, it.path, it.data)
         }
         messageClient.addListener(onMessageReceiveListener)
         // Store this in a map, so we can look it up to unregister later
@@ -109,22 +103,6 @@ class WearOSConnectionHandler internal constructor(
         // Look up listener and remove it from both the map and messageClient
         messageListeners.remove(listener)?.let {
             messageClient.removeListener(it)
-        }
-    }
-
-    /**
-     * Attempts to get a [UUID] from [idMap], or creates one if it wasn't found
-     * @param nodeId The ID of the Node to look up a UUID for.
-     * @return An existing [UUID], or a new one if none were found.
-     */
-    private fun getOrCreateID(nodeId: String): UUID {
-        val id = idMap[nodeId]
-        return if (id != null) {
-            id
-        } else {
-            val newUuid = UUID.randomUUID()
-            idMap[nodeId] = newUuid
-            newUuid
         }
     }
 

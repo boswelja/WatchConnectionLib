@@ -10,7 +10,6 @@ import com.samsung.android.sdk.accessory.SA
 import com.samsung.android.sdk.accessory.SAAgentV2
 import com.samsung.android.sdk.accessory.SAMessage
 import com.samsung.android.sdk.accessory.SAPeerAgent
-import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,7 +43,6 @@ class TizenConnectionHandler internal constructor(
 
     private val allWatches = MutableStateFlow<Watch?>(null)
 
-    private val idMap = HashMap<String, UUID>()
     private val peerMap = HashMap<String, SAPeerAgent>()
     private val messageListeners = ArrayList<MessageListener>()
 
@@ -57,7 +55,7 @@ class TizenConnectionHandler internal constructor(
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
             if (peerAgent == null) return
-            val id = idMap[peerAgent.accessory.accessoryId] ?: return
+            val id = Watch.createUUID(PLATFORM, peerAgent.accessory.accessoryId)
             data?.indexOfFirst { it == messageDelimiter.toByte() }?.let { delimiterIndex ->
                 if (delimiterIndex > -1) {
                     val message = String(data.copyOfRange(0, delimiterIndex), Charsets.UTF_8)
@@ -175,32 +173,15 @@ class TizenConnectionHandler internal constructor(
 
     override fun onFindPeerAgentsResponse(peers: Array<out SAPeerAgent>?, result: Int) {
         coroutineScope.launch(Dispatchers.Default + findPeerJob) {
-            peers?.forEach {
+            peers?.forEach { peerAgent ->
                 allWatches.emit(
                     Watch(
-                        getOrCreateID(it.accessory.accessoryId),
-                        it.accessory.name,
-                        it.accessory.accessoryId,
+                        peerAgent.accessory.name,
+                        peerAgent.accessory.accessoryId,
                         PLATFORM
                     )
                 )
             }
-        }
-    }
-
-    /**
-     * Attempts to get a [UUID] from [idMap], or creates one if it wasn't found
-     * @param accessoryId The ID of the Accessory to look up a UUID for.
-     * @return An existing [UUID], or a new one if none were found.
-     */
-    private fun getOrCreateID(accessoryId: String): UUID {
-        val id = idMap[accessoryId]
-        return if (id != null) {
-            id
-        } else {
-            val newUuid = UUID.randomUUID()
-            idMap[accessoryId] = newUuid
-            newUuid
         }
     }
 
