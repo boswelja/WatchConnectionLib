@@ -40,7 +40,8 @@ class WearOSConnectionHandler internal constructor(
 
     private val idMap = HashMap<String, UUID>()
 
-    private val messageListeners = mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
+    private val messageListeners =
+        mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
 
     override val platformIdentifier = PLATFORM
 
