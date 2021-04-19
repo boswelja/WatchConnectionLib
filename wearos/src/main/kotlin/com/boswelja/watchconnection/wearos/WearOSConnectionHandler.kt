@@ -3,7 +3,6 @@ package com.boswelja.watchconnection.wearos
 import android.content.Context
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.PlatformConnectionHandler
-import com.boswelja.watchconnection.core.Result
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.CapabilityClient
@@ -79,13 +78,14 @@ class WearOSConnectionHandler internal constructor(
         }
     }
 
-    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Result {
+    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         // Either sendMessage is successful, or ApiException is thrown
         return try {
             messageClient.sendMessage(watchId, message, data).await()
-            Result.SUCCESS
+            // If we get here, message send was successful
+            true
         } catch (e: ApiException) {
-            Result.FAILED
+            false
         }
     }
 

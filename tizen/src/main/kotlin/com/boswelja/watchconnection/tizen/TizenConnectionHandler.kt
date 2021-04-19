@@ -3,7 +3,6 @@ package com.boswelja.watchconnection.tizen
 import android.content.Context
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.PlatformConnectionHandler
-import com.boswelja.watchconnection.core.Result
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
@@ -140,8 +139,8 @@ class TizenConnectionHandler internal constructor(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
-    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Result {
-        val targetAgent = peerMap[watchId] ?: return Result.FAILED
+    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
+        val targetAgent = peerMap[watchId] ?: return false
         val bytes = withContext(Dispatchers.Default) {
             return@withContext if (data != null) {
                 message.toByteArray(Charsets.UTF_8) + messageDelimiter.toByte() + data
@@ -156,11 +155,7 @@ class TizenConnectionHandler internal constructor(
         messageChannelMap[id] = channel
 
         // If channel has sent true, return success
-        return if (withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true) {
-            Result.SUCCESS
-        } else {
-            Result.FAILED
-        }
+        return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true
     }
 
     override fun registerMessageListener(listener: MessageListener) {

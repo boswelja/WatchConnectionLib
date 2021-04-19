@@ -31,16 +31,18 @@ interface PlatformConnectionHandler {
     suspend fun getCapabilitiesFor(watchId: String): Flow<String>
 
     /**
-     * Send a message to a watch with the given ID.
+     * Send a message to a watch with the given ID. Note that a successful response doesn't
+     * guarantee delivery.
      * @param watchId See [Watch.platformId].
      * @param message The message to send.
      * @param data The data to send with the message, if any.
+     * @return true if sending was successful, false otherwise.
      */
     suspend fun sendMessage(
         watchId: String,
         message: String,
         data: ByteArray? = null
-    ): Result
+    ): Boolean
 
     /**
      * Register a new [MessageListener].
