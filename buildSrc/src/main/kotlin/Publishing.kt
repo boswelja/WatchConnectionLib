@@ -88,9 +88,15 @@ object Publishing {
 
                 dependencySet.forEach {
                     val dependencyNode = dependenciesNode.appendNode("dependency")
-                    dependencyNode.appendNode("groupId", it.group)
-                    dependencyNode.appendNode("artifactId", it.name)
-                    dependencyNode.appendNode("version", it.version)
+                    if (it.name == ":core") {
+                        dependencyNode.appendNode("groupId", groupId)
+                        dependencyNode.appendNode("artifactId", it.name)
+                        dependencyNode.appendNode("version", version)
+                    } else {
+                        dependencyNode.appendNode("groupId", it.group)
+                        dependencyNode.appendNode("artifactId", it.name)
+                        dependencyNode.appendNode("version", it.version)
+                    }
                 }
             }
         }
