@@ -105,6 +105,11 @@ class TizenConnectionHandler internal constructor(
     @ExperimentalCoroutinesApi
     override fun watchesWithApp(): Flow<Watch> = allWatches()
 
+    override suspend fun getCapabilitiesFor(watchId: String): Array<String> {
+        // TODO("Not yet implemented")
+        return emptyArray()
+    }
+
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Result {

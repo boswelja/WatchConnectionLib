@@ -5,7 +5,7 @@ package com.boswelja.watchconnection.core
  */
 enum class Result {
     /**
-     * Indicated the operation was successful.
+     * Indicates the operation was successful.
      */
     SUCCESS,
 
