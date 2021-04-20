@@ -37,7 +37,7 @@ dependencies {
 
     testImplementation("androidx.test:core-ktx:1.4.0-alpha05")
     testImplementation("androidx.test.ext:junit-ktx:1.1.3-alpha05")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3-native-mt")
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.strikt:strikt-core:0.30.1")
     testImplementation("io.mockk:mockk:1.11.0")
