@@ -88,7 +88,8 @@ object Publishing {
 
                 dependencySet.forEach {
                     val dependencyNode = dependenciesNode.appendNode("dependency")
-                    if (it.name == ":core") {
+                    // Replace implementation(project()) with something more meaningful
+                    if (it.group == "WatchConnectionLib") {
                         dependencyNode.appendNode("groupId", groupId)
                         dependencyNode.appendNode("artifactId", it.name)
                         dependencyNode.appendNode("version", version)
