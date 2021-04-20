@@ -106,7 +106,11 @@ class WatchConnectionClientTest {
     @Test
     fun `registerMessageListener adds the message listener to all platforms`() {
         val messageListener = object : MessageListener {
-            override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) { }
+            override fun onMessageReceived(
+                sourceWatchId: UUID,
+                message: String,
+                data: ByteArray?
+            ) { }
         }
         connectionClient.registerMessageListener(messageListener)
         dummyPlatforms.forEach { platform ->
@@ -117,7 +121,11 @@ class WatchConnectionClientTest {
     @Test
     fun `unregisterMessageListener removes the message listener from all platforms`() {
         val messageListener = object : MessageListener {
-            override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) { }
+            override fun onMessageReceived(
+                sourceWatchId: UUID,
+                message: String,
+                data: ByteArray?
+            ) { }
         }
         connectionClient.unregisterMessageListener(messageListener)
         dummyPlatforms.forEach { platform ->
