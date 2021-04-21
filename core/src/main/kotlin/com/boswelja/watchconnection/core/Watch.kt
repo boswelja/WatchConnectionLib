@@ -11,11 +11,11 @@ import java.util.UUID
  * @param platform The platform identifier string of this watch. You shouldn't need to use this
  * outside the calling platform.
  */
-data class Watch(
-    val id: UUID,
-    val name: String,
-    val platformId: String,
-    val platform: String
+open class Watch(
+    open val id: UUID,
+    open val name: String,
+    open val platformId: String,
+    open val platform: String
 ) {
 
     constructor(
