@@ -65,7 +65,7 @@ jobs:
         uses: boswelja/ktlint-pr-comments@input-arguments
         with:
           repotoken: ${{ secrets.GITHUB_TOKEN }}
-          arguments: "--android --reporter=xml"
+          arguments: "--android"
       - name: Cache Gradle packages
         uses: actions/cache@v2.1.5
         with:
