@@ -37,15 +37,13 @@ class WatchConnectionClient(
         connectionHandlers.values.map { it.watchesWithApp() }.merge()
 
     /**
-     * Send a message to a number of [Watch]es.
-     * @param to The [Watch]es to send the message to.
+     * Send a message to a [Watch].
+     * @param to The [Watch] to send the message to.
      * @param message The message to send.
      * @param data The data to send with the message, if any.
      */
-    suspend fun sendMessage(vararg to: Watch, message: String, data: ByteArray? = null) {
-        to.forEach { watch ->
-            connectionHandlers[watch.platform]?.sendMessage(watch.platformId, message, data)
-        }
+    suspend fun sendMessage(to: Watch, message: String, data: ByteArray? = null) {
+        connectionHandlers[to.platform]?.sendMessage(to.platformId, message, data)
     }
 
     /**
