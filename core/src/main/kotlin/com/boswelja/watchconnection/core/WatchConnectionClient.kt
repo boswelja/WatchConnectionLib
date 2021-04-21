@@ -74,4 +74,8 @@ class WatchConnectionClient(
             it.unregisterMessageListener(messageListener)
         }
     }
+    
+    fun doNothing() {
+        
+    }
 }
