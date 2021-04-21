@@ -41,10 +41,10 @@ class WatchConnectionClient(
      * @param to The [Watch] to send the message to.
      * @param message The message to send.
      * @param data The data to send with the message, if any.
+     * @return true if sending the message was successful, false otherwise.
      */
-    suspend fun sendMessage(to: Watch, message: String, data: ByteArray? = null) {
-        connectionHandlers[to.platform]?.sendMessage(to.platformId, message, data)
-    }
+    suspend fun sendMessage(to: Watch, message: String, data: ByteArray? = null) =
+        connectionHandlers[to.platform]?.sendMessage(to.platformId, message, data) == true
 
     /**
      * Get a flow of capabilities found for a given [Watch].
