@@ -26,9 +26,6 @@ object Publishing {
     val signingSecretKeyring: String?
         get() = System.getenv("SIGNING_SECRET_KEY_RING_FILE")
 
-    val stagingProfileId: String?
-        get() = System.getenv("SONATYPE_STAGING_PROFILE_ID")
-
     val scm: Action<MavenPomScm> = Action {
         connection.set("scm:git:github.com/boswelja/WatchConnectionLib.git")
         developerConnection.set("scm:git:ssh://github.com/boswelja/WatchConnectionLib.git")
@@ -93,7 +90,7 @@ object Publishing {
                         dependencyNode.appendNode("groupId", groupId)
                         dependencyNode.appendNode("artifactId", it.name)
                         dependencyNode.appendNode("version", version)
-                    } else {
+                    } else if (it.group != null && it.version != null) {
                         dependencyNode.appendNode("groupId", it.group)
                         dependencyNode.appendNode("artifactId", it.name)
                         dependencyNode.appendNode("version", it.version)
