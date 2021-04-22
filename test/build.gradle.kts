@@ -30,6 +30,11 @@ android {
     testOptions.unitTests {
         isIncludeAndroidResources = true
     }
+
+    // Workaround for old Accessory SDK
+    testOptions.unitTests.all {
+        it.jvmArgs("-noverify")
+    }
 }
 
 dependencies {
