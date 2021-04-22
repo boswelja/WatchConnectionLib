@@ -14,7 +14,7 @@ class DummyConnectionHandler(
 
     override fun watchesWithApp(): Flow<Watch> = flowOf(*watchesWithApp)
 
-    override suspend fun getCapabilitiesFor(watchId: String): Flow<String> = flow { }
+    override fun getCapabilitiesFor(watchId: String): Flow<String> = flow { }
 
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         // Do nothing
