@@ -35,6 +35,7 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":wearos"))
+    implementation(project(":tizen"))
 
     testImplementation("androidx.test:core-ktx:1.4.0-alpha05")
     testImplementation("androidx.test.ext:junit-ktx:1.1.3-alpha05")
