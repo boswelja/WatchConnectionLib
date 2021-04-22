@@ -51,7 +51,7 @@ class WatchConnectionClient(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    suspend fun getCapabilitiesFor(watch: Watch): Flow<String>? {
+    fun getCapabilitiesFor(watch: Watch): Flow<String>? {
         return connectionHandlers[watch.platform]?.getCapabilitiesFor(watch.platformId)
     }
 

@@ -28,7 +28,7 @@ interface PlatformConnectionHandler {
      * @param watchId See [Watch.platformId].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    suspend fun getCapabilitiesFor(watchId: String): Flow<String>
+    fun getCapabilitiesFor(watchId: String): Flow<String>
 
     /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't

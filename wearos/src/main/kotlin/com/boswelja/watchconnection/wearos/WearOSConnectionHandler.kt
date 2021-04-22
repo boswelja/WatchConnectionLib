@@ -66,7 +66,7 @@ class WearOSConnectionHandler internal constructor(
             }
     }
 
-    override suspend fun getCapabilitiesFor(watchId: String): Flow<String> = flow {
+    override fun getCapabilitiesFor(watchId: String): Flow<String> = flow {
         // Get all capabilities
         val capabilities = capabilityClient
             .getAllCapabilities(CapabilityClient.FILTER_REACHABLE).await()

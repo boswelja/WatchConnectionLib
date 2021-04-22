@@ -120,7 +120,7 @@ class TizenConnectionHandler internal constructor(
     override fun watchesWithApp(): Flow<Watch> = allWatches()
 
     @ExperimentalCoroutinesApi
-    override suspend fun getCapabilitiesFor(watchId: String): Flow<String> {
+    override fun getCapabilitiesFor(watchId: String): Flow<String> {
         var flow = capabilityMap[watchId]
         if (flow == null) {
             // Flow doesn't already exist, create a new one
@@ -132,7 +132,9 @@ class TizenConnectionHandler internal constructor(
         }
 
         // Request capability stream
-        sendMessage(watchId, CAPABILITY_MESSAGE)
+        coroutineScope.launch(Dispatchers.IO + capabilityJob) {
+            sendMessage(watchId, CAPABILITY_MESSAGE)
+        }
 
         return flow.mapNotNull { it }
     }
