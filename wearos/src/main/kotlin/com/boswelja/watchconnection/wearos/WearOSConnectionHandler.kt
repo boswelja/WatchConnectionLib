@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class WearOSConnectionHandler internal constructor(
+class WearOSConnectionHandler constructor(
     private val appCapability: String,
+    private val capabilities: List<String>,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,
     private val capabilityClient: CapabilityClient
@@ -23,14 +24,17 @@ class WearOSConnectionHandler internal constructor(
     /**
      * A [PlatformConnectionHandler] with support for Wear OS via Google's Wearable Support Library.
      * @param context The [Context] to initialize [Wearable] components with.
-     * @param appCapability The capability string to use when searching for watches with the
+     * @param appCapability The capability string to use when searching for watches with the app.
+     * @param capabilities A list of capability strings to use when searching for watch capabilities
      * companion app installed.
      */
     constructor(
         context: Context,
-        appCapability: String
+        appCapability: String,
+        capabilities: List<String>
     ) : this(
         appCapability,
+        capabilities,
         Wearable.getNodeClient(context),
         Wearable.getMessageClient(context),
         Wearable.getCapabilityClient(context)
@@ -67,14 +71,14 @@ class WearOSConnectionHandler internal constructor(
     }
 
     override fun getCapabilitiesFor(watchId: String): Flow<String> = flow {
-        // Get all capabilities
-        val capabilities = capabilityClient
-            .getAllCapabilities(CapabilityClient.FILTER_REACHABLE).await()
         capabilities.forEach { capability ->
-            // If capability has a node with the same ID as the watch we want, add it
-            if (capability.value.nodes.any { it.id == watchId }) {
-                emit(capability.key)
-            }
+            // Get capability info
+            val capabilityInfo = capabilityClient
+                .getCapability(capability, CapabilityClient.FILTER_ALL)
+                .await()
+            // If node is found with same ID as watch, emit capability
+            if (capabilityInfo.nodes.any { it.id == watchId })
+                emit(capability)
         }
     }
 
