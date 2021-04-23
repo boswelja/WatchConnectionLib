@@ -30,12 +30,19 @@ android {
     testOptions.unitTests {
         isIncludeAndroidResources = true
     }
+
+    // Workaround for old Accessory SDK
+    testOptions.unitTests.all {
+        it.jvmArgs("-noverify")
+    }
 }
 
 dependencies {
     implementation(project(":core"))
     implementation(project(":wearos"))
+    implementation(project(":tizen"))
 
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("androidx.test:core-ktx:1.4.0-alpha05")
     testImplementation("androidx.test.ext:junit-ktx:1.1.3-alpha05")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
