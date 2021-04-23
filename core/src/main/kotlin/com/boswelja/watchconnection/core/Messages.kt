@@ -1,16 +1,6 @@
 package com.boswelja.watchconnection.core
 
-import java.util.UUID
-
 object Messages {
-    interface Listener {
-
-        /**
-         * Called when a message is received by this callback.
-         * @param sourceWatchId The [UUID] of the source watch.
-         * @param message The message that was received.
-         * @param data The data sent with the message, or null if there was none.
-         */
-        fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?)
-    }
+    const val ACTION_MESSAGE_RECEIVED =
+        "com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED"
 }

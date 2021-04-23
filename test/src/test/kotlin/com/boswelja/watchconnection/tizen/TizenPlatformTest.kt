@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.MessageListener
 import com.samsung.android.sdk.accessory.SAAgentV2
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -129,7 +129,7 @@ class TizenPlatformTest {
 
     @Test
     fun `registerMessageListener calls agent`() {
-        val listener = object : Messages.Listener {
+        val listener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
@@ -142,7 +142,7 @@ class TizenPlatformTest {
 
     @Test
     fun `unregisterMessageListener calls agent`() {
-        val listener = object : Messages.Listener {
+        val listener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,

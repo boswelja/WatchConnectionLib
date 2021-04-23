@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.wearos
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
 import com.google.android.gms.common.api.ApiException
@@ -41,7 +41,7 @@ class WearOSPlatform constructor(
     )
 
     private val messageListeners =
-        mutableMapOf<Messages.Listener, MessageClient.OnMessageReceivedListener>()
+        mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
 
     override val platformIdentifier = PLATFORM
 
@@ -93,7 +93,7 @@ class WearOSPlatform constructor(
         }
     }
 
-    override fun addMessageListener(listener: Messages.Listener) {
+    override fun addMessageListener(listener: MessageListener) {
         val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
             val id = Watch.createUUID(PLATFORM, it.sourceNodeId)
             listener.onMessageReceived(id, it.path, it.data)
@@ -103,7 +103,7 @@ class WearOSPlatform constructor(
         messageListeners[listener] = onMessageReceiveListener
     }
 
-    override fun removeMessageListener(listener: Messages.Listener) {
+    override fun removeMessageListener(listener: MessageListener) {
         // Look up listener and remove it from both the map and messageClient
         messageListeners.remove(listener)?.let {
             messageClient.removeListener(it)

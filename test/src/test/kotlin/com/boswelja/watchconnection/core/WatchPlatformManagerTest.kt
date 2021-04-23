@@ -105,7 +105,7 @@ class WatchPlatformManagerTest {
 
     @Test
     fun `registerMessageListener adds the message listener to all platforms`() {
-        val messageListener = object : Messages.Listener {
+        val messageListener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
@@ -120,7 +120,7 @@ class WatchPlatformManagerTest {
 
     @Test
     fun `unregisterMessageListener removes the message listener from all platforms`() {
-        val messageListener = object : Messages.Listener {
+        val messageListener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,

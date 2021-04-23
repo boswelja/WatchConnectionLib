@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
@@ -33,7 +33,7 @@ class TizenAccessoryAgent internal constructor(
     private val allWatches = MutableStateFlow<Watch?>(null)
 
     private val peerMap = HashMap<String, SAPeerAgent>()
-    private val messageListeners = ArrayList<Messages.Listener>()
+    private val messageListeners = ArrayList<MessageListener>()
 
     // Keep a map of channels to message IDs to
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
@@ -149,11 +149,11 @@ class TizenAccessoryAgent internal constructor(
         return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true
     }
 
-    fun registerMessageListener(listener: Messages.Listener) {
+    fun registerMessageListener(listener: MessageListener) {
         messageListeners.add(listener)
     }
 
-    fun unregisterMessageListener(listener: Messages.Listener) {
+    fun unregisterMessageListener(listener: MessageListener) {
         messageListeners.remove(listener)
     }
 

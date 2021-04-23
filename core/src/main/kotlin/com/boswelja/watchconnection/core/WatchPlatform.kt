@@ -45,15 +45,15 @@ interface WatchPlatform {
     ): Boolean
 
     /**
-     * Adds a new [Messages.Listener].
-     * @param listener The [Messages.Listener] to register.
+     * Adds a new [MessageListener].
+     * @param listener The [MessageListener] to register.
      */
-    fun addMessageListener(listener: Messages.Listener)
+    fun addMessageListener(listener: MessageListener)
 
     /**
-     * Removes a [Messages.Listener]. This will do nothing if the provided listener is not
+     * Removes a [MessageListener]. This will do nothing if the provided listener is not
      * registered.
-     * @param listener The [Messages.Listener] to unregister.
+     * @param listener The [MessageListener] to unregister.
      */
-    fun removeMessageListener(listener: Messages.Listener)
+    fun removeMessageListener(listener: MessageListener)
 }
