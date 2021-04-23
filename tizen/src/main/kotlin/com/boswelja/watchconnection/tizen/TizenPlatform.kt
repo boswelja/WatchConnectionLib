@@ -2,8 +2,8 @@ package com.boswelja.watchconnection.tizen
 
 import android.content.Context
 import com.boswelja.watchconnection.core.Messages
-import com.boswelja.watchconnection.core.WatchPlatform
 import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.core.WatchPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

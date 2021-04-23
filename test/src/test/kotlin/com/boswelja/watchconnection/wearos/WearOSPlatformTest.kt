@@ -15,6 +15,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,8 +26,6 @@ import strikt.assertions.isContainedIn
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
 import java.util.UUID
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.runBlocking
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -36,9 +36,12 @@ class WearOSPlatformTest {
 
     private lateinit var connectionHandler: WearOSPlatform
 
-    @RelaxedMockK private lateinit var nodeClient: NodeClient
-    @RelaxedMockK private lateinit var messageClient: MessageClient
-    @RelaxedMockK private lateinit var capabilityClient: CapabilityClient
+    @RelaxedMockK
+    private lateinit var nodeClient: NodeClient
+    @RelaxedMockK
+    private lateinit var messageClient: MessageClient
+    @RelaxedMockK
+    private lateinit var capabilityClient: CapabilityClient
 
     @Before
     fun setUp() {
@@ -149,7 +152,8 @@ class WearOSPlatformTest {
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) { }
+            ) {
+            }
         }
 
         // Register listener
@@ -167,7 +171,8 @@ class WearOSPlatformTest {
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) { }
+            ) {
+            }
         }
 
         // We need to add a listener first
@@ -188,7 +193,8 @@ class WearOSPlatformTest {
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) { }
+            ) {
+            }
         }
 
         // Register listener

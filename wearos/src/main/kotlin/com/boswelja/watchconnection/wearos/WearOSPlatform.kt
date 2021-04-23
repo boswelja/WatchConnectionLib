@@ -2,8 +2,8 @@ package com.boswelja.watchconnection.wearos
 
 import android.content.Context
 import com.boswelja.watchconnection.core.Messages
-import com.boswelja.watchconnection.core.WatchPlatform
 import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.core.WatchPlatform
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
