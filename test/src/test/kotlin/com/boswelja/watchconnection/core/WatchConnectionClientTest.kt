@@ -112,9 +112,9 @@ class WatchConnectionClientTest {
                 data: ByteArray?
             ) { }
         }
-        connectionClient.registerMessageListener(messageListener)
+        connectionClient.addMessageListener(messageListener)
         dummyPlatforms.forEach { platform ->
-            verify { platform.registerMessageListener(messageListener) }
+            verify { platform.addMessageListener(messageListener) }
         }
     }
 
@@ -127,9 +127,9 @@ class WatchConnectionClientTest {
                 data: ByteArray?
             ) { }
         }
-        connectionClient.unregisterMessageListener(messageListener)
+        connectionClient.removeMessageListener(messageListener)
         dummyPlatforms.forEach { platform ->
-            verify { platform.unregisterMessageListener(messageListener) }
+            verify { platform.removeMessageListener(messageListener) }
         }
     }
 }

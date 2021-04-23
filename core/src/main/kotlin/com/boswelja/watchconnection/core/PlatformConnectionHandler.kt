@@ -45,15 +45,15 @@ interface PlatformConnectionHandler {
     ): Boolean
 
     /**
-     * Register a new [MessageListener].
+     * Adds a new [MessageListener].
      * @param listener The [MessageListener] to register.
      */
-    fun registerMessageListener(listener: MessageListener)
+    fun addMessageListener(listener: MessageListener)
 
     /**
-     * Unregister a [MessageListener]. This will do nothing if the provided listener is not
+     * Removes a [MessageListener]. This will do nothing if the provided listener is not
      * registered.
      * @param listener The [MessageListener] to unregister.
      */
-    fun unregisterMessageListener(listener: MessageListener)
+    fun removeMessageListener(listener: MessageListener)
 }

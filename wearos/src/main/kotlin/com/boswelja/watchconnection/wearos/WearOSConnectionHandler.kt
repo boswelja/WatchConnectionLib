@@ -93,7 +93,7 @@ class WearOSConnectionHandler constructor(
         }
     }
 
-    override fun registerMessageListener(listener: MessageListener) {
+    override fun addMessageListener(listener: MessageListener) {
         val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
             val id = Watch.createUUID(PLATFORM, it.sourceNodeId)
             listener.onMessageReceived(id, it.path, it.data)
@@ -103,7 +103,7 @@ class WearOSConnectionHandler constructor(
         messageListeners[listener] = onMessageReceiveListener
     }
 
-    override fun unregisterMessageListener(listener: MessageListener) {
+    override fun removeMessageListener(listener: MessageListener) {
         // Look up listener and remove it from both the map and messageClient
         messageListeners.remove(listener)?.let {
             messageClient.removeListener(it)

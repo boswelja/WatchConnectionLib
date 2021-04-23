@@ -58,10 +58,10 @@ class TizenConnectionHandler(
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean =
         accessoryAgent.sendMessage(watchId, message, data)
 
-    override fun registerMessageListener(listener: MessageListener) =
+    override fun addMessageListener(listener: MessageListener) =
         accessoryAgent.registerMessageListener(listener)
 
-    override fun unregisterMessageListener(listener: MessageListener) =
+    override fun removeMessageListener(listener: MessageListener) =
         accessoryAgent.unregisterMessageListener(listener)
 
     companion object {

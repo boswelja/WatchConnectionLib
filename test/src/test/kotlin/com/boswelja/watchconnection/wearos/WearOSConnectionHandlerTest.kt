@@ -153,7 +153,7 @@ class WearOSConnectionHandlerTest {
         }
 
         // Register listener
-        connectionHandler.registerMessageListener(listener)
+        connectionHandler.addMessageListener(listener)
 
         // Check messageClient was called
         verify { messageClient.addListener(any()) }
@@ -171,10 +171,10 @@ class WearOSConnectionHandlerTest {
         }
 
         // We need to add a listener first
-        connectionHandler.registerMessageListener(listener)
+        connectionHandler.addMessageListener(listener)
 
         // Register listener
-        connectionHandler.unregisterMessageListener(listener)
+        connectionHandler.removeMessageListener(listener)
 
         // Check messageClient was called
         verify { messageClient.removeListener(any()) }
@@ -192,7 +192,7 @@ class WearOSConnectionHandlerTest {
         }
 
         // Register listener
-        connectionHandler.unregisterMessageListener(listener)
+        connectionHandler.removeMessageListener(listener)
 
         // Check messageClient was called
         verify(inverse = true) { messageClient.removeListener(any()) }

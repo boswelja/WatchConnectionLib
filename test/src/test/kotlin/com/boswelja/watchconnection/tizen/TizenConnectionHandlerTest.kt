@@ -136,7 +136,7 @@ class TizenConnectionHandlerTest {
                 data: ByteArray?
             ) { }
         }
-        connectionHandler.registerMessageListener(listener)
+        connectionHandler.addMessageListener(listener)
         verify { accessoryAgent.registerMessageListener(listener) }
     }
 
@@ -149,7 +149,7 @@ class TizenConnectionHandlerTest {
                 data: ByteArray?
             ) { }
         }
-        connectionHandler.unregisterMessageListener(listener)
+        connectionHandler.removeMessageListener(listener)
         verify { accessoryAgent.unregisterMessageListener(listener) }
     }
 }

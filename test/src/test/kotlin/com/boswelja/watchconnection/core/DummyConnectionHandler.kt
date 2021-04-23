@@ -21,11 +21,11 @@ class DummyConnectionHandler(
         return false
     }
 
-    override fun registerMessageListener(listener: MessageListener) {
+    override fun addMessageListener(listener: MessageListener) {
         // Do nothing
     }
 
-    override fun unregisterMessageListener(listener: MessageListener) {
+    override fun removeMessageListener(listener: MessageListener) {
         // Do nothing
     }
 }

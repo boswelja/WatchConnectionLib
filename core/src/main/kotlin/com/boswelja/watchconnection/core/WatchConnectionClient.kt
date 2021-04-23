@@ -56,20 +56,20 @@ class WatchConnectionClient(
     }
 
     /**
-     * Registers a [MessageListener] on all platforms.
+     * Adds a [MessageListener] to all platforms.
      */
-    fun registerMessageListener(messageListener: MessageListener) {
+    fun addMessageListener(messageListener: MessageListener) {
         connectionHandlers.values.forEach {
-            it.registerMessageListener(messageListener)
+            it.addMessageListener(messageListener)
         }
     }
 
     /**
-     * Unregisters a [MessageListener] on all platforms.
+     * Removes a [MessageListener] from all platforms.
      */
-    fun unregisterMessageListener(messageListener: MessageListener) {
+    fun removeMessageListener(messageListener: MessageListener) {
         connectionHandlers.values.forEach {
-            it.unregisterMessageListener(messageListener)
+            it.removeMessageListener(messageListener)
         }
     }
 }
