@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * The base connection handler to be implemented by supported platforms.
  */
-interface PlatformConnectionHandler {
+interface WatchPlatform {
 
     /**
      * Returns a unique string to identify this platform. This will be used to map watches to the
@@ -45,15 +45,15 @@ interface PlatformConnectionHandler {
     ): Boolean
 
     /**
-     * Register a new [MessageListener].
-     * @param listener The [MessageListener] to register.
+     * Adds a new [Messages.Listener].
+     * @param listener The [Messages.Listener] to register.
      */
-    fun registerMessageListener(listener: MessageListener)
+    fun addMessageListener(listener: Messages.Listener)
 
     /**
-     * Unregister a [MessageListener]. This will do nothing if the provided listener is not
+     * Removes a [Messages.Listener]. This will do nothing if the provided listener is not
      * registered.
-     * @param listener The [MessageListener] to unregister.
+     * @param listener The [Messages.Listener] to unregister.
      */
-    fun unregisterMessageListener(listener: MessageListener)
+    fun removeMessageListener(listener: Messages.Listener)
 }

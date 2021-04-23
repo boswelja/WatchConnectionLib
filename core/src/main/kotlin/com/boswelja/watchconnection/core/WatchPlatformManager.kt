@@ -5,32 +5,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.merge
 
 /**
- * A class to simplify handling multiple [PlatformConnectionHandler].
- * @param connectionHandler All [PlatformConnectionHandler]s to manage.
+ * A class to simplify handling multiple [WatchPlatform].
+ * @param platforms All [WatchPlatform]s to manage.
  */
-class WatchConnectionClient(
-    vararg connectionHandler: PlatformConnectionHandler
+class WatchPlatformManager(
+    vararg platforms: WatchPlatform
 ) {
 
     /** A map of platform IDs to their handlers */
-    private val connectionHandlers = HashMap<String, PlatformConnectionHandler>()
+    private val connectionHandlers = HashMap<String, WatchPlatform>()
 
     init {
         // Map platform IDs to their handlers for easier access later
-        connectionHandler.forEach {
+        platforms.forEach {
             connectionHandlers[it.platformIdentifier] = it
         }
     }
 
     /**
-     * Get a [Flow] of all [Watch]es found by all [PlatformConnectionHandler]s.
+     * Get a [Flow] of all [Watch]es found by all [WatchPlatform]s.
      */
     @ExperimentalCoroutinesApi
     fun allWatches(): Flow<Watch> = connectionHandlers.values.map { it.allWatches() }.merge()
 
     /**
      * Get a [Flow] of all [Watch]es determined to have the companion app installed from all
-     * [PlatformConnectionHandler]s.
+     * [WatchPlatform]s.
      */
     @ExperimentalCoroutinesApi
     fun watchesWithApp(): Flow<Watch> =
@@ -56,20 +56,20 @@ class WatchConnectionClient(
     }
 
     /**
-     * Registers a [MessageListener] on all platforms.
+     * Adds a [Messages.Listener] to all platforms.
      */
-    fun registerMessageListener(messageListener: MessageListener) {
+    fun addMessageListener(messageListener: Messages.Listener) {
         connectionHandlers.values.forEach {
-            it.registerMessageListener(messageListener)
+            it.addMessageListener(messageListener)
         }
     }
 
     /**
-     * Unregisters a [MessageListener] on all platforms.
+     * Removes a [Messages.Listener] from all platforms.
      */
-    fun unregisterMessageListener(messageListener: MessageListener) {
+    fun removeMessageListener(messageListener: Messages.Listener) {
         connectionHandlers.values.forEach {
-            it.unregisterMessageListener(messageListener)
+            it.removeMessageListener(messageListener)
         }
     }
 }

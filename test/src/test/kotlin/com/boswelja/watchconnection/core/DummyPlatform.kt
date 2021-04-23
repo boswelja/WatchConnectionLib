@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
-class DummyConnectionHandler(
+class DummyPlatform(
     override val platformIdentifier: String,
     val allWatches: Array<Watch>,
     val watchesWithApp: Array<Watch>
-) : PlatformConnectionHandler {
+) : WatchPlatform {
 
     override fun allWatches(): Flow<Watch> = flowOf(*allWatches)
 
@@ -21,11 +21,11 @@ class DummyConnectionHandler(
         return false
     }
 
-    override fun registerMessageListener(listener: MessageListener) {
+    override fun addMessageListener(listener: Messages.Listener) {
         // Do nothing
     }
 
-    override fun unregisterMessageListener(listener: MessageListener) {
+    override fun removeMessageListener(listener: Messages.Listener) {
         // Do nothing
     }
 }

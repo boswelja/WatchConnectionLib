@@ -26,10 +26,10 @@ dependencies {
 }
 ```
 
-Next, you'll want to create an instance of `WatchConnectionClient` and pass in all your desired `PlatformConnectionHandler`s provided by your selected modules (see each modules documentation for more info in creating their respective platform handlers). The result should look something like this:
+Next, you'll want to create an instance of `WatchPlatformManager` and pass in all your desired `WatchPlatform`s provided by your selected modules (see each modules documentation for more info in creating their respective platform handlers). The result should look something like this:
 ```kotlin
-val connectionClient = WatchConnectionClient(
-    wearOSConnectionHandler,
-    tizenConnectionHandler
+val connectionClient = WatchPlatformManager(
+    wearOSPlatform,
+    tizenPlatform
 )
 ```

@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.wearos
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Messages
 import com.boswelja.watchconnection.wearos.CapabilityHelpers.createCapabilities
 import com.boswelja.watchconnection.wearos.NodeHelpers.createDummyNodes
 import com.google.android.gms.common.api.ApiException
@@ -15,7 +15,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import java.util.UUID
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -26,25 +25,29 @@ import strikt.api.expectThat
 import strikt.assertions.isContainedIn
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
+import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class WearOSConnectionHandlerTest {
+class WearOSPlatformTest {
 
     private val appCapability = "app-capability"
     private val capabilities = createCapabilities(5)
 
-    private lateinit var connectionHandler: WearOSConnectionHandler
+    private lateinit var connectionHandler: WearOSPlatform
 
-    @RelaxedMockK private lateinit var nodeClient: NodeClient
-    @RelaxedMockK private lateinit var messageClient: MessageClient
-    @RelaxedMockK private lateinit var capabilityClient: CapabilityClient
+    @RelaxedMockK
+    private lateinit var nodeClient: NodeClient
+    @RelaxedMockK
+    private lateinit var messageClient: MessageClient
+    @RelaxedMockK
+    private lateinit var capabilityClient: CapabilityClient
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
 
-        connectionHandler = WearOSConnectionHandler(
+        connectionHandler = WearOSPlatform(
             appCapability,
             capabilities,
             nodeClient,
@@ -144,16 +147,17 @@ class WearOSConnectionHandlerTest {
     @Test
     fun `registerMessageListener registers a listener with messageClient`() {
         // Create dummy listener
-        val listener = object : MessageListener {
+        val listener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) { }
+            ) {
+            }
         }
 
         // Register listener
-        connectionHandler.registerMessageListener(listener)
+        connectionHandler.addMessageListener(listener)
 
         // Check messageClient was called
         verify { messageClient.addListener(any()) }
@@ -162,19 +166,20 @@ class WearOSConnectionHandlerTest {
     @Test
     fun `unregisterMessageListener removes a listener with messageClient`() {
         // Create dummy listener
-        val listener = object : MessageListener {
+        val listener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) { }
+            ) {
+            }
         }
 
         // We need to add a listener first
-        connectionHandler.registerMessageListener(listener)
+        connectionHandler.addMessageListener(listener)
 
         // Register listener
-        connectionHandler.unregisterMessageListener(listener)
+        connectionHandler.removeMessageListener(listener)
 
         // Check messageClient was called
         verify { messageClient.removeListener(any()) }
@@ -183,16 +188,17 @@ class WearOSConnectionHandlerTest {
     @Test
     fun `unregisterMessageListener does nothing with previously unregistered listener`() {
         // Create dummy listener
-        val listener = object : MessageListener {
+        val listener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) { }
+            ) {
+            }
         }
 
         // Register listener
-        connectionHandler.unregisterMessageListener(listener)
+        connectionHandler.removeMessageListener(listener)
 
         // Check messageClient was called
         verify(inverse = true) { messageClient.removeListener(any()) }

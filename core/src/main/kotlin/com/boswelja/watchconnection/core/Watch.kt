@@ -31,23 +31,18 @@ open class Watch(
 
     override fun equals(other: Any?): Boolean {
         if (other !is Watch) return super.equals(other)
-        return other.id == id &&
-            other.name == name &&
-            other.platform == platform
+        return other.id == id
     }
 
     override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + platform.hashCode()
-        return result
+        return id.hashCode()
     }
 
     companion object {
 
         /**
          * Gets a reproducible [UUID] from the provided info.
-         * @param platform See [PlatformConnectionHandler.platformIdentifier].
+         * @param platform See [WatchPlatform.platformIdentifier].
          * @param platformId See [Watch.platformId].
          */
         fun createUUID(platform: String, platformId: String) =

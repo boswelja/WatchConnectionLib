@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Messages
 import com.samsung.android.sdk.accessory.SAAgentV2
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -29,12 +29,12 @@ import strikt.assertions.isTrue
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class TizenConnectionHandlerTest {
+class TizenPlatformTest {
 
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var connectionHandler: TizenConnectionHandler
+    private lateinit var connectionHandler: TizenPlatform
 
     @RelaxedMockK private lateinit var accessoryAgent: TizenAccessoryAgent
 
@@ -50,7 +50,7 @@ class TizenConnectionHandlerTest {
             this.thirdArg<SAAgentV2.RequestAgentCallback>().onAgentAvailable(accessoryAgent)
         }
 
-        connectionHandler = TizenConnectionHandler(ApplicationProvider.getApplicationContext())
+        connectionHandler = TizenPlatform(ApplicationProvider.getApplicationContext())
     }
 
     @Test
@@ -61,7 +61,7 @@ class TizenConnectionHandlerTest {
         } answers {
             this.thirdArg<SAAgentV2.RequestAgentCallback>().onAgentAvailable(accessoryAgent)
         }
-        connectionHandler = TizenConnectionHandler(ApplicationProvider.getApplicationContext())
+        connectionHandler = TizenPlatform(ApplicationProvider.getApplicationContext())
         expectThat(connectionHandler.isReady).isTrue()
     }
 
@@ -76,7 +76,7 @@ class TizenConnectionHandlerTest {
                 this.thirdArg<SAAgentV2.RequestAgentCallback>().onError(0, "Mocking error")
             }.isFailure()
         }
-        TizenConnectionHandler(ApplicationProvider.getApplicationContext())
+        TizenPlatform(ApplicationProvider.getApplicationContext())
     }
 
     @Test(expected = Exception::class)
@@ -96,7 +96,7 @@ class TizenConnectionHandlerTest {
                 this.thirdArg<SAAgentV2.RequestAgentCallback>().onAgentAvailable(dummyAgent)
             }.isFailure()
         }
-        TizenConnectionHandler(ApplicationProvider.getApplicationContext())
+        TizenPlatform(ApplicationProvider.getApplicationContext())
     }
 
     @Test
@@ -129,27 +129,27 @@ class TizenConnectionHandlerTest {
 
     @Test
     fun `registerMessageListener calls agent`() {
-        val listener = object : MessageListener {
+        val listener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
             ) { }
         }
-        connectionHandler.registerMessageListener(listener)
+        connectionHandler.addMessageListener(listener)
         verify { accessoryAgent.registerMessageListener(listener) }
     }
 
     @Test
     fun `unregisterMessageListener calls agent`() {
-        val listener = object : MessageListener {
+        val listener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
             ) { }
         }
-        connectionHandler.unregisterMessageListener(listener)
+        connectionHandler.removeMessageListener(listener)
         verify { accessoryAgent.unregisterMessageListener(listener) }
     }
 }

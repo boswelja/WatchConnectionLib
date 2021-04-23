@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Messages
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
@@ -33,7 +33,7 @@ class TizenAccessoryAgent internal constructor(
     private val allWatches = MutableStateFlow<Watch?>(null)
 
     private val peerMap = HashMap<String, SAPeerAgent>()
-    private val messageListeners = ArrayList<MessageListener>()
+    private val messageListeners = ArrayList<Messages.Listener>()
 
     // Keep a map of channels to message IDs to
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
@@ -45,13 +45,13 @@ class TizenAccessoryAgent internal constructor(
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
             if (peerAgent == null) return
             val id = Watch.createUUID(
-                TizenConnectionHandler.PLATFORM,
+                TizenPlatform.PLATFORM,
                 peerAgent.accessory.accessoryId
             )
             data?.indexOfFirst { it == messageDelimiter.toByte() }?.let { delimiterIndex ->
                 if (delimiterIndex > -1) {
                     val message = String(data.copyOfRange(0, delimiterIndex), Charsets.UTF_8)
-                    if (message == TizenConnectionHandler.CAPABILITY_MESSAGE) {
+                    if (message == TizenPlatform.CAPABILITY_MESSAGE) {
                         // Capability message, assume we have data
                         coroutineScope.launch(Dispatchers.IO + capabilityJob) {
                             val messageData = data.copyOfRange(delimiterIndex + 1, data.size)
@@ -122,7 +122,7 @@ class TizenAccessoryAgent internal constructor(
 
         // Request capability stream
         coroutineScope.launch(Dispatchers.IO + capabilityJob) {
-            sendMessage(watchId, TizenConnectionHandler.CAPABILITY_MESSAGE, null)
+            sendMessage(watchId, TizenPlatform.CAPABILITY_MESSAGE, null)
         }
 
         return flow.mapNotNull { it }
@@ -149,11 +149,11 @@ class TizenAccessoryAgent internal constructor(
         return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true
     }
 
-    fun registerMessageListener(listener: MessageListener) {
+    fun registerMessageListener(listener: Messages.Listener) {
         messageListeners.add(listener)
     }
 
-    fun unregisterMessageListener(listener: MessageListener) {
+    fun unregisterMessageListener(listener: Messages.Listener) {
         messageListeners.remove(listener)
     }
 
@@ -164,7 +164,7 @@ class TizenAccessoryAgent internal constructor(
                     Watch(
                         peerAgent.accessory.name,
                         peerAgent.accessory.accessoryId,
-                        TizenConnectionHandler.PLATFORM
+                        TizenPlatform.PLATFORM
                     )
                 )
             }
