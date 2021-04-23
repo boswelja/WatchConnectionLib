@@ -1,20 +1,20 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.MessageListener
-import com.boswelja.watchconnection.core.PlatformConnectionHandler
+import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.WatchPlatform
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /**
- * A [PlatformConnectionHandler] with support for Tizen via Samsung's Accessory SDK.
+ * A [WatchPlatform] with support for Tizen via Samsung's Accessory SDK.
  * @param context See [Context].
  */
-class TizenConnectionHandler(
+class TizenPlatform(
     context: Context
-) : PlatformConnectionHandler {
+) : WatchPlatform {
 
     private lateinit var accessoryAgent: TizenAccessoryAgent
     var isReady: Boolean = false
@@ -58,10 +58,10 @@ class TizenConnectionHandler(
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean =
         accessoryAgent.sendMessage(watchId, message, data)
 
-    override fun addMessageListener(listener: MessageListener) =
+    override fun addMessageListener(listener: Messages.Listener) =
         accessoryAgent.registerMessageListener(listener)
 
-    override fun removeMessageListener(listener: MessageListener) =
+    override fun removeMessageListener(listener: Messages.Listener) =
         accessoryAgent.unregisterMessageListener(listener)
 
     companion object {

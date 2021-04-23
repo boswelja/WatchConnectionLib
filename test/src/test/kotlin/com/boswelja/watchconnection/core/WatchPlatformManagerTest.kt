@@ -16,7 +16,7 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class WatchConnectionClientTest {
+class WatchPlatformManagerTest {
     private val dummyWatchCountPerPlatform = 5
     private val dummyWatchWithAppCountPerPlatform = 3
 
@@ -24,9 +24,9 @@ class WatchConnectionClientTest {
 
     private var dummyWatches: Array<Watch> = emptyArray()
     private var dummyWatchesWithApp: Array<Watch> = emptyArray()
-    private var dummyPlatforms: Array<PlatformConnectionHandler> = emptyArray()
+    private var dummyPlatforms: Array<WatchPlatform> = emptyArray()
 
-    private lateinit var connectionClient: WatchConnectionClient
+    private lateinit var platformManager: WatchPlatformManager
 
     @Before
     fun setUp() {
@@ -61,21 +61,21 @@ class WatchConnectionClientTest {
             dummyWatchesWithApp += watchesWithApp
 
             // Create dummy connection handlers
-            dummyPlatforms += spyk(DummyConnectionHandler(platform, allWatches, watchesWithApp))
+            dummyPlatforms += spyk(DummyPlatform(platform, allWatches, watchesWithApp))
         }
 
-        connectionClient = WatchConnectionClient(*dummyPlatforms)
+        platformManager = WatchPlatformManager(*dummyPlatforms)
     }
 
     @Test
     fun `allWatches gets all watches from platforms`() {
-        connectionClient.allWatches()
+        platformManager.allWatches()
         dummyPlatforms.forEach { verify { it.allWatches() } }
     }
 
     @Test
     fun `watchesWithApp gets all watches with app from platforms`() {
-        connectionClient.watchesWithApp()
+        platformManager.watchesWithApp()
         dummyPlatforms.forEach { verify { it.watchesWithApp() } }
     }
 
@@ -83,7 +83,7 @@ class WatchConnectionClientTest {
     fun `sendMessage passes request to the correct platform`(): Unit = runBlocking {
         val message = "message"
         dummyWatches.forEach { watch ->
-            connectionClient.sendMessage(
+            platformManager.sendMessage(
                 watch,
                 message = message
             )
@@ -97,7 +97,7 @@ class WatchConnectionClientTest {
     @Test
     fun `getCapabilitiesFor passes request to the correct platform`(): Unit = runBlocking {
         dummyWatches.forEach { watch ->
-            connectionClient.getCapabilitiesFor(watch)
+            platformManager.getCapabilitiesFor(watch)
             val platform = dummyPlatforms.first { it.platformIdentifier == watch.platform }
             coVerify { platform.getCapabilitiesFor(watch.platformId) }
         }
@@ -105,14 +105,14 @@ class WatchConnectionClientTest {
 
     @Test
     fun `registerMessageListener adds the message listener to all platforms`() {
-        val messageListener = object : MessageListener {
+        val messageListener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
             ) { }
         }
-        connectionClient.addMessageListener(messageListener)
+        platformManager.addMessageListener(messageListener)
         dummyPlatforms.forEach { platform ->
             verify { platform.addMessageListener(messageListener) }
         }
@@ -120,14 +120,14 @@ class WatchConnectionClientTest {
 
     @Test
     fun `unregisterMessageListener removes the message listener from all platforms`() {
-        val messageListener = object : MessageListener {
+        val messageListener = object : Messages.Listener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
             ) { }
         }
-        connectionClient.removeMessageListener(messageListener)
+        platformManager.removeMessageListener(messageListener)
         dummyPlatforms.forEach { platform ->
             verify { platform.removeMessageListener(messageListener) }
         }

@@ -1,12 +1,7 @@
-# Keep interfaces
--keep class com.boswelja.watchconnection.core.MessageListener
-
-# Keep data classes
--keep class com.boswelja.watchconnection.core.Watch
-
-# Keep enums
--keep class com.boswelja.watchconnection.core.Result
+# Keep objects
+-keep class com.boswelja.watchconnection.core.Messages
 
 # Keep classes
--keep class com.boswelja.watchconnection.core.PlatformConnectionHandler
--keep class com.boswelja.watchconnection.core.WatchConnectionClient
+-keep class com.boswelja.watchconnection.core.WatchPlatform
+-keep class com.boswelja.watchconnection.core.WatchPlatformManager
+-keep class com.boswelja.watchconnection.core.Watch

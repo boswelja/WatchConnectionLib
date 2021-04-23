@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.wearos
 
 import android.content.Context
-import com.boswelja.watchconnection.core.MessageListener
-import com.boswelja.watchconnection.core.PlatformConnectionHandler
+import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.WatchPlatform
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.CapabilityClient
@@ -13,16 +13,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class WearOSConnectionHandler constructor(
+class WearOSPlatform constructor(
     private val appCapability: String,
     private val capabilities: List<String>,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,
     private val capabilityClient: CapabilityClient
-) : PlatformConnectionHandler {
+) : WatchPlatform {
 
     /**
-     * A [PlatformConnectionHandler] with support for Wear OS via Google's Wearable Support Library.
+     * A [WatchPlatform] with support for Wear OS via Google's Wearable Support Library.
      * @param context The [Context] to initialize [Wearable] components with.
      * @param appCapability The capability string to use when searching for watches with the app.
      * @param capabilities A list of capability strings to use when searching for watch capabilities
@@ -41,7 +41,7 @@ class WearOSConnectionHandler constructor(
     )
 
     private val messageListeners =
-        mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
+        mutableMapOf<Messages.Listener, MessageClient.OnMessageReceivedListener>()
 
     override val platformIdentifier = PLATFORM
 
@@ -93,7 +93,7 @@ class WearOSConnectionHandler constructor(
         }
     }
 
-    override fun addMessageListener(listener: MessageListener) {
+    override fun addMessageListener(listener: Messages.Listener) {
         val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
             val id = Watch.createUUID(PLATFORM, it.sourceNodeId)
             listener.onMessageReceived(id, it.path, it.data)
@@ -103,7 +103,7 @@ class WearOSConnectionHandler constructor(
         messageListeners[listener] = onMessageReceiveListener
     }
 
-    override fun removeMessageListener(listener: MessageListener) {
+    override fun removeMessageListener(listener: Messages.Listener) {
         // Look up listener and remove it from both the map and messageClient
         messageListeners.remove(listener)?.let {
             messageClient.removeListener(it)
