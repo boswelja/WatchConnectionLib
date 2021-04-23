@@ -6,19 +6,19 @@ Provides an interface for connecting to Tizen smartwatches via Samsung's Accesso
 
 Under the hood, this plugin still uses Samsung's Accessory SDK, so you'll need to be familiar with that first. Find out more here: https://developer.samsung.com/galaxy-accessory/overview.html
 
-To use this plugin, you'll want to create an instance of `TizenConnectionHandler`. The result should look something like this:
+To use this plugin, you'll want to create an instance of `TizenPlatform`. The result should look something like this:
 ```kotlin
-val tizenConnectionHandler = TizenConnectionHandler(context)
+val tizenPlatform = TizenPlatform(context)
 ```
 
 At this stage, you still need to create your own Accessory Service Provider xml file.
-Make sure to declare 'message' as a supported feature, and point `serviceImpl` to `TizenConnectionHandler`. You should have something like the this:
+Make sure to declare 'message' as a supported feature, and point `serviceImpl` to `TizenAccessoryAgent`. You should have something like the this:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <application name="@string/app_name">
         <serviceProfile
-            serviceImpl="com.boswelja.watchconnection.tizen.TizenConnectionHandler"
+            serviceImpl="com.boswelja.watchconnection.tizen.TizenAccessoryAgent"
             role="provider"
             name="WatchConnectionLib"
             id="/watchconnection/tizen"
@@ -40,6 +40,6 @@ Find out more via [Samsung's programming guide](https://developer.samsung.com/ga
 
 You'll still want to use Samsung's Accessory SDK in your Tizen app. Currently, this module only supports `SAMessage`, as well as getting watches via `findPeerAgents()`.
 
-This module does not currently support differentiating between watches with and without your app installed. Both `allWatches()` and `watchesWithApp()` return the same Flow.
+This module does not currently differentiate between watches with and without your app installed. Both `allWatches()` and `watchesWithApp()` return the same Flow.
 
 To support messages, you'll need to prefix anything you send from your watch app with a string to identify it, followed by `|` to indicate where the identifier ends and the data starts.
