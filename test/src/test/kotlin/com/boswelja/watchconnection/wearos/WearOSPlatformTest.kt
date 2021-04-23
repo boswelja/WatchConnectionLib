@@ -15,9 +15,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import java.util.UUID
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +23,9 @@ import strikt.api.expectThat
 import strikt.assertions.isContainedIn
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
+import java.util.UUID
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
