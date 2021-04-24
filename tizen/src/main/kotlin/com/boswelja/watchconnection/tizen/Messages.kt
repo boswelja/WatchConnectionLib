@@ -3,7 +3,10 @@ package com.boswelja.watchconnection.tizen
 object Messages {
     private const val messageDelimiter = '|'.toByte()
 
-    fun toByteArray(message: String, data: ByteArray?): ByteArray {
+    /**
+     * Convert a message to a [ByteArray] for use with [TizenAccessoryAgent].
+     */
+    internal fun toByteArray(message: String, data: ByteArray?): ByteArray {
         var messageData = message.toByteArray(Charsets.UTF_8)
         // If data is not null, add delimiter and data to message
         data?.let {
@@ -13,7 +16,10 @@ object Messages {
         return messageData
     }
 
-    fun fromByteArray(data: ByteArray): Pair<String, ByteArray?> {
+    /**
+     * Get a message from a [ByteArray] for use with [TizenAccessoryAgent].
+     */
+    internal fun fromByteArray(data: ByteArray): Pair<String, ByteArray?> {
         val delimiterIndex = data.indexOfFirst { it == messageDelimiter }
         return when {
             delimiterIndex <= -1 -> {

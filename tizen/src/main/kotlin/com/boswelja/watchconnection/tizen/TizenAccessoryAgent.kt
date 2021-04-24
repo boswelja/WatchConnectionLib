@@ -142,6 +142,11 @@ class TizenAccessoryAgent internal constructor(
         }
     }
 
+    /**
+     * Handle a [TizenPlatform.CAPABILITY_MESSAGE].
+     * @param peer The [SAPeerAgent] that sent the capability data.
+     * @param data The received capability data.
+     */
     private fun handleCapabilityMessage(peer: SAPeerAgent, data: ByteArray) {
         coroutineScope.launch(Dispatchers.IO + capabilityJob) {
             capabilityMap[peer.accessory.accessoryId]?.let { flow ->
@@ -152,6 +157,12 @@ class TizenAccessoryAgent internal constructor(
         }
     }
 
+    /**
+     * Pass a received message on to message listeners and broadcast receivers.
+     * @param peer The [SAPeerAgent] that sent the message.
+     * @param message The message received.
+     * @param data The data received with the message, or null if there was none.
+     */
     private fun handleMessage(peer: SAPeerAgent, message: String, data: ByteArray?) {
         val id = Watch.createUUID(
             TizenPlatform.PLATFORM,

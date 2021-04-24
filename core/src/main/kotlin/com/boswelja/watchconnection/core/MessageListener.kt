@@ -2,6 +2,10 @@ package com.boswelja.watchconnection.core
 
 import java.util.UUID
 
+/**
+ * An interface for message listeners. Add listener with [WatchPlatformManager.addMessageListener],
+ * and remove with [WatchPlatformManager.removeMessageListener] when no longer needed.
+ */
 interface MessageListener {
     /**
      * Called when a message is received by this callback.

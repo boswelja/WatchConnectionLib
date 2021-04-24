@@ -28,7 +28,7 @@ abstract class MessageReceiver : BroadcastReceiver() {
         data: ByteArray?
     )
 
-    override fun onReceive(context: Context?, intent: Intent?) {
+    final override fun onReceive(context: Context?, intent: Intent?) {
         // Don't handle intent if it's not ACTION_MESSAGE_RECEIVED
         if (intent?.action != Messages.ACTION_MESSAGE_RECEIVED) return
 
