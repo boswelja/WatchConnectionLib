@@ -1,11 +1,8 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import android.content.Intent
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.boswelja.watchconnection.core.MessageListener
-import com.boswelja.watchconnection.core.MessageReceiver
-import com.boswelja.watchconnection.core.Messages.ACTION_MESSAGE_RECEIVED
+import com.boswelja.watchconnection.core.Messages.sendBroadcast
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
@@ -168,15 +165,8 @@ class TizenAccessoryAgent internal constructor(
             )
         }
 
-        // Broadcast intent for user receivers
-        Intent(ACTION_MESSAGE_RECEIVED).apply {
-            putExtra(MessageReceiver.WATCH_ID_EXTRA, id.toString())
-            putExtra(MessageReceiver.MESSAGE_EXTRA, message)
-            if (data?.isNotEmpty() == true) putExtra(MessageReceiver.DATA_EXTRA, data)
-        }.also {
-            // Send to receivers in this app specifically
-            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(it)
-        }
+        // Send message broadcast
+        sendBroadcast(applicationContext, id, message, data)
     }
 
     companion object {
