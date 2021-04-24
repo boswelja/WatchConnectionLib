@@ -44,35 +44,20 @@ class TizenAccessoryAgent internal constructor(
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
             if (peerAgent == null) return
-            val id = Watch.createUUID(
-                TizenPlatform.PLATFORM,
-                peerAgent.accessory.accessoryId
-            )
+
             data?.indexOfFirst { it == messageDelimiter.toByte() }?.let { delimiterIndex ->
                 if (delimiterIndex > -1) {
                     val message = String(data.copyOfRange(0, delimiterIndex), Charsets.UTF_8)
                     if (message == TizenPlatform.CAPABILITY_MESSAGE) {
                         // Capability message, assume we have data
-                        coroutineScope.launch(Dispatchers.IO + capabilityJob) {
-                            val messageData = data.copyOfRange(delimiterIndex + 1, data.size)
-                            capabilityMap[peerAgent.accessory.accessoryId]?.let { flow ->
-                                if (flow is MutableStateFlow) {
-                                    flow.emit(String(messageData, Charsets.UTF_8))
-                                }
-                            }
-                        }
+                        val messageData = data.copyOfRange(delimiterIndex + 1, data.size)
+                        handleCapabilityMessage(peerAgent, messageData)
                     } else {
                         val messageData =
                             if (data.size > delimiterIndex + 1)
                                 data.copyOfRange(delimiterIndex + 1, data.size)
                             else null
-                        messageListeners.forEach { listener ->
-                            listener.onMessageReceived(
-                                id,
-                                message,
-                                messageData
-                            )
-                        }
+                        handleMessage(peerAgent, message, messageData)
                     }
                 }
             }
@@ -168,6 +153,30 @@ class TizenAccessoryAgent internal constructor(
                     )
                 )
             }
+        }
+    }
+
+    private fun handleCapabilityMessage(peer: SAPeerAgent, data: ByteArray) {
+        coroutineScope.launch(Dispatchers.IO + capabilityJob) {
+            capabilityMap[peer.accessory.accessoryId]?.let { flow ->
+                if (flow is MutableStateFlow) {
+                    flow.emit(String(data, Charsets.UTF_8))
+                }
+            }
+        }
+    }
+
+    private fun handleMessage(peer: SAPeerAgent, message: String, data: ByteArray?) {
+        val id = Watch.createUUID(
+            TizenPlatform.PLATFORM,
+            peer.accessory.accessoryId
+        )
+        messageListeners.forEach { listener ->
+            listener.onMessageReceived(
+                id,
+                message,
+                data
+            )
         }
     }
 
