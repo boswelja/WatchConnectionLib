@@ -1,10 +1,10 @@
 package com.boswelja.watchconnection.core
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import java.util.UUID
-import android.content.ComponentName
 
 object Messages {
 
