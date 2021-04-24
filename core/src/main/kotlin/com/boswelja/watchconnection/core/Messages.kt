@@ -26,9 +26,9 @@ object Messages {
     @SuppressLint("QueryPermissionsNeeded")
     fun sendBroadcast(context: Context, watchId: UUID, message: String, data: ByteArray?) {
         Intent(ACTION_MESSAGE_RECEIVED).apply {
-            putExtra(MessageReceiver.WATCH_ID_EXTRA, watchId.toString())
-            putExtra(MessageReceiver.MESSAGE_EXTRA, message)
-            if (data?.isNotEmpty() == true) putExtra(MessageReceiver.DATA_EXTRA, data)
+            putExtra(MessageReceiver.EXTRA_WATCH_ID, watchId.toString())
+            putExtra(MessageReceiver.EXTRA_MESSAGE, message)
+            if (data?.isNotEmpty() == true) putExtra(MessageReceiver.EXTRA_DATA, data)
         }.also { intent ->
             // Get all registered message receivers and send the intent to them. We can suppress
             // query permission warning since we're only targeting the package this lib is in.

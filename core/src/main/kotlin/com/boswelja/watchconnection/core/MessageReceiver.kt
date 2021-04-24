@@ -36,9 +36,9 @@ abstract class MessageReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         coroutineScope.launch {
             // Collect data from intent
-            val watchId = UUID.fromString(intent.getStringExtra(WATCH_ID_EXTRA))
-            val message = intent.getStringExtra(MESSAGE_EXTRA)!!
-            val data = intent.getByteArrayExtra(DATA_EXTRA)
+            val watchId = UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID))
+            val message = intent.getStringExtra(EXTRA_MESSAGE)!!
+            val data = intent.getByteArrayExtra(EXTRA_DATA)
 
             // Pass it on to user code
             onMessageReceived(watchId, message, data)
@@ -49,8 +49,8 @@ abstract class MessageReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        const val WATCH_ID_EXTRA = "watch_id"
-        const val MESSAGE_EXTRA = "message"
-        const val DATA_EXTRA = "data"
+        const val EXTRA_WATCH_ID = "watch_id"
+        const val EXTRA_MESSAGE = "message"
+        const val EXTRA_DATA = "data"
     }
 }
