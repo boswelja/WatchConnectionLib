@@ -21,11 +21,11 @@ class DummyPlatform(
         return false
     }
 
-    override fun addMessageListener(listener: Messages.Listener) {
+    override fun addMessageListener(listener: MessageListener) {
         // Do nothing
     }
 
-    override fun removeMessageListener(listener: Messages.Listener) {
+    override fun removeMessageListener(listener: MessageListener) {
         // Do nothing
     }
 }

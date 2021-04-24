@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.wearos
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.wearos.CapabilityHelpers.createCapabilities
 import com.boswelja.watchconnection.wearos.NodeHelpers.createDummyNodes
 import com.google.android.gms.common.api.ApiException
@@ -147,13 +147,12 @@ class WearOSPlatformTest {
     @Test
     fun `registerMessageListener registers a listener with messageClient`() {
         // Create dummy listener
-        val listener = object : Messages.Listener {
+        val listener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) {
-            }
+            ) { }
         }
 
         // Register listener
@@ -166,13 +165,12 @@ class WearOSPlatformTest {
     @Test
     fun `unregisterMessageListener removes a listener with messageClient`() {
         // Create dummy listener
-        val listener = object : Messages.Listener {
+        val listener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) {
-            }
+            ) { }
         }
 
         // We need to add a listener first
@@ -188,13 +186,12 @@ class WearOSPlatformTest {
     @Test
     fun `unregisterMessageListener does nothing with previously unregistered listener`() {
         // Create dummy listener
-        val listener = object : Messages.Listener {
+        val listener = object : MessageListener {
             override fun onMessageReceived(
                 sourceWatchId: UUID,
                 message: String,
                 data: ByteArray?
-            ) {
-            }
+            ) { }
         }
 
         // Register listener

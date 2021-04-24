@@ -56,18 +56,18 @@ class WatchPlatformManager(
     }
 
     /**
-     * Adds a [Messages.Listener] to all platforms.
+     * Adds a [MessageListener] to all platforms.
      */
-    fun addMessageListener(messageListener: Messages.Listener) {
+    fun addMessageListener(messageListener: MessageListener) {
         connectionHandlers.values.forEach {
             it.addMessageListener(messageListener)
         }
     }
 
     /**
-     * Removes a [Messages.Listener] from all platforms.
+     * Removes a [MessageListener] from all platforms.
      */
-    fun removeMessageListener(messageListener: Messages.Listener) {
+    fun removeMessageListener(messageListener: MessageListener) {
         connectionHandlers.values.forEach {
             it.removeMessageListener(messageListener)
         }

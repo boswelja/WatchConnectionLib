@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
@@ -58,10 +58,10 @@ class TizenPlatform(
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean =
         accessoryAgent.sendMessage(watchId, message, data)
 
-    override fun addMessageListener(listener: Messages.Listener) =
+    override fun addMessageListener(listener: MessageListener) =
         accessoryAgent.registerMessageListener(listener)
 
-    override fun removeMessageListener(listener: Messages.Listener) =
+    override fun removeMessageListener(listener: MessageListener) =
         accessoryAgent.unregisterMessageListener(listener)
 
     companion object {

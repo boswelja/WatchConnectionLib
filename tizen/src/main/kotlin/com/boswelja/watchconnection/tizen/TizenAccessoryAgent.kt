@@ -1,7 +1,8 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Messages
+import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Messages.sendBroadcast
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 class TizenAccessoryAgent internal constructor(
@@ -33,7 +33,7 @@ class TizenAccessoryAgent internal constructor(
     private val allWatches = MutableStateFlow<Watch?>(null)
 
     private val peerMap = HashMap<String, SAPeerAgent>()
-    private val messageListeners = ArrayList<Messages.Listener>()
+    private val messageListeners = ArrayList<MessageListener>()
 
     // Keep a map of channels to message IDs to
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
@@ -44,36 +44,13 @@ class TizenAccessoryAgent internal constructor(
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
             if (peerAgent == null) return
-            val id = Watch.createUUID(
-                TizenPlatform.PLATFORM,
-                peerAgent.accessory.accessoryId
-            )
-            data?.indexOfFirst { it == messageDelimiter.toByte() }?.let { delimiterIndex ->
-                if (delimiterIndex > -1) {
-                    val message = String(data.copyOfRange(0, delimiterIndex), Charsets.UTF_8)
-                    if (message == TizenPlatform.CAPABILITY_MESSAGE) {
-                        // Capability message, assume we have data
-                        coroutineScope.launch(Dispatchers.IO + capabilityJob) {
-                            val messageData = data.copyOfRange(delimiterIndex + 1, data.size)
-                            capabilityMap[peerAgent.accessory.accessoryId]?.let { flow ->
-                                if (flow is MutableStateFlow) {
-                                    flow.emit(String(messageData, Charsets.UTF_8))
-                                }
-                            }
-                        }
-                    } else {
-                        val messageData =
-                            if (data.size > delimiterIndex + 1)
-                                data.copyOfRange(delimiterIndex + 1, data.size)
-                            else null
-                        messageListeners.forEach { listener ->
-                            listener.onMessageReceived(
-                                id,
-                                message,
-                                messageData
-                            )
-                        }
-                    }
+            data?.let {
+                val (message, messageData) = Messages.fromByteArray(data)
+                if (message == TizenPlatform.CAPABILITY_MESSAGE) {
+                    // Capability message, assume we have data
+                    handleCapabilityMessage(peerAgent, messageData!!)
+                } else {
+                    handleMessage(peerAgent, message, messageData)
                 }
             }
         }
@@ -132,13 +109,7 @@ class TizenAccessoryAgent internal constructor(
     @ExperimentalCoroutinesApi
     suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         val targetAgent = peerMap[watchId] ?: return false
-        val bytes = withContext(Dispatchers.Default) {
-            return@withContext if (data != null) {
-                message.toByteArray(Charsets.UTF_8) + messageDelimiter.toByte() + data
-            } else {
-                message.toByteArray(Charsets.UTF_8)
-            }
-        }
+        val bytes = Messages.toByteArray(message, data)
 
         // Create channel and map message ID to it
         val channel = Channel<Boolean>(capacity = 1)
@@ -149,11 +120,11 @@ class TizenAccessoryAgent internal constructor(
         return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true
     }
 
-    fun registerMessageListener(listener: Messages.Listener) {
+    fun registerMessageListener(listener: MessageListener) {
         messageListeners.add(listener)
     }
 
-    fun unregisterMessageListener(listener: Messages.Listener) {
+    fun unregisterMessageListener(listener: MessageListener) {
         messageListeners.remove(listener)
     }
 
@@ -171,9 +142,46 @@ class TizenAccessoryAgent internal constructor(
         }
     }
 
+    /**
+     * Handle a [TizenPlatform.CAPABILITY_MESSAGE].
+     * @param peer The [SAPeerAgent] that sent the capability data.
+     * @param data The received capability data.
+     */
+    private fun handleCapabilityMessage(peer: SAPeerAgent, data: ByteArray) {
+        coroutineScope.launch(Dispatchers.IO + capabilityJob) {
+            capabilityMap[peer.accessory.accessoryId]?.let { flow ->
+                if (flow is MutableStateFlow) {
+                    flow.emit(String(data, Charsets.UTF_8))
+                }
+            }
+        }
+    }
+
+    /**
+     * Pass a received message on to message listeners and broadcast receivers.
+     * @param peer The [SAPeerAgent] that sent the message.
+     * @param message The message received.
+     * @param data The data received with the message, or null if there was none.
+     */
+    private fun handleMessage(peer: SAPeerAgent, message: String, data: ByteArray?) {
+        val id = Watch.createUUID(
+            TizenPlatform.PLATFORM,
+            peer.accessory.accessoryId
+        )
+        messageListeners.forEach { listener ->
+            listener.onMessageReceived(
+                id,
+                message,
+                data
+            )
+        }
+
+        // Send message broadcast
+        sendBroadcast(applicationContext, id, message, data)
+    }
+
     companion object {
         private const val TAG = "TizenConnectionHandler"
-        private const val messageDelimiter = '|'
         private const val OPERATION_TIMEOUT = 1000L
     }
 }
