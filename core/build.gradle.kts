@@ -28,6 +28,7 @@ android {
 
 dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    api("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0-alpha01")
 }
 
 // Bundle sources with binaries
