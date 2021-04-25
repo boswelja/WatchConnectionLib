@@ -61,6 +61,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           stripHeaders: true
+          releaseBranch: "main"
           sinceTag: ${{ steps.version.outputs.pervious-version }}
 
       - name: Create GitHub Release
