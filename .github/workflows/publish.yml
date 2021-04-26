@@ -62,7 +62,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           stripHeaders: true
           releaseBranch: "main"
+          pullRequests: true
+          author: true
+          issues: true
+          issuesWoLabels: true
+          prWoLabels: true
+          compareLink: true
+          filterByMilestone: false
+          unreleased: false
           sinceTag: ${{ steps.version.outputs.pervious-version }}
+          addSections: '{"core":{"prefix":"**Core changes:**","labels":["core"]}, "tizen":{"prefix":"**Tizen changes:**","labels":["tizen"]}, "wearos":{"prefix":"**Wear OS changes:**","labels":["wearos"]}}'
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
