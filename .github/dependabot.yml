@@ -9,10 +9,29 @@ updates:
     labels:
       - "dependencies"
 
-  # Maintain dependencies for modules
+  # Maintain dependencies for core module
   - package-ecosystem: "gradle"
-    directory: "/"
+    directory: "/core"
     schedule:
       interval: "daily"
     labels:
       - "dependencies"
+      - "core"
+
+  # Maintain dependencies for tizen module
+  - package-ecosystem: "gradle"
+    directory: "/tizen"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "tizen"
+
+  # Maintain dependencies for wearos module
+  - package-ecosystem: "gradle"
+    directory: "/wearos"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "wearos"
