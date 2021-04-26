@@ -10,7 +10,7 @@
     <application>
         <meta-data
             android:name="AccessoryServicesLocation"
-            android:value="/res/xml/<profileName>.xml" />
+            android:value="/res/xml/accessory_services_profile.xml" />
 
         <receiver
             android:exported="true"
