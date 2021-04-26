@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <application name="@string/accessory_app_name">
+        <serviceProfile
+            serviceImpl="com.boswelja.watchconnection.tizen.TizenAccessoryAgent"
+            role="provider"
+            name="WatchConnectionLib"
+            id="/watchconnection/tizen"
+            version="1.0"
+            serviceLimit="any"
+            serviceTimeout="10">
+            <supportedTransports>
+                <transport type="TRANSPORT_BT" />
+                <transport type="TRANSPORT_BLE" />
+                <transport type="TRANSPORT_WIFI" />
+            </supportedTransports>
+            <supportedFeatures>
+                <feature type="message" />
+            </supportedFeatures>
+        </serviceProfile>
+    </application>
+</resources>
