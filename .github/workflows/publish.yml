@@ -70,7 +70,7 @@ jobs:
           compareLink: true
           filterByMilestone: false
           unreleased: false
-          sinceTag: ${{ steps.version.outputs.pervious-version }}
+          lastTag: true
           addSections: '{"core":{"prefix":"**Core changes:**","labels":["core"]}, "tizen":{"prefix":"**Tizen changes:**","labels":["tizen"]}, "wearos":{"prefix":"**Wear OS changes:**","labels":["wearos"]}}'
 
       - name: Create GitHub Release
