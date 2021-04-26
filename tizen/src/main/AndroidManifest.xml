@@ -8,6 +8,10 @@
     <queries> <package android:name="com.samsung.accessory"/> </queries>
 
     <application>
+        <meta-data
+            android:name="AccessoryServicesLocation"
+            android:value="/res/xml/<profileName>.xml" />
+
         <receiver
             android:exported="true"
             android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
