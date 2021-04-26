@@ -71,6 +71,7 @@ jobs:
           filterByMilestone: false
           unreleased: false
           sinceTag: ${{ steps.version.outputs.pervious-version }}
+          addSections: '{"core":{"prefix":"**Core changes:**","labels":["core"]}, "tizen":{"prefix":"**Tizen changes:**","labels":["tizen"]}, "wearos":{"prefix":"**Wear OS changes:**","labels":["wearos"]}}'
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
