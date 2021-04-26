@@ -42,7 +42,7 @@ class MessageReceiverTest {
         val intent = Intent("action")
         messageReceiver.onReceive(context, intent)
         verify(inverse = true) { messageReceiver.goAsync() }
-        coVerify(inverse = true) { messageReceiver.onMessageReceived(any(), any(), any()) }
+        coVerify(inverse = true) { messageReceiver.onMessageReceived(any(), any(), any(), any()) }
     }
 
     @Test
@@ -57,7 +57,7 @@ class MessageReceiverTest {
             messageReceiver.onReceive(context, intent)
         }
 
-        coVerify { messageReceiver.onMessageReceived(id, message, null) }
+        coVerify { messageReceiver.onMessageReceived(context, id, message, null) }
     }
 
     @Test
@@ -74,6 +74,6 @@ class MessageReceiverTest {
             messageReceiver.onReceive(context, intent)
         }
 
-        coVerify { messageReceiver.onMessageReceived(id, message, data) }
+        coVerify { messageReceiver.onMessageReceived(context, id, message, data) }
     }
 }
