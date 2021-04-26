@@ -62,6 +62,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           stripHeaders: true
           releaseBranch: "main"
+          pullRequests: true
+          author: true
+          issues: true
+          issuesWoLabels: true
+          prWoLabels: true
+          compareLink: true
+          filterByMilestone: false
+          unreleased: false
           sinceTag: ${{ steps.version.outputs.pervious-version }}
 
       - name: Create GitHub Release
