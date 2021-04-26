@@ -23,6 +23,7 @@ abstract class MessageReceiver : BroadcastReceiver() {
      * @param data The data included with the message, or null if there was no data.
      */
     abstract suspend fun onMessageReceived(
+        context: Context,
         sourceWatchId: UUID,
         message: String,
         data: ByteArray?
@@ -32,19 +33,21 @@ abstract class MessageReceiver : BroadcastReceiver() {
         // Don't handle intent if it's not ACTION_MESSAGE_RECEIVED
         if (intent?.action != Messages.ACTION_MESSAGE_RECEIVED) return
 
-        // Going async
-        val pendingResult = goAsync()
-        coroutineScope.launch {
-            // Collect data from intent
-            val watchId = UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID))
-            val message = intent.getStringExtra(EXTRA_MESSAGE)!!
-            val data = intent.getByteArrayExtra(EXTRA_DATA)
+        context?.let {
+            // Going async
+            val pendingResult = goAsync()
+            coroutineScope.launch {
+                // Collect data from intent
+                val watchId = UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID))
+                val message = intent.getStringExtra(EXTRA_MESSAGE)!!
+                val data = intent.getByteArrayExtra(EXTRA_DATA)
 
-            // Pass it on to user code
-            onMessageReceived(watchId, message, data)
+                // Pass it on to user code
+                onMessageReceived(context, watchId, message, data)
 
-            // Let the BroadcastReceiver know we're done
-            pendingResult.finish()
+                // Let the BroadcastReceiver know we're done
+                pendingResult.finish()
+            }
         }
     }
 
