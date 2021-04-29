@@ -56,6 +56,15 @@ class WatchPlatformManager(
     }
 
     /**
+     * Gets a [Flow] of [Status] for a given [Watch].
+     * @param watch The [Watch] to get a [Status] for.
+     * @return The [Flow] of [Status].
+     */
+    fun getStatusFor(watch: Watch): Flow<Status>? {
+        return connectionHandlers[watch.platform]?.getStatusFor(watch.platformId)
+    }
+
+    /**
      * Adds a [MessageListener] to all platforms.
      */
     fun addMessageListener(messageListener: MessageListener) {
