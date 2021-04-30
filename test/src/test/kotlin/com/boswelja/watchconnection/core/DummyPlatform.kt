@@ -10,11 +10,11 @@ class DummyPlatform(
     val watchesWithApp: Array<Watch>
 ) : WatchPlatform {
 
-    override fun allWatches(): Flow<Watch> = flowOf(*allWatches)
+    override fun allWatches(): Flow<Array<Watch>> = flowOf(allWatches)
 
-    override fun watchesWithApp(): Flow<Watch> = flowOf(*watchesWithApp)
+    override fun watchesWithApp(): Flow<Array<Watch>> = flowOf(watchesWithApp)
 
-    override fun getCapabilitiesFor(watchId: String): Flow<String> = flow { }
+    override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> = flow { }
 
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         // Do nothing
