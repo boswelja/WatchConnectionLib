@@ -44,13 +44,13 @@ class TizenPlatform(
     override val platformIdentifier = PLATFORM
 
     @ExperimentalCoroutinesApi
-    override fun allWatches(): Flow<Watch> = accessoryAgent.allWatches()
+    override fun allWatches(): Flow<Array<Watch>> = accessoryAgent.allWatches()
 
     @ExperimentalCoroutinesApi
-    override fun watchesWithApp(): Flow<Watch> = accessoryAgent.allWatches()
+    override fun watchesWithApp(): Flow<Array<Watch>> = accessoryAgent.allWatches()
 
     @ExperimentalCoroutinesApi
-    override fun getCapabilitiesFor(watchId: String): Flow<String> =
+    override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> =
         accessoryAgent.getCapabilitiesFor(watchId)
 
     @Suppress("BlockingMethodInNonBlockingContext")
