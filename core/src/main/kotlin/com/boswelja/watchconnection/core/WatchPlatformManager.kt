@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.core
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.combine
 
 /**
  * A class to simplify handling multiple [WatchPlatform].
@@ -26,15 +26,20 @@ class WatchPlatformManager(
      * Get a [Flow] of all [Watch]es found by all [WatchPlatform]s.
      */
     @ExperimentalCoroutinesApi
-    fun allWatches(): Flow<Watch> = connectionHandlers.values.map { it.allWatches() }.merge()
+    fun allWatches(): Flow<List<Watch>> =
+        combine(*connectionHandlers.values.map { it.allWatches() }.toTypedArray()) {
+            it.flatten()
+        }
 
     /**
      * Get a [Flow] of all [Watch]es determined to have the companion app installed from all
      * [WatchPlatform]s.
      */
     @ExperimentalCoroutinesApi
-    fun watchesWithApp(): Flow<Watch> =
-        connectionHandlers.values.map { it.watchesWithApp() }.merge()
+    fun watchesWithApp(): Flow<List<Watch>> =
+        combine(*connectionHandlers.values.map { it.watchesWithApp() }.toTypedArray()) {
+            it.flatten()
+        }
 
     /**
      * Send a message to a [Watch].
@@ -51,7 +56,7 @@ class WatchPlatformManager(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    fun getCapabilitiesFor(watch: Watch): Flow<String>? {
+    fun getCapabilitiesFor(watch: Watch): Flow<Array<String>>? {
         return connectionHandlers[watch.platform]?.getCapabilitiesFor(watch.platformId)
     }
 

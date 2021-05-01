@@ -53,32 +53,43 @@ class WearOSPlatform constructor(
 
     override val platformIdentifier = PLATFORM
 
-    override fun allWatches(): Flow<Watch> = flow {
-        nodeClient.connectedNodes.await().forEach {
-            emit(
+    override fun allWatches(): Flow<Array<Watch>> = flow {
+        emit(
+            nodeClient.connectedNodes.await().map { node ->
                 Watch(
-                    it.displayName,
-                    it.id,
+                    node.displayName,
+                    node.id,
                     PLATFORM
                 )
+            }.toTypedArray()
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun watchesWithApp(): Flow<Array<Watch>> = callbackFlow {
+        // Create capability listener
+        val listener = CapabilityClient.OnCapabilityChangedListener { info ->
+            sendBlocking(
+                info.nodes.map { node ->
+                    Watch(
+                        node.displayName,
+                        node.id,
+                        PLATFORM
+                    )
+                }.toTypedArray()
             )
+        }
+        // Add listener
+        capabilityClient.addListener(listener, appCapability)
+
+        // Remove listener on Flow close
+        awaitClose {
+            capabilityClient.removeListener(listener)
         }
     }
 
-    override fun watchesWithApp(): Flow<Watch> = flow {
-        capabilityClient.getCapability(appCapability, CapabilityClient.FILTER_ALL).await().nodes
-            .forEach {
-                emit(
-                    Watch(
-                        it.displayName,
-                        it.id,
-                        PLATFORM
-                    )
-                )
-            }
-    }
-
-    override fun getCapabilitiesFor(watchId: String): Flow<String> = flow {
+    override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> = flow {
+        val discoveredCapabilities = mutableListOf<String>()
         capabilities.forEach { capability ->
             // Get capability info
             val capabilityInfo = capabilityClient
@@ -86,8 +97,9 @@ class WearOSPlatform constructor(
                 .await()
             // If node is found with same ID as watch, emit capability
             if (capabilityInfo.nodes.any { it.id == watchId })
-                emit(capability)
+                discoveredCapabilities += capabilityInfo.name
         }
+        emit(discoveredCapabilities.toTypedArray())
     }
 
     @ExperimentalCoroutinesApi

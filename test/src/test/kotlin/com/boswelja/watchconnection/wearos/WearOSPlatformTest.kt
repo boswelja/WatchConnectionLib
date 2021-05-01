@@ -69,28 +69,38 @@ class WearOSPlatformTest {
         every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes)
 
         // Collect the result and make sure they match up with dummy nodes
-        connectionHandler.allWatches().collect { watch ->
-            expectThat(dummyNodes.any { it.id == watch.platformId && it.displayName == watch.name })
+        val watches = withTimeout(2000) {
+            connectionHandler.allWatches().first()
+        }
+        watches.forEach { watch ->
+            expectThat(dummyNodes.any { it.id == watch.platformId })
                 .isTrue()
         }
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun `watchesWithApp flows from capability client`(): Unit = runBlocking {
         // Create dummy CapabilityInfo and set up mock
         val dummyNodes = createDummyNodes(3)
         every {
-            capabilityClient.getCapability(appCapability, any())
-        } returns Tasks.forResult(
-            CapabilityHelpers.DummyCapabilityInfo(
-                appCapability,
-                dummyNodes.toMutableSet()
+            capabilityClient.addListener(any(), appCapability)
+        } answers {
+            firstArg<CapabilityClient.OnCapabilityChangedListener>().onCapabilityChanged(
+                CapabilityHelpers.DummyCapabilityInfo(
+                    appCapability,
+                    dummyNodes.toMutableSet()
+                )
             )
-        )
+            Tasks.forResult(null)
+        }
 
         // Collect the result and make sure they match up with dummy nodes
-        connectionHandler.watchesWithApp().collect { watch ->
-            expectThat(dummyNodes.any { it.id == watch.platformId && it.displayName == watch.name })
+        val watches = withTimeout(2000) {
+            connectionHandler.watchesWithApp().first()
+        }
+        watches.forEach { watch ->
+            expectThat(dummyNodes.any { it.id == watch.platformId })
                 .isTrue()
         }
     }
@@ -185,14 +195,17 @@ class WearOSPlatformTest {
                 capabilityClient.getCapability(capability, any())
             } returns Tasks.forResult(
                 CapabilityHelpers.DummyCapabilityInfo(
-                    appCapability,
+                    capability,
                     dummyNode.toMutableSet()
                 )
             )
         }
 
         // Collect the result and make sure they match up with capabilities
-        connectionHandler.getCapabilitiesFor(dummyNode.first().id).collect { capability ->
+        val foundCapabilities = withTimeout(2000) {
+            connectionHandler.getCapabilitiesFor(dummyNode.first().id).first()
+        }
+        foundCapabilities.forEach { capability ->
             expectThat(capability).isContainedIn(capabilities)
         }
     }

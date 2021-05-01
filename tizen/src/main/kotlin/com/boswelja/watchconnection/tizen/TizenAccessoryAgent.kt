@@ -30,7 +30,7 @@ class TizenAccessoryAgent internal constructor(
     private val findPeerJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val allWatches = MutableStateFlow<Watch?>(null)
+    private val allWatches = MutableStateFlow<Array<Watch>?>(null)
 
     private val peerMap = HashMap<String, SAPeerAgent>()
     private val messageListeners = ArrayList<MessageListener>()
@@ -39,7 +39,7 @@ class TizenAccessoryAgent internal constructor(
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
 
     // Keep a map of peer agents to their capabilities
-    private val capabilityMap = HashMap<String, Flow<String?>>()
+    private val capabilityMap = HashMap<String, Flow<Array<String>?>>()
 
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
@@ -78,15 +78,14 @@ class TizenAccessoryAgent internal constructor(
     }
 
     @ExperimentalCoroutinesApi
-    fun allWatches(): Flow<Watch> {
+    fun allWatches(): Flow<Array<Watch>> {
         findPeerJob.cancel()
-        allWatches.resetReplayCache()
         findPeerAgents()
         return allWatches.mapNotNull { it }
     }
 
     @ExperimentalCoroutinesApi
-    fun getCapabilitiesFor(watchId: String): Flow<String> {
+    fun getCapabilitiesFor(watchId: String): Flow<Array<String>> {
         var flow = capabilityMap[watchId]
         if (flow == null) {
             // Flow doesn't already exist, create a new one
@@ -130,15 +129,15 @@ class TizenAccessoryAgent internal constructor(
 
     override fun onFindPeerAgentsResponse(peers: Array<out SAPeerAgent>?, result: Int) {
         coroutineScope.launch(Dispatchers.Default + findPeerJob) {
-            peers?.forEach { peerAgent ->
-                allWatches.emit(
+            allWatches.emit(
+                peers?.map { peerAgent ->
                     Watch(
                         peerAgent.accessory.name,
                         peerAgent.accessory.accessoryId,
                         TizenPlatform.PLATFORM
                     )
-                )
-            }
+                }?.toTypedArray() ?: emptyArray()
+            )
         }
     }
 
@@ -151,7 +150,7 @@ class TizenAccessoryAgent internal constructor(
         coroutineScope.launch(Dispatchers.IO + capabilityJob) {
             capabilityMap[peer.accessory.accessoryId]?.let { flow ->
                 if (flow is MutableStateFlow) {
-                    flow.emit(String(data, Charsets.UTF_8))
+                    flow.emit(String(data, Charsets.UTF_8).split('|').toTypedArray())
                 }
             }
         }
