@@ -3,10 +3,10 @@ package com.boswelja.watchconnection.core
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 /**
  * A [BroadcastReceiver] for receiving messages from watches of all supported platforms.
