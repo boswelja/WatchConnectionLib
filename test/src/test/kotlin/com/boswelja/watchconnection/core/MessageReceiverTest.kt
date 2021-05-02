@@ -41,8 +41,10 @@ class MessageReceiverTest {
     fun `onReceive does nothing for incorrect actions`() {
         val intent = Intent("action")
         messageReceiver.onReceive(context, intent)
-        verify(inverse = true) { messageReceiver.goAsync() }
-        coVerify(inverse = true) { messageReceiver.onMessageReceived(any(), any(), any(), any()) }
+        verify(inverse = true, timeout = 50) { messageReceiver.goAsync() }
+        coVerify(inverse = true, timeout = 50) {
+            messageReceiver.onMessageReceived(any(), any(), any(), any())
+        }
     }
 
     @Test
@@ -57,7 +59,7 @@ class MessageReceiverTest {
             messageReceiver.onReceive(context, intent)
         }
 
-        coVerify { messageReceiver.onMessageReceived(context, id, message, null) }
+        coVerify(timeout = 50) { messageReceiver.onMessageReceived(context, id, message, null) }
     }
 
     @Test
@@ -74,6 +76,6 @@ class MessageReceiverTest {
             messageReceiver.onReceive(context, intent)
         }
 
-        coVerify { messageReceiver.onMessageReceived(context, id, message, data) }
+        coVerify(timeout = 50) { messageReceiver.onMessageReceived(context, id, message, data) }
     }
 }
