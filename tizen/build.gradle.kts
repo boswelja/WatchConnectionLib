@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Sdk.target)
+    compileSdk = Sdk.target
 
     defaultConfig {
-        minSdkVersion(Sdk.min)
-        targetSdkVersion(Sdk.target)
+        minSdk = Sdk.min
+        targetSdk = Sdk.target
         consumerProguardFile("proguard-rules.pro")
     }
 

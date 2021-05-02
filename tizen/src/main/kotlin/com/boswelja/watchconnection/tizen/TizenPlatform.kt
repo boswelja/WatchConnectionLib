@@ -2,11 +2,13 @@ package com.boswelja.watchconnection.tizen
 
 import android.content.Context
 import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * A [WatchPlatform] with support for Tizen via Samsung's Accessory SDK.
@@ -52,6 +54,12 @@ class TizenPlatform(
     @ExperimentalCoroutinesApi
     override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> =
         accessoryAgent.getCapabilitiesFor(watchId)
+
+    @ExperimentalCoroutinesApi
+    override fun getStatusFor(watchId: String): Flow<Status> = allWatches().map { allWatches ->
+        if (allWatches.any { it.platformId == watchId }) Status.CONNECTED
+        else Status.DISCONNECTED
+    }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi

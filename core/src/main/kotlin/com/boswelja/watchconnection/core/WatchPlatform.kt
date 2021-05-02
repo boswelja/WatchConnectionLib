@@ -31,6 +31,13 @@ interface WatchPlatform {
     fun getCapabilitiesFor(watchId: String): Flow<Array<String>>
 
     /**
+     * Gets a [Flow] of [Status] for the watch with the given ID.
+     * @param watchId See [Watch.platformId].
+     * @return The [Flow] of [Status].
+     */
+    fun getStatusFor(watchId: String): Flow<Status>
+
+    /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't
      * guarantee delivery.
      * @param watchId See [Watch.platformId].

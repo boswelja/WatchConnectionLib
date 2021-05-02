@@ -13,13 +13,13 @@ import com.boswelja.watchconnection.core.Messages.ACTION_MESSAGE_RECEIVED
 import io.mockk.coVerify
 import io.mockk.spyk
 import io.mockk.verify
+import java.util.UUID
+import kotlin.random.Random
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import java.util.UUID
-import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])

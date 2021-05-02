@@ -3,10 +3,11 @@ package com.boswelja.watchconnection.wearos
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.wearos.CapabilityHelpers.createCapabilities
 import com.boswelja.watchconnection.wearos.NodeHelpers.createDummyNodes
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Status
+import com.google.android.gms.common.api.Status.RESULT_CANCELED
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
@@ -15,7 +16,9 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -25,9 +28,9 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.isContainedIn
+import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
-import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -101,6 +104,87 @@ class WearOSPlatformTest {
         }
     }
 
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `getStatusFor starts with CONNECTING`(): Unit = runBlocking {
+        val dummyNode = createDummyNodes(1).first()
+        expectThat(connectionHandler.getStatusFor(dummyNode.id).first())
+            .isEqualTo(Status.CONNECTING)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `getStatusFor flows MISSING_APP if watch not found in capable nodes`(): Unit = runBlocking {
+        // Create node and mock capabilityClient
+        val capabilityInfo = CapabilityHelpers.DummyCapabilityInfo(appCapability, mutableSetOf())
+        val dummyNode = createDummyNodes(1).first()
+        every { capabilityClient.addListener(any(), appCapability) } answers {
+            // Call listener with dummy capabilityInfo
+            firstArg<CapabilityClient.OnCapabilityChangedListener>()
+                .onCapabilityChanged(capabilityInfo)
+            Tasks.forResult(null)
+        }
+
+        // Get the first value that isn't CONNECTING
+        val status = withTimeout(2000) {
+            connectionHandler.getStatusFor(dummyNode.id)
+                .filterNot { it == Status.CONNECTING }
+                .first()
+        }
+        expectThat(status).isEqualTo(Status.MISSING_APP)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `getStatusFor flows CONNECTED if watch is capable and connected`(): Unit = runBlocking {
+        // Create node and mock capabilityClient
+        val dummyNodes = createDummyNodes(1)
+        val capabilityInfo =
+            CapabilityHelpers.DummyCapabilityInfo(appCapability, dummyNodes.toMutableSet())
+        every { capabilityClient.addListener(any(), appCapability) } answers {
+            // Call listener with dummy capabilityInfo
+            firstArg<CapabilityClient.OnCapabilityChangedListener>()
+                .onCapabilityChanged(capabilityInfo)
+            Tasks.forResult(null)
+        }
+        // Mock connected nodes
+        every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes)
+
+        // Get the first value that isn't CONNECTING
+        val status = withTimeout(2000) {
+            connectionHandler.getStatusFor(dummyNodes.first().id)
+                .filterNot { it == Status.CONNECTING }
+                .first()
+        }
+        expectThat(status).isEqualTo(Status.CONNECTED)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `getStatusFor flows DISCONNECTED if watch is capable and not connected`(): Unit =
+        runBlocking {
+            // Create node and mock capabilityClient
+            val dummyNodes = createDummyNodes(1)
+            val capabilityInfo =
+                CapabilityHelpers.DummyCapabilityInfo(appCapability, dummyNodes.toMutableSet())
+            every { capabilityClient.addListener(any(), appCapability) } answers {
+                // Call listener with dummy capabilityInfo
+                firstArg<CapabilityClient.OnCapabilityChangedListener>()
+                    .onCapabilityChanged(capabilityInfo)
+                Tasks.forResult(null)
+            }
+            // Mock no connected nodes
+            every { nodeClient.connectedNodes } returns Tasks.forResult(emptyList())
+
+            // Get the first value that isn't CONNECTING
+            val status = withTimeout(2000) {
+                connectionHandler.getStatusFor(dummyNodes.first().id)
+                    .filterNot { it == Status.CONNECTING }
+                    .first()
+            }
+            expectThat(status).isEqualTo(Status.DISCONNECTED)
+        }
+
     @Test
     fun `getCapabilitiesFor flows correct capabilities when watch has all`(): Unit = runBlocking {
         // Create dummy CapabilityInfos and set up mocks
@@ -152,7 +236,7 @@ class WearOSPlatformTest {
         // Mock messageClient to error on sendMessage
         every {
             messageClient.sendMessage(any(), any(), any())
-        } throws ApiException(Status.RESULT_CANCELED)
+        } throws ApiException(RESULT_CANCELED)
 
         // Call sendMessage and check result
         val result = connectionHandler.sendMessage(id, message, data)

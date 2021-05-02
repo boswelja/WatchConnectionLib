@@ -16,6 +16,8 @@ class DummyPlatform(
 
     override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> = flow { }
 
+    override fun getStatusFor(watchId: String): Flow<Status> = flow { }
+
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         // Do nothing
         return false

@@ -4,12 +4,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Sdk.target)
+    compileSdk = Sdk.target
 
     defaultConfig {
-        minSdkVersion(Sdk.min)
-        targetSdkVersion(Sdk.target)
-        consumerProguardFile("proguard-rules.pro")
+        minSdk = Sdk.min
+        targetSdk = Sdk.target
 
         applicationId = "com.boswelja.watchconnection.test"
         versionCode = 1

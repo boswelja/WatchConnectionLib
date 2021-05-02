@@ -2,19 +2,23 @@ package com.boswelja.watchconnection.wearos
 
 import android.content.Context
 import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 class WearOSPlatform constructor(
@@ -96,6 +100,38 @@ class WearOSPlatform constructor(
                 discoveredCapabilities += capabilityInfo.name
         }
         emit(discoveredCapabilities.toTypedArray())
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun getStatusFor(watchId: String): Flow<Status> = callbackFlow {
+        // Start with CONNECTING
+        send(Status.CONNECTING)
+
+        val listener = CapabilityClient.OnCapabilityChangedListener { info: CapabilityInfo ->
+            // If watch is found in capable nodes list, check if it's connected
+            if (info.nodes.any { it.id == watchId }) {
+                try {
+                    // runBlocking should be safe here, since we're within a Flow
+                    val connectedNodes = runBlocking { nodeClient.connectedNodes.await() }
+                    // Got connected nodes, check if it contains our desired node
+                    if (connectedNodes.any { it.id == watchId }) sendBlocking(Status.CONNECTED)
+                    else sendBlocking(Status.DISCONNECTED)
+                } catch (e: CancellationException) {
+                    // Failed, send error
+                    sendBlocking(Status.ERROR)
+                }
+            } else {
+                // No watch in capable nodes, app is missing
+                sendBlocking(Status.MISSING_APP)
+            }
+        }
+        // Add the listener
+        capabilityClient.addListener(listener, appCapability)
+
+        // On finish, remove the listener
+        awaitClose {
+            capabilityClient.removeListener(listener)
+        }
     }
 
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
