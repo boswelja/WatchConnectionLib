@@ -13,6 +13,7 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -107,26 +108,17 @@ class WearOSPlatform constructor(
         // Start with CONNECTING
         send(Status.CONNECTING)
 
+        // Create our listener
         val listener = CapabilityClient.OnCapabilityChangedListener { info: CapabilityInfo ->
-            // If watch is found in capable nodes list, check if it's connected
-            if (info.nodes.any { it.id == watchId }) {
-                try {
-                    // runBlocking should be safe here, since we're within a Flow
-                    val connectedNodes = runBlocking { nodeClient.connectedNodes.await() }
-                    // Got connected nodes, check if it contains our desired node
-                    if (connectedNodes.any { it.id == watchId }) sendBlocking(Status.CONNECTED)
-                    else sendBlocking(Status.DISCONNECTED)
-                } catch (e: CancellationException) {
-                    // Failed, send error
-                    sendBlocking(Status.ERROR)
-                }
-            } else {
-                // No watch in capable nodes, app is missing
-                sendBlocking(Status.MISSING_APP)
-            }
+            getStatusFromCapabilityInfo(watchId, info)
         }
         // Add the listener
         capabilityClient.addListener(listener, appCapability)
+
+        // Update capabilities now
+        val capabilityInfo = capabilityClient
+            .getCapability(appCapability, CapabilityClient.FILTER_ALL).await()
+        getStatusFromCapabilityInfo(watchId, capabilityInfo)
 
         // On finish, remove the listener
         awaitClose {
@@ -159,6 +151,29 @@ class WearOSPlatform constructor(
         // Look up listener and remove it from both the map and messageClient
         messageListeners.remove(listener)?.let {
             messageClient.removeListener(it)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    private fun ProducerScope<Status>.getStatusFromCapabilityInfo(
+        watchId: String,
+        info: CapabilityInfo
+    ) {
+        // If watch is found in capable nodes list, check if it's connected
+        if (info.nodes.any { it.id == watchId }) {
+            try {
+                // runBlocking should be safe here, since we're within a Flow
+                val connectedNodes = runBlocking { nodeClient.connectedNodes.await() }
+                // Got connected nodes, check if it contains our desired node
+                if (connectedNodes.any { it.id == watchId }) sendBlocking(Status.CONNECTED)
+                else sendBlocking(Status.DISCONNECTED)
+            } catch (e: CancellationException) {
+                // Failed, send error
+                sendBlocking(Status.ERROR)
+            }
+        } else {
+            // No watch in capable nodes, app is missing
+            sendBlocking(Status.MISSING_APP)
         }
     }
 
