@@ -83,6 +83,19 @@ class WearOSPlatform constructor(
         // Add listener
         capabilityClient.addListener(listener, appCapability)
 
+        // Update capabilities now
+        val capabilityInfo = capabilityClient
+            .getCapability(appCapability, CapabilityClient.FILTER_ALL).await()
+        sendBlocking(
+            capabilityInfo.nodes.map { node ->
+                Watch(
+                    node.displayName,
+                    node.id,
+                    PLATFORM
+                )
+            }.toTypedArray()
+        )
+
         // Remove listener on Flow close
         awaitClose {
             capabilityClient.removeListener(listener)
