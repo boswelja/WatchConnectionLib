@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0                # fetch the whole repo history
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v2.0.0
+        uses: actions/setup-java@v2.1.0
         with:
           java-version: 11
           distribution: 'adopt'
@@ -77,7 +77,7 @@ jobs:
           compareLink: true
           filterByMilestone: false
           unreleased: false
-          lastTag: true
+          onlyLastTag: true
           configureSections: '{"core":{"prefix":"**Core changes:**","labels":["core"]}, "tizen":{"prefix":"**Tizen changes:**","labels":["tizen"]}, "wearos":{"prefix":"**Wear OS changes:**","labels":["wearos"]}}'
 
       - name: Create GitHub Release
