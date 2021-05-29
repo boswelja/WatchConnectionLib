@@ -27,8 +27,12 @@ class WatchPlatformManager(
      */
     @ExperimentalCoroutinesApi
     fun allWatches(): Flow<List<Watch>> =
-        combine(*connectionHandlers.values.map { it.allWatches() }.toTypedArray()) {
-            it.flatten()
+        combine(connectionHandlers.values.map { it.allWatches() }) { flows ->
+            val list = mutableListOf<Watch>()
+            flows.forEach { watches ->
+                list += watches
+            }
+            list
         }
 
     /**
@@ -37,8 +41,12 @@ class WatchPlatformManager(
      */
     @ExperimentalCoroutinesApi
     fun watchesWithApp(): Flow<List<Watch>> =
-        combine(*connectionHandlers.values.map { it.watchesWithApp() }.toTypedArray()) {
-            it.flatten()
+        combine(connectionHandlers.values.map { it.watchesWithApp() }) { flows ->
+            val list = mutableListOf<Watch>()
+            flows.forEach { watches ->
+                list += watches
+            }
+            list
         }
 
     /**
@@ -56,14 +64,15 @@ class WatchPlatformManager(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    fun getCapabilitiesFor(watch: Watch): Flow<Array<String>>? {
+    fun getCapabilitiesFor(watch: Watch): Flow<List<String>>? {
         return connectionHandlers[watch.platform]?.getCapabilitiesFor(watch.platformId)
     }
 
     /**
      * Gets a [Flow] of [Status] for a given [Watch].
      * @param watch The [Watch] to get a [Status] for.
-     * @return The [Flow] of [Status].
+     * @return The [Flow] of [Status]. May be null if the given watches platform doesn't exist in
+     * this instance.
      */
     fun getStatusFor(watch: Watch): Flow<Status>? {
         return connectionHandlers[watch.platform]?.getStatusFor(watch.platformId)

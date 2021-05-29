@@ -46,13 +46,13 @@ class TizenPlatform(
     override val platformIdentifier = PLATFORM
 
     @ExperimentalCoroutinesApi
-    override fun allWatches(): Flow<Array<Watch>> = accessoryAgent.allWatches()
+    override fun allWatches(): Flow<List<Watch>> = accessoryAgent.allWatches()
 
     @ExperimentalCoroutinesApi
-    override fun watchesWithApp(): Flow<Array<Watch>> = accessoryAgent.allWatches()
+    override fun watchesWithApp(): Flow<List<Watch>> = accessoryAgent.allWatches()
 
     @ExperimentalCoroutinesApi
-    override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> =
+    override fun getCapabilitiesFor(watchId: String): Flow<List<String>> =
         accessoryAgent.getCapabilitiesFor(watchId)
 
     @ExperimentalCoroutinesApi

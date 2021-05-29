@@ -16,7 +16,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -29,7 +28,7 @@ class TizenAccessoryAgent internal constructor(
     private val findPeerJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val allWatches = MutableStateFlow<Array<Watch>?>(null)
+    private val allWatches = MutableStateFlow<List<Watch>>(emptyList())
 
     private val peerMap = HashMap<String, SAPeerAgent>()
     private val messageListeners = ArrayList<MessageListener>()
@@ -38,7 +37,7 @@ class TizenAccessoryAgent internal constructor(
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
 
     // Keep a map of peer agents to their capabilities
-    private val capabilityMap = HashMap<String, Flow<Array<String>?>>()
+    private val capabilityMap = HashMap<String, Flow<List<String>>>()
 
     private val saMessage = object : SAMessage(this) {
         override fun onReceive(peerAgent: SAPeerAgent?, data: ByteArray?) {
@@ -77,18 +76,18 @@ class TizenAccessoryAgent internal constructor(
     }
 
     @ExperimentalCoroutinesApi
-    fun allWatches(): Flow<Array<Watch>> {
+    fun allWatches(): Flow<List<Watch>> {
         findPeerJob.cancel()
         findPeerAgents()
-        return allWatches.mapNotNull { it }
+        return allWatches
     }
 
     @ExperimentalCoroutinesApi
-    fun getCapabilitiesFor(watchId: String): Flow<Array<String>> {
+    fun getCapabilitiesFor(watchId: String): Flow<List<String>> {
         var flow = capabilityMap[watchId]
         if (flow == null) {
             // Flow doesn't already exist, create a new one
-            flow = MutableStateFlow(null)
+            flow = MutableStateFlow(emptyList())
             capabilityMap[watchId] = flow
         } else if (flow is MutableStateFlow) {
             // Reset replay cache if possible
@@ -100,7 +99,7 @@ class TizenAccessoryAgent internal constructor(
             sendMessage(watchId, TizenPlatform.CAPABILITY_MESSAGE, null)
         }
 
-        return flow.mapNotNull { it }
+        return flow
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -135,7 +134,7 @@ class TizenAccessoryAgent internal constructor(
                         peerAgent.accessory.accessoryId,
                         TizenPlatform.PLATFORM
                     )
-                }?.toTypedArray() ?: emptyArray()
+                } ?: emptyList()
             )
         }
     }
@@ -149,7 +148,7 @@ class TizenAccessoryAgent internal constructor(
         coroutineScope.launch(Dispatchers.IO + capabilityJob) {
             capabilityMap[peer.accessory.accessoryId]?.let { flow ->
                 if (flow is MutableStateFlow) {
-                    flow.emit(String(data, Charsets.UTF_8).split('|').toTypedArray())
+                    flow.emit(String(data, Charsets.UTF_8).split('|'))
                 }
             }
         }

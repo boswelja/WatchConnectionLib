@@ -53,7 +53,7 @@ class WearOSPlatform constructor(
 
     override val platformIdentifier = PLATFORM
 
-    override fun allWatches(): Flow<Array<Watch>> = flow {
+    override fun allWatches(): Flow<List<Watch>> = flow {
         emit(
             nodeClient.connectedNodes.await().map { node ->
                 Watch(
@@ -61,12 +61,12 @@ class WearOSPlatform constructor(
                     node.id,
                     PLATFORM
                 )
-            }.toTypedArray()
+            }
         )
     }
 
     @ExperimentalCoroutinesApi
-    override fun watchesWithApp(): Flow<Array<Watch>> = callbackFlow {
+    override fun watchesWithApp(): Flow<List<Watch>> = callbackFlow {
         // Create capability listener
         val listener = CapabilityClient.OnCapabilityChangedListener { info ->
             trySend(
@@ -76,7 +76,7 @@ class WearOSPlatform constructor(
                         node.id,
                         PLATFORM
                     )
-                }.toTypedArray()
+                }
             )
         }
         // Add listener
@@ -92,7 +92,7 @@ class WearOSPlatform constructor(
                     node.id,
                     PLATFORM
                 )
-            }.toTypedArray()
+            }
         )
 
         // Remove listener on Flow close
@@ -101,7 +101,7 @@ class WearOSPlatform constructor(
         }
     }
 
-    override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> = flow {
+    override fun getCapabilitiesFor(watchId: String): Flow<List<String>> = flow {
         val discoveredCapabilities = mutableListOf<String>()
         capabilities.forEach { capability ->
             // Get capability info
@@ -112,7 +112,7 @@ class WearOSPlatform constructor(
             if (capabilityInfo.nodes.any { it.id == watchId })
                 discoveredCapabilities += capabilityInfo.name
         }
-        emit(discoveredCapabilities.toTypedArray())
+        emit(discoveredCapabilities)
     }
 
     @ExperimentalCoroutinesApi
