@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.tizen
 
 object Messages {
-    private const val messageDelimiter = '|'.toByte()
+    private const val messageDelimiter = '|'.code.toByte()
 
     /**
      * Convert a message to a [ByteArray] for use with [TizenAccessoryAgent].

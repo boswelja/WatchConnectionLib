@@ -22,15 +22,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
 }
 
 dependencies {
     api(project(":core"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3")
-    api("com.google.android.gms:play-services-wearable:17.0.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.0-RC")
+    api("com.google.android.gms:play-services-wearable:17.1.0")
 }
 
 // Bundle sources with binaries

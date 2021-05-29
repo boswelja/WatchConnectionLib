@@ -45,7 +45,7 @@ open class Watch(
          * @param platform See [WatchPlatform.platformIdentifier].
          * @param platformId See [Watch.platformId].
          */
-        fun createUUID(platform: String, platformId: String) =
+        fun createUUID(platform: String, platformId: String): UUID =
             UUID.nameUUIDFromBytes((platform + platformId).toByteArray(Charsets.UTF_8))
     }
 }

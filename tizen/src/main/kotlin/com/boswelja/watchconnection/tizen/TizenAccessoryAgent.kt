@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.receiveOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
@@ -56,11 +55,11 @@ class TizenAccessoryAgent internal constructor(
         }
 
         override fun onSent(peerAgent: SAPeerAgent?, id: Int) {
-            messageChannelMap[id]?.offer(true)
+            messageChannelMap[id]?.trySend(true)
         }
 
         override fun onError(peerAgent: SAPeerAgent?, id: Int, errorCode: Int) {
-            messageChannelMap[id]?.offer(false)
+            messageChannelMap[id]?.trySend(false)
         }
     }
 
@@ -116,7 +115,7 @@ class TizenAccessoryAgent internal constructor(
         messageChannelMap[id] = channel
 
         // If channel has sent true, return success
-        return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receiveOrNull() } == true
+        return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receive() } == true
     }
 
     fun registerMessageListener(listener: MessageListener) {

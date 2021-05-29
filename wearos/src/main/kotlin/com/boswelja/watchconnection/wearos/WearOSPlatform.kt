@@ -15,7 +15,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
@@ -70,7 +69,7 @@ class WearOSPlatform constructor(
     override fun watchesWithApp(): Flow<Array<Watch>> = callbackFlow {
         // Create capability listener
         val listener = CapabilityClient.OnCapabilityChangedListener { info ->
-            sendBlocking(
+            trySend(
                 info.nodes.map { node ->
                     Watch(
                         node.displayName,
@@ -86,7 +85,7 @@ class WearOSPlatform constructor(
         // Update capabilities now
         val capabilityInfo = capabilityClient
             .getCapability(appCapability, CapabilityClient.FILTER_ALL).await()
-        sendBlocking(
+        send(
             capabilityInfo.nodes.map { node ->
                 Watch(
                     node.displayName,
@@ -178,15 +177,15 @@ class WearOSPlatform constructor(
                 // runBlocking should be safe here, since we're within a Flow
                 val connectedNodes = runBlocking { nodeClient.connectedNodes.await() }
                 // Got connected nodes, check if it contains our desired node
-                if (connectedNodes.any { it.id == watchId }) sendBlocking(Status.CONNECTED)
-                else sendBlocking(Status.DISCONNECTED)
+                if (connectedNodes.any { it.id == watchId }) trySend(Status.CONNECTED)
+                else trySend(Status.DISCONNECTED)
             } catch (e: CancellationException) {
                 // Failed, send error
-                sendBlocking(Status.ERROR)
+                trySend(Status.ERROR)
             }
         } else {
             // No watch in capable nodes, app is missing
-            sendBlocking(Status.MISSING_APP)
+            trySend(Status.MISSING_APP)
         }
     }
 
