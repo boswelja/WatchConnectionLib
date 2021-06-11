@@ -14,6 +14,12 @@ interface WatchPlatform {
     val platformIdentifier: String
 
     /**
+     * The [Flow] of [Message] received by this platform. This should not emit anything unless there
+     * are collectors attached.
+     */
+    val incomingMessages: Flow<Message>
+
+    /**
      * A flow of all available watches for this platform.
      */
     fun allWatches(): Flow<List<Watch>>
