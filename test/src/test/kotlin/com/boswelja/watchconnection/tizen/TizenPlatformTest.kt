@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
 import io.mockk.verify
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
@@ -124,31 +123,5 @@ class TizenPlatformTest {
         val data = ByteArray(0)
         connectionHandler.sendMessage(id, message, data)
         coVerify { accessoryAgent.sendMessage(id, message, data) }
-    }
-
-    @Test
-    fun `registerMessageListener calls agent`() {
-        val listener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-        connectionHandler.addMessageListener(listener)
-        verify { accessoryAgent.registerMessageListener(listener) }
-    }
-
-    @Test
-    fun `unregisterMessageListener calls agent`() {
-        val listener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-        connectionHandler.removeMessageListener(listener)
-        verify { accessoryAgent.unregisterMessageListener(listener) }
     }
 }

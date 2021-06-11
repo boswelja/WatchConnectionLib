@@ -65,7 +65,7 @@ class WearOSPlatform constructor(
     }
 
     private val incomingMessageFlow = MutableSharedFlow<Message>(
-        replay = 0,
+        replay = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 

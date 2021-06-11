@@ -5,7 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.mockk.coVerify
 import io.mockk.spyk
 import io.mockk.verify
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -37,7 +36,7 @@ class WatchPlatformManagerTest {
 
         dummyPlatformIds.forEach { platform ->
             // Generate dummy watches
-            var allWatches = emptyArray<Watch>()
+            val allWatches = mutableListOf<Watch>()
             (1..dummyWatchCountPerPlatform + 1).forEach { count ->
                 allWatches += Watch(
                     name = "Watch $count",
@@ -47,7 +46,7 @@ class WatchPlatformManagerTest {
             }
 
             // Generate dummy watches with app
-            var watchesWithApp = emptyArray<Watch>()
+            val watchesWithApp = mutableListOf<Watch>()
             (1..dummyWatchWithAppCountPerPlatform + 1).forEach { count ->
                 watchesWithApp += Watch(
                     name = "Watch $count",
@@ -100,36 +99,6 @@ class WatchPlatformManagerTest {
             platformManager.getCapabilitiesFor(watch)
             val platform = dummyPlatforms.first { it.platformIdentifier == watch.platform }
             coVerify { platform.getCapabilitiesFor(watch.platformId) }
-        }
-    }
-
-    @Test
-    fun `registerMessageListener adds the message listener to all platforms`() {
-        val messageListener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-        platformManager.addMessageListener(messageListener)
-        dummyPlatforms.forEach { platform ->
-            verify { platform.addMessageListener(messageListener) }
-        }
-    }
-
-    @Test
-    fun `unregisterMessageListener removes the message listener from all platforms`() {
-        val messageListener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-        platformManager.removeMessageListener(messageListener)
-        dummyPlatforms.forEach { platform ->
-            verify { platform.removeMessageListener(messageListener) }
         }
     }
 }

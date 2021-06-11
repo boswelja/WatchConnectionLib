@@ -43,27 +43,12 @@ class MessageReceiverTest {
         messageReceiver.onReceive(context, intent)
         verify(inverse = true, timeout = 50) { messageReceiver.goAsync() }
         coVerify(inverse = true, timeout = 50) {
-            messageReceiver.onMessageReceived(any(), any(), any(), any())
+            messageReceiver.onMessageReceived(any(), any())
         }
     }
 
     @Test
-    fun `onReceive passes variables to onMessageReceived if message has no data`() {
-        val id = UUID.randomUUID()
-        val message = "message"
-
-        Intent(ACTION_MESSAGE_RECEIVED).apply {
-            putExtra(EXTRA_WATCH_ID, id.toString())
-            putExtra(EXTRA_MESSAGE, message)
-        }.also { intent ->
-            messageReceiver.onReceive(context, intent)
-        }
-
-        coVerify(timeout = 50) { messageReceiver.onMessageReceived(context, id, message, null) }
-    }
-
-    @Test
-    fun `onReceive passes variables to onMessageReceived if message has data`() {
+    fun `onReceive passes variables to onMessageReceived`() {
         val id = UUID.randomUUID()
         val message = "message"
         val data = Random.nextBytes(10)
@@ -76,6 +61,7 @@ class MessageReceiverTest {
             messageReceiver.onReceive(context, intent)
         }
 
-        coVerify(timeout = 50) { messageReceiver.onMessageReceived(context, id, message, data) }
+        val expectedMessage = Message(id, message, data)
+        coVerify(timeout = 50) { messageReceiver.onMessageReceived(context, expectedMessage) }
     }
 }

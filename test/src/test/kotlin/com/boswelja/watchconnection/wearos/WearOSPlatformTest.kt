@@ -14,8 +14,6 @@ import com.google.android.gms.wearable.NodeClient
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
@@ -240,62 +238,5 @@ class WearOSPlatformTest {
         // Call sendMessage and check result
         val result = connectionHandler.sendMessage(id, message, data)
         expectThat(result).isFalse()
-    }
-
-    @Test
-    fun `registerMessageListener registers a listener with messageClient`() {
-        // Create dummy listener
-        val listener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-
-        // Register listener
-        connectionHandler.addMessageListener(listener)
-
-        // Check messageClient was called
-        verify { messageClient.addListener(any()) }
-    }
-
-    @Test
-    fun `unregisterMessageListener removes a listener with messageClient`() {
-        // Create dummy listener
-        val listener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-
-        // We need to add a listener first
-        connectionHandler.addMessageListener(listener)
-
-        // Register listener
-        connectionHandler.removeMessageListener(listener)
-
-        // Check messageClient was called
-        verify { messageClient.removeListener(any()) }
-    }
-
-    @Test
-    fun `unregisterMessageListener does nothing with previously unregistered listener`() {
-        // Create dummy listener
-        val listener = object : MessageListener {
-            override fun onMessageReceived(
-                sourceWatchId: UUID,
-                message: String,
-                data: ByteArray?
-            ) { }
-        }
-
-        // Register listener
-        connectionHandler.removeMessageListener(listener)
-
-        // Check messageClient was called
-        verify(inverse = true) { messageClient.removeListener(any()) }
     }
 }
