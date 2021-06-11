@@ -1,14 +1,21 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
+import com.boswelja.watchconnection.core.Message
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
+import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /**
  * A [WatchPlatform] with support for Tizen via Samsung's Accessory SDK.
@@ -17,6 +24,24 @@ import kotlinx.coroutines.flow.map
 class TizenPlatform(
     context: Context
 ) : WatchPlatform {
+
+    private val coroutineScope = MainScope()
+
+    private val incomingMessagesFlow = MutableSharedFlow<Message>(
+        replay = 0,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    private val messageReceiver = object : MessageReceiver() {
+        override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
+            val message = Message(
+                watchId,
+                message,
+                data
+            )
+            incomingMessagesFlow.tryEmit(message)
+        }
+    }
 
     private lateinit var accessoryAgent: TizenAccessoryAgent
     var isReady: Boolean = false
@@ -44,6 +69,20 @@ class TizenPlatform(
     }
 
     override val platformIdentifier = PLATFORM
+
+    override val incomingMessages: Flow<Message> = incomingMessagesFlow
+
+    init {
+        coroutineScope.launch {
+            incomingMessagesFlow.subscriptionCount.collect { subscriberCount ->
+                if (subscriberCount > 0) {
+                    accessoryAgent.registerMessageListener(messageReceiver)
+                } else {
+                    accessoryAgent.registerMessageListener(messageReceiver)
+                }
+            }
+        }
+    }
 
     @ExperimentalCoroutinesApi
     override fun allWatches(): Flow<List<Watch>> = accessoryAgent.allWatches()
