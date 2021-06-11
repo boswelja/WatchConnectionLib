@@ -51,7 +51,7 @@ class TizenAccessoryAgent internal constructor(
                         TizenPlatform.PLATFORM, peerAgent.accessory.accessoryId
                     )
                     messageListener?.onMessageReceived(watchId, message, messageData)
-                    handleMessage(peerAgent, message, messageData)
+                    sendBroadcast(applicationContext, watchId, message, data)
                 }
             }
         }
@@ -155,22 +155,6 @@ class TizenAccessoryAgent internal constructor(
                 }
             }
         }
-    }
-
-    /**
-     * Pass a received message on to message listeners and broadcast receivers.
-     * @param peer The [SAPeerAgent] that sent the message.
-     * @param message The message received.
-     * @param data The data received with the message, or null if there was none.
-     */
-    private fun handleMessage(peer: SAPeerAgent, message: String, data: ByteArray?) {
-        val id = Watch.createUUID(
-            TizenPlatform.PLATFORM,
-            peer.accessory.accessoryId
-        )
-
-        // Send message broadcast
-        sendBroadcast(applicationContext, id, message, data)
     }
 
     companion object {

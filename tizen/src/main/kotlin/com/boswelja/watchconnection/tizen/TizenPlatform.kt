@@ -33,12 +33,13 @@ class TizenPlatform(
 
     private val messageReceiver = object : MessageReceiver() {
         override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
-            val message = Message(
-                watchId,
-                message,
-                data
+            incomingMessagesFlow.tryEmit(
+                Message(
+                    watchId,
+                    message,
+                    data
+                )
             )
-            incomingMessagesFlow.tryEmit(message)
         }
     }
 
