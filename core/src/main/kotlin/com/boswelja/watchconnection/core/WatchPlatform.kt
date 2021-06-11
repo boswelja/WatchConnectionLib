@@ -55,6 +55,7 @@ interface WatchPlatform {
      * Adds a new [MessageListener].
      * @param listener The [MessageListener] to register.
      */
+    @Deprecated("Use incomingMessages Flow instead")
     fun addMessageListener(listener: MessageListener)
 
     /**
@@ -62,5 +63,6 @@ interface WatchPlatform {
      * registered.
      * @param listener The [MessageListener] to unregister.
      */
+    @Deprecated("Use incomingMessages Flow instead")
     fun removeMessageListener(listener: MessageListener)
 }

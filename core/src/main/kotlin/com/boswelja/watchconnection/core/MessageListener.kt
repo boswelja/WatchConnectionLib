@@ -6,6 +6,7 @@ import java.util.UUID
  * An interface for message listeners. Add listener with [WatchPlatformManager.addMessageListener],
  * and remove with [WatchPlatformManager.removeMessageListener] when no longer needed.
  */
+@Deprecated("Collect inbound messages with inboundMessages flow instead")
 interface MessageListener {
     /**
      * Called when a message is received by this callback.

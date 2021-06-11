@@ -81,6 +81,7 @@ class WatchPlatformManager(
     /**
      * Adds a [MessageListener] to all platforms.
      */
+    @Deprecated("Use incomingMessages flow instead")
     fun addMessageListener(messageListener: MessageListener) {
         connectionHandlers.values.forEach {
             it.addMessageListener(messageListener)
@@ -90,6 +91,7 @@ class WatchPlatformManager(
     /**
      * Removes a [MessageListener] from all platforms.
      */
+    @Deprecated("Use incomingMessages flow instead")
     fun removeMessageListener(messageListener: MessageListener) {
         connectionHandlers.values.forEach {
             it.removeMessageListener(messageListener)
