@@ -2,7 +2,6 @@ package com.boswelja.watchconnection.wearos
 
 import android.content.Context
 import com.boswelja.watchconnection.core.Message
-import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
@@ -55,9 +54,6 @@ class WearOSPlatform constructor(
     )
 
     private val coroutineScope = MainScope()
-
-    private val messageListeners =
-        mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
 
     private val wearableMessageReceiver = MessageClient.OnMessageReceivedListener { messageEvent ->
         val message = Message(
@@ -181,23 +177,6 @@ class WearOSPlatform constructor(
             true
         } catch (e: ApiException) {
             false
-        }
-    }
-
-    override fun addMessageListener(listener: MessageListener) {
-        val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
-            val id = Watch.createUUID(PLATFORM, it.sourceNodeId)
-            listener.onMessageReceived(id, it.path, it.data)
-        }
-        messageClient.addListener(onMessageReceiveListener)
-        // Store this in a map, so we can look it up to unregister later
-        messageListeners[listener] = onMessageReceiveListener
-    }
-
-    override fun removeMessageListener(listener: MessageListener) {
-        // Look up listener and remove it from both the map and messageClient
-        messageListeners.remove(listener)?.let {
-            messageClient.removeListener(it)
         }
     }
 

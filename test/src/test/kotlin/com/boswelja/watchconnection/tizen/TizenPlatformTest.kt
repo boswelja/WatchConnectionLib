@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.watchconnection.core.MessageListener
 import com.samsung.android.sdk.accessory.SAAgentV2
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify

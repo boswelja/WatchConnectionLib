@@ -2,7 +2,6 @@ package com.boswelja.watchconnection.wearos
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.wearos.CapabilityHelpers.createCapabilities
 import com.boswelja.watchconnection.wearos.NodeHelpers.createDummyNodes
