@@ -8,7 +8,7 @@ import java.util.UUID
  * @param message The message itself.
  * @param data Any data that may have been included with the message, or null if there is none.
  */
-data class Message internal constructor(
+data class Message(
     val sourceWatchId: UUID,
     val message: String,
     val data: ByteArray?
