@@ -18,15 +18,11 @@ abstract class MessageReceiver : BroadcastReceiver() {
     /**
      * Called when a message has been received. While this is a suspendable function, the limits
      * of [BroadcastReceiver.goAsync] still apply.
-     * @param sourceWatchId The [Watch.id] of the watch that sent the message.
-     * @param message The message that was received.
-     * @param data The data included with the message, or null if there was no data.
+     * @param message The [Message] that was received.
      */
     abstract suspend fun onMessageReceived(
         context: Context,
-        sourceWatchId: UUID,
-        message: String,
-        data: ByteArray?
+        message: Message
     )
 
     final override fun onReceive(context: Context?, intent: Intent?) {
@@ -43,7 +39,10 @@ abstract class MessageReceiver : BroadcastReceiver() {
                 val data = intent.getByteArrayExtra(EXTRA_DATA)
 
                 // Pass it on to user code
-                onMessageReceived(context, watchId, message, data)
+                onMessageReceived(
+                    context,
+                    Message(watchId, message, data)
+                )
 
                 // Let the BroadcastReceiver know we're done
                 pendingResult.finish()

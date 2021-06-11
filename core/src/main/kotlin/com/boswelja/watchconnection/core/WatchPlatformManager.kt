@@ -3,6 +3,7 @@ package com.boswelja.watchconnection.core
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.merge
 
 /**
  * A class to simplify handling multiple [WatchPlatform].
@@ -50,6 +51,13 @@ class WatchPlatformManager(
         }
 
     /**
+     * A [Flow] of [Message]s received by all [WatchPlatform]s.
+     */
+    @ExperimentalCoroutinesApi
+    fun incomingMessages(): Flow<Message> =
+        connectionHandlers.values.map { it.incomingMessages() }.merge()
+
+    /**
      * Send a message to a [Watch].
      * @param to The [Watch] to send the message to.
      * @param message The message to send.
@@ -76,23 +84,5 @@ class WatchPlatformManager(
      */
     fun getStatusFor(watch: Watch): Flow<Status>? {
         return connectionHandlers[watch.platform]?.getStatusFor(watch.platformId)
-    }
-
-    /**
-     * Adds a [MessageListener] to all platforms.
-     */
-    fun addMessageListener(messageListener: MessageListener) {
-        connectionHandlers.values.forEach {
-            it.addMessageListener(messageListener)
-        }
-    }
-
-    /**
-     * Removes a [MessageListener] from all platforms.
-     */
-    fun removeMessageListener(messageListener: MessageListener) {
-        connectionHandlers.values.forEach {
-            it.removeMessageListener(messageListener)
-        }
     }
 }

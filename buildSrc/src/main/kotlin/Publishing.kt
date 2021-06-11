@@ -12,9 +12,9 @@ object Publishing {
     val version: String?
         get() = System.getenv("VERSION")
 
-    private val ossrhUsername: String?
+    val ossrhUsername: String?
         get() = System.getenv("OSSRH_USERNAME")
-    private val ossrhPassword: String?
+    val ossrhPassword: String?
         get() = System.getenv("OSSRH_PASSWORD")
 
     const val groupId = "io.github.boswelja.watchconnection"

@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Messages.sendBroadcast
 import com.boswelja.watchconnection.core.Watch
 import com.samsung.android.sdk.SsdkUnsupportedException
@@ -31,7 +30,7 @@ class TizenAccessoryAgent internal constructor(
     private val allWatches = MutableStateFlow<List<Watch>>(emptyList())
 
     private val peerMap = HashMap<String, SAPeerAgent>()
-    private val messageListeners = ArrayList<MessageListener>()
+    private val messageListeners = mutableListOf<MessageReceiver>()
 
     // Keep a map of channels to message IDs to
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
@@ -48,7 +47,13 @@ class TizenAccessoryAgent internal constructor(
                     // Capability message, assume we have data
                     handleCapabilityMessage(peerAgent, messageData!!)
                 } else {
-                    handleMessage(peerAgent, message, messageData)
+                    val watchId = Watch.createUUID(
+                        TizenPlatform.PLATFORM, peerAgent.accessory.accessoryId
+                    )
+                    messageListeners.forEach {
+                        it.onMessageReceived(watchId, message, data)
+                    }
+                    sendBroadcast(applicationContext, watchId, message, data)
                 }
             }
         }
@@ -117,11 +122,11 @@ class TizenAccessoryAgent internal constructor(
         return withTimeoutOrNull(OPERATION_TIMEOUT) { channel.receive() } == true
     }
 
-    fun registerMessageListener(listener: MessageListener) {
+    fun registerMessageListener(listener: MessageReceiver) {
         messageListeners.add(listener)
     }
 
-    fun unregisterMessageListener(listener: MessageListener) {
+    fun unregisterMessageListener(listener: MessageReceiver) {
         messageListeners.remove(listener)
     }
 
@@ -152,29 +157,6 @@ class TizenAccessoryAgent internal constructor(
                 }
             }
         }
-    }
-
-    /**
-     * Pass a received message on to message listeners and broadcast receivers.
-     * @param peer The [SAPeerAgent] that sent the message.
-     * @param message The message received.
-     * @param data The data received with the message, or null if there was none.
-     */
-    private fun handleMessage(peer: SAPeerAgent, message: String, data: ByteArray?) {
-        val id = Watch.createUUID(
-            TizenPlatform.PLATFORM,
-            peer.accessory.accessoryId
-        )
-        messageListeners.forEach { listener ->
-            listener.onMessageReceived(
-                id,
-                message,
-                data
-            )
-        }
-
-        // Send message broadcast
-        sendBroadcast(applicationContext, id, message, data)
     }
 
     companion object {

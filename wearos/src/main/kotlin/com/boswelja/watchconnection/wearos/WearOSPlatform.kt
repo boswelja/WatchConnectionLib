@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.wearos
 
 import android.content.Context
-import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Message
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
@@ -15,6 +15,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
@@ -36,6 +37,7 @@ class WearOSPlatform constructor(
      * @param capabilities A list of capability strings to use when searching for watch capabilities
      * companion app installed.
      */
+    @Suppress("unused")
     constructor(
         context: Context,
         appCapability: String,
@@ -48,10 +50,25 @@ class WearOSPlatform constructor(
         Wearable.getCapabilityClient(context)
     )
 
-    private val messageListeners =
-        mutableMapOf<MessageListener, MessageClient.OnMessageReceivedListener>()
-
     override val platformIdentifier = PLATFORM
+
+    @ExperimentalCoroutinesApi
+    override fun incomingMessages(): Flow<Message> = callbackFlow {
+        val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
+            val message = Message(
+                Watch.createUUID(PLATFORM, messageEvent.sourceNodeId),
+                messageEvent.path,
+                messageEvent.data
+            )
+            trySendBlocking(message)
+        }
+
+        messageClient.addListener(listener)
+
+        awaitClose {
+            messageClient.removeListener(listener)
+        }
+    }
 
     override fun allWatches(): Flow<List<Watch>> = flow {
         emit(
@@ -146,23 +163,6 @@ class WearOSPlatform constructor(
             true
         } catch (e: ApiException) {
             false
-        }
-    }
-
-    override fun addMessageListener(listener: MessageListener) {
-        val onMessageReceiveListener = MessageClient.OnMessageReceivedListener {
-            val id = Watch.createUUID(PLATFORM, it.sourceNodeId)
-            listener.onMessageReceived(id, it.path, it.data)
-        }
-        messageClient.addListener(onMessageReceiveListener)
-        // Store this in a map, so we can look it up to unregister later
-        messageListeners[listener] = onMessageReceiveListener
-    }
-
-    override fun removeMessageListener(listener: MessageListener) {
-        // Look up listener and remove it from both the map and messageClient
-        messageListeners.remove(listener)?.let {
-            messageClient.removeListener(it)
         }
     }
 

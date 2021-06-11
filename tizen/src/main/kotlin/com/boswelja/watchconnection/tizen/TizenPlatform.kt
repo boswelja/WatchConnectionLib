@@ -1,13 +1,16 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Message
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
+import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -46,6 +49,26 @@ class TizenPlatform(
     override val platformIdentifier = PLATFORM
 
     @ExperimentalCoroutinesApi
+    override fun incomingMessages(): Flow<Message> = callbackFlow {
+        val receiver = object : MessageReceiver() {
+            override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
+                val messageData = Message(
+                    watchId, message, data
+                )
+                trySend(
+                    messageData
+                )
+            }
+        }
+
+        accessoryAgent.registerMessageListener(receiver)
+
+        awaitClose {
+            accessoryAgent.unregisterMessageListener(receiver)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
     override fun allWatches(): Flow<List<Watch>> = accessoryAgent.allWatches()
 
     @ExperimentalCoroutinesApi
@@ -65,12 +88,6 @@ class TizenPlatform(
     @ExperimentalCoroutinesApi
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean =
         accessoryAgent.sendMessage(watchId, message, data)
-
-    override fun addMessageListener(listener: MessageListener) =
-        accessoryAgent.registerMessageListener(listener)
-
-    override fun removeMessageListener(listener: MessageListener) =
-        accessoryAgent.unregisterMessageListener(listener)
 
     companion object {
         const val CAPABILITY_MESSAGE = "/request_capabilities"

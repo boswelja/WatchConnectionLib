@@ -14,6 +14,12 @@ interface WatchPlatform {
     val platformIdentifier: String
 
     /**
+     * A [Flow] of [Message]s received by this platform. This should not emit anything unless there
+     * are collectors attached.
+     */
+    fun incomingMessages(): Flow<Message>
+
+    /**
      * A flow of all available watches for this platform.
      */
     fun allWatches(): Flow<List<Watch>>
@@ -50,17 +56,4 @@ interface WatchPlatform {
         message: String,
         data: ByteArray? = null
     ): Boolean
-
-    /**
-     * Adds a new [MessageListener].
-     * @param listener The [MessageListener] to register.
-     */
-    fun addMessageListener(listener: MessageListener)
-
-    /**
-     * Removes a [MessageListener]. This will do nothing if the provided listener is not
-     * registered.
-     * @param listener The [MessageListener] to unregister.
-     */
-    fun removeMessageListener(listener: MessageListener)
 }

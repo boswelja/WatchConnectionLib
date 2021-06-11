@@ -6,28 +6,22 @@ import kotlinx.coroutines.flow.flowOf
 
 class DummyPlatform(
     override val platformIdentifier: String,
-    val allWatches: Array<Watch>,
-    val watchesWithApp: Array<Watch>
+    val allWatches: List<Watch>,
+    val watchesWithApp: List<Watch>
 ) : WatchPlatform {
 
-    override fun allWatches(): Flow<Array<Watch>> = flowOf(allWatches)
+    override fun incomingMessages(): Flow<Message> = flow { }
 
-    override fun watchesWithApp(): Flow<Array<Watch>> = flowOf(watchesWithApp)
+    override fun allWatches(): Flow<List<Watch>> = flowOf(allWatches)
 
-    override fun getCapabilitiesFor(watchId: String): Flow<Array<String>> = flow { }
+    override fun watchesWithApp(): Flow<List<Watch>> = flowOf(watchesWithApp)
+
+    override fun getCapabilitiesFor(watchId: String): Flow<List<String>> = flow { }
 
     override fun getStatusFor(watchId: String): Flow<Status> = flow { }
 
     override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         // Do nothing
         return false
-    }
-
-    override fun addMessageListener(listener: MessageListener) {
-        // Do nothing
-    }
-
-    override fun removeMessageListener(listener: MessageListener) {
-        // Do nothing
     }
 }
