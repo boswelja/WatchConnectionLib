@@ -8,13 +8,10 @@ import com.boswelja.watchconnection.core.WatchPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 /**
  * A [WatchPlatform] with support for Tizen via Samsung's Accessory SDK.
@@ -23,25 +20,6 @@ import kotlinx.coroutines.launch
 class TizenPlatform(
     context: Context
 ) : WatchPlatform {
-
-    private val coroutineScope = MainScope()
-
-    private val incomingMessagesFlow = MutableSharedFlow<Message>(
-        replay = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-
-    private val messageReceiver = object : MessageReceiver() {
-        override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
-            incomingMessagesFlow.tryEmit(
-                Message(
-                    watchId,
-                    message,
-                    data
-                )
-            )
-        }
-    }
 
     private lateinit var accessoryAgent: TizenAccessoryAgent
     var isReady: Boolean = false
@@ -70,17 +48,23 @@ class TizenPlatform(
 
     override val platformIdentifier = PLATFORM
 
-    override val incomingMessages: Flow<Message> = incomingMessagesFlow
-
-    init {
-        coroutineScope.launch {
-            incomingMessagesFlow.subscriptionCount.collect { subscriberCount ->
-                if (subscriberCount > 0) {
-                    accessoryAgent.registerMessageListener(messageReceiver)
-                } else {
-                    accessoryAgent.registerMessageListener(messageReceiver)
-                }
+    @ExperimentalCoroutinesApi
+    override fun incomingMessages(): Flow<Message> = callbackFlow {
+        val receiver = object : MessageReceiver() {
+            override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
+                val messageData = Message(
+                    watchId, message, data
+                )
+                trySend(
+                    messageData
+                )
             }
+        }
+
+        accessoryAgent.registerMessageListener(receiver)
+
+        awaitClose {
+            accessoryAgent.unregisterMessageListener(receiver)
         }
     }
 

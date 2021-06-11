@@ -30,7 +30,7 @@ class TizenAccessoryAgent internal constructor(
     private val allWatches = MutableStateFlow<List<Watch>>(emptyList())
 
     private val peerMap = HashMap<String, SAPeerAgent>()
-    private var messageListener: MessageReceiver? = null
+    private val messageListeners = mutableListOf<MessageReceiver>()
 
     // Keep a map of channels to message IDs to
     private val messageChannelMap = HashMap<Int, Channel<Boolean>>()
@@ -50,7 +50,9 @@ class TizenAccessoryAgent internal constructor(
                     val watchId = Watch.createUUID(
                         TizenPlatform.PLATFORM, peerAgent.accessory.accessoryId
                     )
-                    messageListener?.onMessageReceived(watchId, message, messageData)
+                    messageListeners.forEach {
+                        it.onMessageReceived(watchId, message, data)
+                    }
                     sendBroadcast(applicationContext, watchId, message, data)
                 }
             }
@@ -121,11 +123,11 @@ class TizenAccessoryAgent internal constructor(
     }
 
     fun registerMessageListener(listener: MessageReceiver) {
-        messageListener = listener
+        messageListeners.add(listener)
     }
 
     fun unregisterMessageListener(listener: MessageReceiver) {
-        messageListener = listener
+        messageListeners.remove(listener)
     }
 
     override fun onFindPeerAgentsResponse(peers: Array<out SAPeerAgent>?, result: Int) {

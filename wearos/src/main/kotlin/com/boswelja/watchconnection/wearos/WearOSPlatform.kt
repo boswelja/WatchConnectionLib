@@ -13,16 +13,12 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
@@ -41,6 +37,7 @@ class WearOSPlatform constructor(
      * @param capabilities A list of capability strings to use when searching for watch capabilities
      * companion app installed.
      */
+    @Suppress("unused")
     constructor(
         context: Context,
         appCapability: String,
@@ -53,37 +50,26 @@ class WearOSPlatform constructor(
         Wearable.getCapabilityClient(context)
     )
 
-    private val coroutineScope = MainScope()
-
-    private val wearableMessageReceiver = MessageClient.OnMessageReceivedListener { messageEvent ->
-        val message = Message(
-            Watch.createUUID(PLATFORM, messageEvent.sourceNodeId),
-            messageEvent.path,
-            messageEvent.data
-        )
-        incomingMessageFlow.tryEmit(message)
-    }
-
-    private val incomingMessageFlow = MutableSharedFlow<Message>(
-        replay = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-
     override val platformIdentifier = PLATFORM
 
-    override val incomingMessages: Flow<Message> = incomingMessageFlow
+    @ExperimentalCoroutinesApi
+    override fun incomingMessages(): Flow<Message> = callbackFlow {
+        val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
+            val message = Message(
+                Watch.createUUID(PLATFORM, messageEvent.sourceNodeId),
+                messageEvent.path,
+                messageEvent.data
+            )
+            trySendBlocking(message)
+        }
 
-    init {
-        coroutineScope.launch {
-            incomingMessageFlow.subscriptionCount.collect { subscriberCount ->
-                if (subscriberCount > 0) {
-                    messageClient.addListener(wearableMessageReceiver)
-                } else {
-                    messageClient.removeListener(wearableMessageReceiver)
-                }
-            }
+        messageClient.addListener(listener)
+
+        awaitClose {
+            messageClient.removeListener(listener)
         }
     }
+
     override fun allWatches(): Flow<List<Watch>> = flow {
         emit(
             nodeClient.connectedNodes.await().map { node ->

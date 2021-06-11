@@ -10,7 +10,7 @@ class DummyPlatform(
     val watchesWithApp: List<Watch>
 ) : WatchPlatform {
 
-    override val incomingMessages: Flow<Message> = flow { }
+    override fun incomingMessages(): Flow<Message> = flow { }
 
     override fun allWatches(): Flow<List<Watch>> = flowOf(allWatches)
 
