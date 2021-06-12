@@ -86,8 +86,12 @@ class TizenPlatform(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
-    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean =
-        accessoryAgent.sendMessage(watchId, message, data)
+    override suspend fun sendMessage(
+        watchId: String,
+        message: String,
+        data: ByteArray?,
+        priority: Message.Priority
+    ): Boolean = accessoryAgent.sendMessage(watchId, message, data)
 
     companion object {
         const val CAPABILITY_MESSAGE = "/request_capabilities"

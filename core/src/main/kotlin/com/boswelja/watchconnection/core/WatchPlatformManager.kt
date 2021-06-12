@@ -64,8 +64,12 @@ class WatchPlatformManager(
      * @param data The data to send with the message, if any.
      * @return true if sending the message was successful, false otherwise.
      */
-    suspend fun sendMessage(to: Watch, message: String, data: ByteArray? = null) =
-        connectionHandlers[to.platform]?.sendMessage(to.platformId, message, data) == true
+    suspend fun sendMessage(
+        to: Watch,
+        message: String,
+        data: ByteArray? = null,
+        priority: Message.Priority = Message.Priority.LOW
+    ) = connectionHandlers[to.platform]?.sendMessage(to.platformId, message, data, priority) == true
 
     /**
      * Get a flow of capabilities found for a given [Watch].

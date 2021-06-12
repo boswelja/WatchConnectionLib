@@ -232,7 +232,7 @@ class WearOSPlatformTest {
 
         // Mock messageClient to error on sendMessage
         every {
-            messageClient.sendMessage(any(), any(), any())
+            messageClient.sendMessage(any(), any(), any(), any())
         } throws ApiException(RESULT_CANCELED)
 
         // Call sendMessage and check result

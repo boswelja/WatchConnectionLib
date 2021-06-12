@@ -20,7 +20,12 @@ class DummyPlatform(
 
     override fun getStatusFor(watchId: String): Flow<Status> = flow { }
 
-    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
+    override suspend fun sendMessage(
+        watchId: String,
+        message: String,
+        data: ByteArray?,
+        priority: Message.Priority
+    ): Boolean {
         // Do nothing
         return false
     }
