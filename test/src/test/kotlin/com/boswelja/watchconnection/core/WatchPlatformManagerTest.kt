@@ -6,7 +6,10 @@ import io.mockk.coVerify
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,14 +70,14 @@ class WatchPlatformManagerTest {
     }
 
     @Test
-    fun `allWatches gets all watches from platforms`() {
-        platformManager.allWatches()
+    fun `allWatches gets all watches from platforms`(): Unit = runBlocking {
+        withTimeout(TIMEOUT) { platformManager.allWatches().take(1).collect() }
         dummyPlatforms.forEach { verify { it.allWatches() } }
     }
 
     @Test
-    fun `watchesWithApp gets all watches with app from platforms`() {
-        platformManager.watchesWithApp()
+    fun `watchesWithApp gets all watches with app from platforms`(): Unit = runBlocking {
+        withTimeout(TIMEOUT) { platformManager.watchesWithApp().take(1).collect() }
         dummyPlatforms.forEach { verify { it.watchesWithApp() } }
     }
 
@@ -82,10 +85,12 @@ class WatchPlatformManagerTest {
     fun `sendMessage passes request to the correct platform`(): Unit = runBlocking {
         val message = "message"
         dummyWatches.forEach { watch ->
-            platformManager.sendMessage(
-                watch,
-                message = message
-            )
+            withTimeout(TIMEOUT) {
+                platformManager.sendMessage(
+                    watch,
+                    message = message
+                )
+            }
             val platform = dummyPlatforms.first { it.platformIdentifier == watch.platform }
             coVerify {
                 platform.sendMessage(watch.platformId, message, null)
@@ -96,9 +101,13 @@ class WatchPlatformManagerTest {
     @Test
     fun `getCapabilitiesFor passes request to the correct platform`(): Unit = runBlocking {
         dummyWatches.forEach { watch ->
-            platformManager.getCapabilitiesFor(watch)
+            withTimeout(TIMEOUT) { platformManager.getCapabilitiesFor(watch)?.take(1)?.collect() }
             val platform = dummyPlatforms.first { it.platformIdentifier == watch.platform }
             coVerify { platform.getCapabilitiesFor(watch.platformId) }
         }
+    }
+
+    companion object {
+        private const val TIMEOUT = 250L
     }
 }

@@ -13,7 +13,9 @@ import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -99,20 +101,20 @@ class TizenPlatformTest {
 
     @Test
     fun `allWatches calls agent`(): Unit = runBlocking {
-        connectionHandler.allWatches().collect()
+        withTimeout(TIMEOUT) { connectionHandler.allWatches().take(1).collect() }
         verify { accessoryAgent.allWatches() }
     }
 
     @Test
     fun `watchesWithApp calls agent`(): Unit = runBlocking {
-        connectionHandler.watchesWithApp().collect()
+        withTimeout(TIMEOUT) { connectionHandler.watchesWithApp().take(1).collect() }
         verify { accessoryAgent.allWatches() }
     }
 
     @Test
     fun `getCapabilitiesFor calls agent`(): Unit = runBlocking {
         val id = "id"
-        connectionHandler.getCapabilitiesFor(id).collect()
+        withTimeout(TIMEOUT) { connectionHandler.getCapabilitiesFor(id).take(1).collect() }
         verify { accessoryAgent.getCapabilitiesFor(id) }
     }
 
@@ -121,7 +123,11 @@ class TizenPlatformTest {
         val id = "id"
         val message = "message"
         val data = ByteArray(0)
-        connectionHandler.sendMessage(id, message, data)
+        withTimeout(TIMEOUT) { connectionHandler.sendMessage(id, message, data) }
         coVerify { accessoryAgent.sendMessage(id, message, data) }
+    }
+
+    companion object {
+        private const val TIMEOUT = 250L
     }
 }

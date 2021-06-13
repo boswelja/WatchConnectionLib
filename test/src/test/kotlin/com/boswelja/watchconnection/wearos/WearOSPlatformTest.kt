@@ -65,7 +65,7 @@ class WearOSPlatformTest {
         every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes)
 
         // Collect the result and make sure they match up with dummy nodes
-        val watches = withTimeout(2000) {
+        val watches = withTimeout(TIMEOUT) {
             connectionHandler.allWatches().first()
         }
         watches.forEach { watch ->
@@ -92,7 +92,7 @@ class WearOSPlatformTest {
         }
 
         // Collect the result and make sure they match up with dummy nodes
-        val watches = withTimeout(2000) {
+        val watches = withTimeout(TIMEOUT) {
             connectionHandler.watchesWithApp().first()
         }
         watches.forEach { watch ->
@@ -105,8 +105,10 @@ class WearOSPlatformTest {
     @Test
     fun `getStatusFor starts with CONNECTING`(): Unit = runBlocking {
         val dummyNode = createDummyNodes(1).first()
-        expectThat(connectionHandler.getStatusFor(dummyNode.id).first())
-            .isEqualTo(Status.CONNECTING)
+        val status = withTimeout(TIMEOUT) {
+            connectionHandler.getStatusFor(dummyNode.id).first()
+        }
+        expectThat(status).isEqualTo(Status.CONNECTING)
     }
 
     @ExperimentalCoroutinesApi
@@ -123,7 +125,7 @@ class WearOSPlatformTest {
         }
 
         // Get the first value that isn't CONNECTING
-        val status = withTimeout(2000) {
+        val status = withTimeout(TIMEOUT) {
             connectionHandler.getStatusFor(dummyNode.id)
                 .filterNot { it == Status.CONNECTING }
                 .first()
@@ -148,7 +150,7 @@ class WearOSPlatformTest {
         every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes)
 
         // Get the first value that isn't CONNECTING
-        val status = withTimeout(2000) {
+        val status = withTimeout(TIMEOUT) {
             connectionHandler.getStatusFor(dummyNodes.first().id)
                 .filterNot { it == Status.CONNECTING }
                 .first()
@@ -174,7 +176,7 @@ class WearOSPlatformTest {
             every { nodeClient.connectedNodes } returns Tasks.forResult(emptyList())
 
             // Get the first value that isn't CONNECTING
-            val status = withTimeout(2000) {
+            val status = withTimeout(TIMEOUT) {
                 connectionHandler.getStatusFor(dummyNodes.first().id)
                     .filterNot { it == Status.CONNECTING }
                     .first()
@@ -198,7 +200,7 @@ class WearOSPlatformTest {
         }
 
         // Collect the result and make sure they match up with capabilities
-        val foundCapabilities = withTimeout(2000) {
+        val foundCapabilities = withTimeout(TIMEOUT) {
             connectionHandler.getCapabilitiesFor(dummyNode.first().id).first()
         }
         foundCapabilities.forEach { capability ->
@@ -215,11 +217,11 @@ class WearOSPlatformTest {
 
         // Mock messageClient to error on sendMessage
         every {
-            messageClient.sendMessage(any(), any(), any())
+            messageClient.sendMessage(any(), any(), any(), any())
         } returns Tasks.forResult(1)
 
         // Call sendMessage and check result
-        val result = connectionHandler.sendMessage(id, message, data)
+        val result = withTimeout(TIMEOUT) { connectionHandler.sendMessage(id, message, data) }
         expectThat(result).isTrue()
     }
 
@@ -232,11 +234,15 @@ class WearOSPlatformTest {
 
         // Mock messageClient to error on sendMessage
         every {
-            messageClient.sendMessage(any(), any(), any())
+            messageClient.sendMessage(any(), any(), any(), any())
         } throws ApiException(RESULT_CANCELED)
 
         // Call sendMessage and check result
-        val result = connectionHandler.sendMessage(id, message, data)
+        val result = withTimeout(TIMEOUT) { connectionHandler.sendMessage(id, message, data) }
         expectThat(result).isFalse()
+    }
+
+    companion object {
+        private const val TIMEOUT = 250L
     }
 }

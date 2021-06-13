@@ -54,6 +54,7 @@ interface WatchPlatform {
     suspend fun sendMessage(
         watchId: String,
         message: String,
-        data: ByteArray? = null
+        data: ByteArray? = null,
+        priority: Message.Priority = Message.Priority.LOW
     ): Boolean
 }

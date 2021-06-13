@@ -9,6 +9,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageOptions
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CancellationException
@@ -155,10 +156,20 @@ class WearOSPlatform constructor(
         }
     }
 
-    override suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
+    override suspend fun sendMessage(
+        watchId: String,
+        message: String,
+        data: ByteArray?,
+        priority: Message.Priority
+    ): Boolean {
         // Either sendMessage is successful, or ApiException is thrown
         return try {
-            messageClient.sendMessage(watchId, message, data).await()
+            val priorityInt = when (priority) {
+                Message.Priority.LOW -> MessageOptions.MESSAGE_PRIORITY_LOW
+                Message.Priority.HIGH -> MessageOptions.MESSAGE_PRIORITY_HIGH
+            }
+            val options = MessageOptions(priorityInt)
+            messageClient.sendMessage(watchId, message, data, options).await()
             // If we get here, message send was successful
             true
         } catch (e: ApiException) {
