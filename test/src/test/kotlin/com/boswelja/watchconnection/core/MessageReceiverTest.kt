@@ -41,8 +41,8 @@ class MessageReceiverTest {
     fun `onReceive does nothing for incorrect actions`() {
         val intent = Intent("action")
         messageReceiver.onReceive(context, intent)
-        verify(inverse = true, timeout = 50) { messageReceiver.goAsync() }
-        coVerify(inverse = true, timeout = 50) {
+        verify(inverse = true, timeout = TIMEOUT) { messageReceiver.goAsync() }
+        coVerify(inverse = true, timeout = TIMEOUT) {
             messageReceiver.onMessageReceived(any(), any())
         }
     }
@@ -62,6 +62,10 @@ class MessageReceiverTest {
         }
 
         val expectedMessage = Message(id, message, data)
-        coVerify(timeout = 50) { messageReceiver.onMessageReceived(context, expectedMessage) }
+        coVerify(timeout = TIMEOUT) { messageReceiver.onMessageReceived(context, expectedMessage) }
+    }
+
+    companion object {
+        private const val TIMEOUT = 100L
     }
 }
