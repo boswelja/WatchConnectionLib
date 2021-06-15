@@ -3,6 +3,8 @@ package com.boswelja.watchconnection.tizen
 import android.content.Context
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.message.Messages.sendBroadcast
+import com.boswelja.watchconnection.tizen.Constants.CAPABILITY_MESSAGE
+import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
 import com.samsung.android.sdk.accessory.SAAgentV2
@@ -43,13 +45,11 @@ class TizenAccessoryAgent internal constructor(
             if (peerAgent == null) return
             data?.let {
                 val (message, messageData) = Messages.fromByteArray(data)
-                if (message == TizenPlatform.CAPABILITY_MESSAGE) {
+                if (message == CAPABILITY_MESSAGE) {
                     // Capability message, assume we have data
                     handleCapabilityMessage(peerAgent, messageData!!)
                 } else {
-                    val watchId = Watch.createUUID(
-                        TizenPlatform.PLATFORM, peerAgent.accessory.accessoryId
-                    )
+                    val watchId = Watch.createUUID(TIZEN_PLATFORM, peerAgent.accessory.accessoryId)
                     messageListeners.forEach {
                         it.onMessageReceived(watchId, message, data)
                     }
@@ -101,7 +101,7 @@ class TizenAccessoryAgent internal constructor(
 
         // Request capability stream
         coroutineScope.launch(Dispatchers.IO + capabilityJob) {
-            sendMessage(watchId, TizenPlatform.CAPABILITY_MESSAGE, null)
+            sendMessage(watchId, CAPABILITY_MESSAGE, null)
         }
 
         return flow
@@ -137,7 +137,7 @@ class TizenAccessoryAgent internal constructor(
                     Watch(
                         peerAgent.accessory.name,
                         peerAgent.accessory.accessoryId,
-                        TizenPlatform.PLATFORM
+                        TIZEN_PLATFORM
                     )
                 } ?: emptyList()
             )
@@ -145,7 +145,7 @@ class TizenAccessoryAgent internal constructor(
     }
 
     /**
-     * Handle a [TizenPlatform.CAPABILITY_MESSAGE].
+     * Handle a [Constants.CAPABILITY_MESSAGE].
      * @param peer The [SAPeerAgent] that sent the capability data.
      * @param data The received capability data.
      */
