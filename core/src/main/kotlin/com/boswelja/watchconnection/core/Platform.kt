@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.core
 
 /**
- * Provides a common interface between clients
+ * Provides a common interface between platforms
  */
 interface Platform {
 

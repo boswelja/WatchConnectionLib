@@ -5,7 +5,7 @@ import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Discovery provides an interface to discover watches and their capabilities for a platform.
+ * [Platform] support for discovering watches, watch capabilities, and watch status.
  */
 interface DiscoveryPlatform : Platform {
 

@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 /**
- * DiscoveryClient takes all your [DiscoveryPlatform]s, and provides simplified functions to get
- * data from the appropriate one.
+ * DiscoveryClient takes a number of [DiscoveryPlatform]s, and provides a common interface between
+ * them.
+ * @param platforms The [DiscoveryPlatform]s this MessageClient should support.
  */
 class DiscoveryClient(
     vararg platforms: DiscoveryPlatform

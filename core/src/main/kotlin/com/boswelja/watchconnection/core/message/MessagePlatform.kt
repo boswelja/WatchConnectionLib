@@ -5,13 +5,12 @@ import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.flow.Flow
 
 /**
- * MessageClient provides an interface to access messages for a given platform.
+ * [Platform] support for sending and receiving messages.
  */
 interface MessagePlatform : Platform {
 
     /**
-     * A [Flow] of [Message]s received by this platform. This should not emit anything unless there
-     * are collectors attached.
+     * A [Flow] of [Message]s received by this platform.
      */
     fun incomingMessages(): Flow<Message>
 
