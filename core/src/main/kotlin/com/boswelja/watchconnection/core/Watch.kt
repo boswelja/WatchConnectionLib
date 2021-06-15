@@ -42,7 +42,7 @@ open class Watch(
 
         /**
          * Gets a reproducible [UUID] from the provided info.
-         * @param platform See [WatchPlatform.platformIdentifier].
+         * @param platform See [Platform.platformIdentifier].
          * @param platformId See [Watch.platformId].
          */
         fun createUUID(platform: String, platformId: String): UUID =

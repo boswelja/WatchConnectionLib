@@ -1,0 +1,17 @@
+package com.boswelja.watchconnection
+
+import com.boswelja.watchconnection.core.Watch
+
+fun createWatchesFor(count: Int, platformIdentifier: String): List<Watch> {
+    return (0..count).map {
+        Watch(
+            name = "Watch $it",
+            "platform$count",
+            platformIdentifier
+        )
+    }
+}
+
+fun createCapabilities(count: Int): List<String> {
+    return (0..count).map { "capability$it" }
+}
