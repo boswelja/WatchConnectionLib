@@ -1,10 +1,10 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Message
-import com.boswelja.watchconnection.core.Status
+import com.boswelja.watchconnection.core.Platform
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchPlatform
+import com.boswelja.watchconnection.core.discovery.Status
+import com.boswelja.watchconnection.core.message.Message
 import com.samsung.android.sdk.accessory.SAAgentV2
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 
 /**
- * A [WatchPlatform] with support for Tizen via Samsung's Accessory SDK.
+ * A [Platform] with support for Tizen via Samsung's Accessory SDK.
  * @param context See [Context].
  */
 class TizenPlatform(
     context: Context
-) : WatchPlatform {
+) : Platform {
 
     private lateinit var accessoryAgent: TizenAccessoryAgent
     var isReady: Boolean = false

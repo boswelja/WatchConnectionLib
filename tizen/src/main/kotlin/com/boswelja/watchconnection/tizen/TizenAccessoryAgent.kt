@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Messages.sendBroadcast
 import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.core.message.Messages.sendBroadcast
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
 import com.samsung.android.sdk.accessory.SAAgentV2

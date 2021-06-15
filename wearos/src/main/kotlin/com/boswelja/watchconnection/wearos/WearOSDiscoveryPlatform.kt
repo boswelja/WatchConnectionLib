@@ -1,44 +1,31 @@
 package com.boswelja.watchconnection.wearos
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Message
-import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchPlatform
-import com.google.android.gms.common.api.ApiException
+import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
+import com.boswelja.watchconnection.core.discovery.Status
+import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.MessageOptions
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
-class WearOSPlatform constructor(
+class WearOSDiscoveryPlatform(
     private val appCapability: String,
     private val capabilities: List<String>,
     private val nodeClient: NodeClient,
-    private val messageClient: MessageClient,
     private val capabilityClient: CapabilityClient
-) : WatchPlatform {
+) : DiscoveryPlatform {
 
-    /**
-     * A [WatchPlatform] with support for Wear OS via Google's Wearable Support Library.
-     * @param context The [Context] to initialize [Wearable] components with.
-     * @param appCapability The capability string to use when searching for watches with the app.
-     * @param capabilities A list of capability strings to use when searching for watch capabilities
-     * companion app installed.
-     */
-    @Suppress("unused")
     constructor(
         context: Context,
         appCapability: String,
@@ -47,29 +34,10 @@ class WearOSPlatform constructor(
         appCapability,
         capabilities,
         Wearable.getNodeClient(context),
-        Wearable.getMessageClient(context),
         Wearable.getCapabilityClient(context)
     )
 
-    override val platformIdentifier = PLATFORM
-
-    @ExperimentalCoroutinesApi
-    override fun incomingMessages(): Flow<Message> = callbackFlow {
-        val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
-            val message = Message(
-                Watch.createUUID(PLATFORM, messageEvent.sourceNodeId),
-                messageEvent.path,
-                messageEvent.data
-            )
-            trySendBlocking(message)
-        }
-
-        messageClient.addListener(listener)
-
-        awaitClose {
-            messageClient.removeListener(listener)
-        }
-    }
+    override val platformIdentifier: String = WEAROS_PLATFORM
 
     override fun allWatches(): Flow<List<Watch>> = flow {
         emit(
@@ -77,7 +45,7 @@ class WearOSPlatform constructor(
                 Watch(
                     node.displayName,
                     node.id,
-                    PLATFORM
+                    platformIdentifier
                 )
             }
         )
@@ -92,7 +60,7 @@ class WearOSPlatform constructor(
                     Watch(
                         node.displayName,
                         node.id,
-                        PLATFORM
+                        platformIdentifier
                     )
                 }
             )
@@ -108,7 +76,7 @@ class WearOSPlatform constructor(
                 Watch(
                     node.displayName,
                     node.id,
-                    PLATFORM
+                    platformIdentifier
                 )
             }
         )
@@ -156,27 +124,6 @@ class WearOSPlatform constructor(
         }
     }
 
-    override suspend fun sendMessage(
-        watchId: String,
-        message: String,
-        data: ByteArray?,
-        priority: Message.Priority
-    ): Boolean {
-        // Either sendMessage is successful, or ApiException is thrown
-        return try {
-            val priorityInt = when (priority) {
-                Message.Priority.LOW -> MessageOptions.MESSAGE_PRIORITY_LOW
-                Message.Priority.HIGH -> MessageOptions.MESSAGE_PRIORITY_HIGH
-            }
-            val options = MessageOptions(priorityInt)
-            messageClient.sendMessage(watchId, message, data, options).await()
-            // If we get here, message send was successful
-            true
-        } catch (e: ApiException) {
-            false
-        }
-    }
-
     @ExperimentalCoroutinesApi
     private fun ProducerScope<Status>.getStatusFromCapabilityInfo(
         watchId: String,
@@ -198,9 +145,5 @@ class WearOSPlatform constructor(
             // No watch in capable nodes, app is missing
             trySend(Status.MISSING_APP)
         }
-    }
-
-    companion object {
-        const val PLATFORM = "WEAR_OS"
     }
 }
