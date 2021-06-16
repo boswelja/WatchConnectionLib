@@ -87,9 +87,6 @@ class WearOSMessagePlatformTest {
             }
         }
 
-        // TODO This could cause flaky tests, remove it
-        Thread.sleep(250)
-
         // Send the dummy messages
         messages.forEach {
             messageClientTestRule.receiveMessage(

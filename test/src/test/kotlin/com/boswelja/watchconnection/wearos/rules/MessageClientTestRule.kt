@@ -4,6 +4,10 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageClient
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -19,10 +23,19 @@ class MessageClientTestRule : TestRule {
     }
 
     fun receiveMessage(sourceNodeId: String, message: String, data: ByteArray? = null) {
-        if (messageListener == null)
-            throw NullPointerException("No message listener has been added")
+        val messageListener = runBlocking {
+            withTimeoutOrNull(1000L) {
+                withContext(Dispatchers.Default) {
+                    while (messageListener == null) {
+                        continue
+                    }
+                }
 
-        messageListener!!.onMessageReceived(DummyMessageEvent(sourceNodeId, message, data))
+                messageListener
+            }
+        } ?: throw NullPointerException("No message listener has been added")
+
+        messageListener.onMessageReceived(DummyMessageEvent(sourceNodeId, message, data))
     }
 
     inner class MessageClientTestRuleStatement(private val base: Statement?) : Statement() {
