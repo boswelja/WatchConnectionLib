@@ -135,8 +135,12 @@ class WearOSDiscoveryPlatform(
                 // runBlocking should be safe here, since we're within a Flow
                 val connectedNodes = runBlocking { nodeClient.connectedNodes.await() }
                 // Got connected nodes, check if it contains our desired node
-                if (connectedNodes.any { it.id == watchId }) trySend(Status.CONNECTED)
-                else trySend(Status.DISCONNECTED)
+                val node = connectedNodes.firstOrNull { it.id == watchId }
+                val status = node?.let {
+                    if (node.isNearby) Status.CONNECTED_NEARBY
+                    else Status.CONNECTED
+                } ?: Status.DISCONNECTED
+                trySend(status)
             } catch (e: CancellationException) {
                 // Failed, send error
                 trySend(Status.ERROR)
