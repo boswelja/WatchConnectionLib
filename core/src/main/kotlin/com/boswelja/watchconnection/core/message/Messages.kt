@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core
+package com.boswelja.watchconnection.core.message
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -9,7 +9,7 @@ import java.util.UUID
 object Messages {
 
     /**
-     * Sent when a message is received from any supported [WatchPlatform]. Implement
+     * Sent when a message is received from any supported [MessagePlatform]. Implement
      * [MessageReceiver] to receive this intent.
      */
     const val ACTION_MESSAGE_RECEIVED =
@@ -17,9 +17,10 @@ object Messages {
 
     /**
      * Build and send [ACTION_MESSAGE_RECEIVED] broadcast to all manifest receivers. This should not
-     * be called from application code, and is only exposed for [WatchPlatform] use.
+     * be called from application code, and is only exposed for [MessagePlatform] use.
      * @param context [Context].
-     * @param watchId The ID of the watch that sent the message. See [Watch.id].
+     * @param watchId The ID of the watch that sent the message. See
+     * [com.boswelja.watchconnection.core.Watch.id].
      * @param message The message received.
      * @param data The data sent with the message, or null if there was no data.
      */

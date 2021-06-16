@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core
+package com.boswelja.watchconnection.core.message
 
 import android.content.BroadcastReceiver
 import android.content.Context
