@@ -8,8 +8,9 @@ import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -75,16 +76,20 @@ class WearOSMessagePlatformTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `incomingMessages gets all messages received by OnMessageReceivedListener`() {
-        val messages = createMessagesFor(10, messagePlatform.platformIdentifier)
+        val messageCount = 10
+        val messages = createMessagesFor(messageCount, messagePlatform.platformIdentifier)
 
         val scope = CoroutineScope(Dispatchers.Default)
 
         // Start collecting messages
+        val job = Job()
         val collectedMessages = mutableListOf<Message>()
-        scope.launch {
-            messagePlatform.incomingMessages().collect {
+        scope.launch(job) {
+            messagePlatform.incomingMessages().take(messageCount).collect {
                 collectedMessages += it
+                println("Got $it")
             }
+            println("Finished collection")
         }
 
         // Send the dummy messages
@@ -94,8 +99,8 @@ class WearOSMessagePlatformTest {
             )
         }
 
-        // Cancel message collection
-        scope.cancel()
+        // Wait for collection to finish
+        job.complete()
 
         // Make sure we got all the messages
         expectThat(collectedMessages).containsExactlyInAnyOrder(messages.map { it.second })
