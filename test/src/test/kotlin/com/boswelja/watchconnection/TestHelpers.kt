@@ -5,7 +5,7 @@ import com.boswelja.watchconnection.core.message.Message
 import kotlin.random.Random
 
 fun createWatchesFor(count: Int, platformIdentifier: String): List<Watch> {
-    return (0..count).map {
+    return (0 until count).map {
         Watch(
             name = "Watch $it",
             "platform$count",
@@ -15,7 +15,7 @@ fun createWatchesFor(count: Int, platformIdentifier: String): List<Watch> {
 }
 
 fun createCapabilities(count: Int): List<String> {
-    return (0..count).map { "capability$it" }
+    return (0 until count).map { "capability$it" }
 }
 
 /**
@@ -23,7 +23,7 @@ fun createCapabilities(count: Int): List<String> {
  * assigned by WatchConnectionLib), and a fake [Message].
  */
 fun createMessagesFor(count: Int, platform: String): List<Pair<String, Message>> {
-    return (0..count).map {
+    return (0 until count).map {
         Pair(
             it.toString(),
             Message(

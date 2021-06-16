@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.wearos
 
-import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.createMessagesFor
 import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
@@ -10,20 +8,17 @@ import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.containsExactlyInAnyOrder
 
-@RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.R])
 class WearOSMessagePlatformTest {
 
     @get:Rule
@@ -81,20 +76,21 @@ class WearOSMessagePlatformTest {
     @ExperimentalCoroutinesApi
     @Test
     fun `incomingMessages gets all messages received by OnMessageReceivedListener`() {
-        val messages = createMessagesFor(10, messagePlatform.platformIdentifier)
+        val messageCount = 10
+        val messages = createMessagesFor(messageCount, messagePlatform.platformIdentifier)
 
         val scope = CoroutineScope(Dispatchers.Default)
 
         // Start collecting messages
+        val job = Job()
         val collectedMessages = mutableListOf<Message>()
-        scope.launch {
-            messagePlatform.incomingMessages().collect {
+        scope.launch(job) {
+            messagePlatform.incomingMessages().take(messageCount).collect {
                 collectedMessages += it
+                println("Got $it")
             }
+            println("Finished collection")
         }
-
-        // TODO This could cause flaky tests, remove it
-        Thread.sleep(50)
 
         // Send the dummy messages
         messages.forEach {
@@ -103,8 +99,8 @@ class WearOSMessagePlatformTest {
             )
         }
 
-        // Cancel message collection
-        scope.cancel()
+        // Wait for collection to finish
+        job.complete()
 
         // Make sure we got all the messages
         expectThat(collectedMessages).containsExactlyInAnyOrder(messages.map { it.second })
