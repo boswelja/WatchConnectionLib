@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.wearos
 
-import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.createMessagesFor
 import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
@@ -17,13 +15,9 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.containsExactlyInAnyOrder
 
-@RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.R])
 class WearOSMessagePlatformTest {
 
     @get:Rule
