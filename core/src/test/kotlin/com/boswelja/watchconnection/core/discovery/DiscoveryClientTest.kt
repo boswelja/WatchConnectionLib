@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.core.discovery
 
-import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.watchconnection.createCapabilities
 import com.boswelja.watchconnection.createWatchesFor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -9,15 +7,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.containsExactlyInAnyOrder
 import strikt.assertions.isEqualTo
 
 @ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.R])
 class DiscoveryClientTest {
 
     private val allWatches = createWatchesFor(5, ConcreteDiscoveryPlatform.PLATFORM)

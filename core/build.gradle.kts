@@ -14,6 +14,8 @@ android {
         minSdk = Sdk.min
         targetSdk = Sdk.target
         consumerProguardFile("proguard-rules.pro")
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -23,10 +25,21 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    testOptions.unitTests {
+        isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
+
+    testImplementation(libs.androidx.test.ext)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+    testImplementation(libs.strikt.core)
+    testImplementation(libs.mockk.core)
+    testImplementation(libs.robolectric)
 }
 
 // Bundle sources with binaries

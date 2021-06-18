@@ -1,8 +1,7 @@
 include(
     ":core",
     ":wearos",
-    ":tizen",
-    ":test"
+    ":tizen"
 )
 
 enableFeaturePreview("VERSION_CATALOGS")

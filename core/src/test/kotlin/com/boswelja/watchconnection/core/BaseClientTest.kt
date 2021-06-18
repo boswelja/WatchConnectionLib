@@ -1,11 +1,7 @@
 package com.boswelja.watchconnection.core
 
-import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.get
@@ -13,8 +9,6 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.isNotEmpty
 
 @ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.R])
 class BaseClientTest {
 
     @Test

@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.core.message
 
-import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.watchconnection.core.discovery.ConcreteDiscoveryPlatform
 import com.boswelja.watchconnection.createWatchesFor
 import java.util.UUID
@@ -10,15 +8,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import strikt.assertions.isTrue
 
 @ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.R])
 class MessageClientTest {
 
     private val watches = createWatchesFor(5, ConcreteDiscoveryPlatform.PLATFORM)
