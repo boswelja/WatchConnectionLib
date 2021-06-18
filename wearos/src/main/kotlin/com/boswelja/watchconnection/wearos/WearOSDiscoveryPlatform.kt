@@ -40,15 +40,17 @@ class WearOSDiscoveryPlatform(
     override val platformIdentifier: String = WEAROS_PLATFORM
 
     override fun allWatches(): Flow<List<Watch>> = flow {
-        emit(
-            nodeClient.connectedNodes.await().map { node ->
-                Watch(
-                    node.displayName,
-                    node.id,
-                    platformIdentifier
-                )
-            }
-        )
+        repeating(interval = scanRepeatInterval) {
+            emit(
+                nodeClient.connectedNodes.await().map { node ->
+                    Watch(
+                        node.displayName,
+                        node.id,
+                        platformIdentifier
+                    )
+                }
+            )
+        }
     }
 
     @ExperimentalCoroutinesApi
