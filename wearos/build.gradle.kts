@@ -26,10 +26,10 @@ android {
 }
 
 dependencies {
-    api(project(":core"))
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.0-RC")
-    api("com.google.android.gms:play-services-wearable:17.1.0")
+    api(projects.core)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.playservices)
+    api(libs.play.services.wearable)
 }
 
 // Bundle sources with binaries

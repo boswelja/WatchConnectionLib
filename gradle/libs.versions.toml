@@ -1,0 +1,25 @@
+[versions]
+androidxTestCore = "1.4.0-beta02"
+androidxTestExt = "1.1.3-beta02"
+androidxArchTest = "2.1.0"
+coroutines = "1.5.0"
+junit = "4.13.2"
+mockk = "1.11.0"
+playServicesWearable = "17.1.0"
+robolectric = "4.5.1"
+strikt = "0.31.0"
+
+[libraries]
+androidx-arch-test = { module = "androidx.arch.core:core-testing", version.ref = "androidxArchTest" }
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTestCore" }
+androidx-test-ext = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxTestExt" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
+mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+strikt-core = { module = "io.strikt:strikt-core", version.ref = "strikt" }
+strikt-mockk = { module = "io.strikt:strikt-mockk", version.ref = "strikt" }
