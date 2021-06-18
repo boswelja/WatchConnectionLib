@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
+    api(libs.kotlinx.coroutines.core)
 }
 
 // Bundle sources with binaries

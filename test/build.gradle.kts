@@ -23,7 +23,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
 
     testOptions.unitTests {
@@ -37,16 +36,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":wearos"))
-    implementation(project(":tizen"))
+    implementation(projects.core)
+    implementation(projects.wearos)
+    implementation(projects.tizen)
 
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    testImplementation("androidx.test:core-ktx:1.4.0-beta01")
-    testImplementation("androidx.test.ext:junit-ktx:1.1.3-beta01")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.strikt:strikt-core:0.31.0")
-    testImplementation("io.mockk:mockk:1.11.0")
-    testImplementation("org.robolectric:robolectric:4.5.1")
+    testImplementation(libs.androidx.arch.test)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.ext)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+    testImplementation(libs.strikt.core)
+    testImplementation(libs.mockk.core)
+    testImplementation(libs.robolectric)
 }
