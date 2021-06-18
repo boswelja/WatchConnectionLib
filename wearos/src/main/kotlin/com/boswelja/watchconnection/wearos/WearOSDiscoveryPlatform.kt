@@ -28,7 +28,7 @@ class WearOSDiscoveryPlatform(
         context: Context,
         appCapability: String,
         capabilities: List<String>,
-        scanRepeatInterval: Long
+        scanRepeatInterval: Long = 2000
     ) : this(
         appCapability,
         capabilities,
