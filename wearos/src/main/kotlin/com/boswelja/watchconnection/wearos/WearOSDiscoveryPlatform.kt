@@ -88,17 +88,19 @@ class WearOSDiscoveryPlatform(
     }
 
     override fun getCapabilitiesFor(watchId: String): Flow<List<String>> = flow {
-        val discoveredCapabilities = mutableListOf<String>()
-        capabilities.forEach { capability ->
-            // Get capability info
-            val capabilityInfo = capabilityClient
-                .getCapability(capability, CapabilityClient.FILTER_ALL)
-                .await()
-            // If node is found with same ID as watch, emit capability
-            if (capabilityInfo.nodes.any { it.id == watchId })
-                discoveredCapabilities += capabilityInfo.name
+        repeating(interval = scanRepeatInterval) {
+            val discoveredCapabilities = mutableListOf<String>()
+            capabilities.forEach { capability ->
+                // Get capability info
+                val capabilityInfo = capabilityClient
+                    .getCapability(capability, CapabilityClient.FILTER_ALL)
+                    .await()
+                // If node is found with same ID as watch, emit capability
+                if (capabilityInfo.nodes.any { it.id == watchId })
+                    discoveredCapabilities += capabilityInfo.name
+            }
+            emit(discoveredCapabilities)
         }
-        emit(discoveredCapabilities)
     }
 
     @ExperimentalCoroutinesApi
