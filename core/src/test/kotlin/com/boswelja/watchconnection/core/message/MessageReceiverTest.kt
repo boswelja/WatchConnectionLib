@@ -3,13 +3,12 @@ package com.boswelja.watchconnection.core.message
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_DATA
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_MESSAGE
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_WATCH_ID
 import com.boswelja.watchconnection.core.message.Messages.ACTION_MESSAGE_RECEIVED
+import io.mockk.mockk
 import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.flow.firstOrNull
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -29,15 +27,12 @@ import strikt.assertions.isNull
 @Config(sdk = [Build.VERSION_CODES.R])
 class MessageReceiverTest {
 
-    @get:Rule
-    val taskExecutorRule = InstantTaskExecutorRule()
-
     private lateinit var context: Context
     private lateinit var messageReceiver: ConcreteMessageReceiver
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
+        context = mockk()
         messageReceiver = ConcreteMessageReceiver()
     }
 
