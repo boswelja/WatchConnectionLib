@@ -1,12 +1,12 @@
 [versions]
-androidxTestCore = "1.4.0-beta02"
-androidxTestExt = "1.1.3-beta02"
+androidxTestCore = "1.4.0"
+androidxTestExt = "1.1.3"
 androidxArchTest = "2.1.0"
 coroutines = "1.5.0"
 junit = "4.13.2"
-mockk = "1.11.0"
+mockk = "1.12.0"
 playServicesWearable = "17.1.0"
-robolectric = "4.5.1"
+robolectric = "4.6.1"
 strikt = "0.31.0"
 
 [libraries]
