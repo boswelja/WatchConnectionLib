@@ -1,6 +1,8 @@
 package com.boswelja.watchconnection.core
 
+import android.os.Parcelable
 import java.util.UUID
+import kotlinx.parcelize.Parcelize
 
 /**
  * The standardised Watch representation.
@@ -11,12 +13,13 @@ import java.util.UUID
  * @param platform The platform identifier string of this watch. You shouldn't need to use this
  * outside the calling platform.
  */
+@Parcelize
 open class Watch(
     open val id: UUID,
     open val name: String,
     open val platformId: String,
     open val platform: String
-) {
+) : Parcelable {
 
     constructor(
         name: String,
