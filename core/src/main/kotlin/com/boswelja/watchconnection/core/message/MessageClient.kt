@@ -19,10 +19,10 @@ class MessageClient(
 ) : BaseClient<MessagePlatform>(platforms) {
 
     /**
-     * A [Flow] of [ByteArrayMessage]s received by all [Platform]s. See [MessagePlatform.incomingMessages].
+     * A [Flow] of [ReceivedMessage]s received by all [Platform]s. See [MessagePlatform.incomingMessages].
      */
     @ExperimentalCoroutinesApi
-    fun incomingMessages(): Flow<ByteArrayMessage> =
+    fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> =
         platforms.values.map { it.incomingMessages() }.merge()
 
     /**

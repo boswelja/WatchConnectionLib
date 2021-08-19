@@ -12,7 +12,7 @@ interface MessagePlatform : Platform {
     /**
      * A [Flow] of [ByteArrayMessage]s received by this platform.
      */
-    fun incomingMessages(): Flow<ByteArrayMessage>
+    fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>>
 
     /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't

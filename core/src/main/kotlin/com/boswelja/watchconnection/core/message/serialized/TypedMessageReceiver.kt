@@ -2,8 +2,8 @@ package com.boswelja.watchconnection.core.message.serialized
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessageReceiver
+import com.boswelja.watchconnection.core.message.ReceivedMessage
 
 /**
  * An extension of [MessageReceiver] that supports deserializing data automatically.
@@ -16,20 +16,23 @@ abstract class TypedMessageReceiver<T>(
     /**
      * Called when a message has been received. While this is a suspendable function, the limits
      * of [BroadcastReceiver.goAsync] still apply.
-     * @param message The [TypedMessage] that was received.
+     * @param message The [ReceivedMessage] that was received.
      */
-    abstract suspend fun onMessageReceived(context: Context, message: TypedMessage<T>)
+    abstract suspend fun onTypedMessageReceived(context: Context, message: ReceivedMessage<T>)
 
-    final override suspend fun onMessageReceived(context: Context, message: ByteArrayMessage) {
+    final override suspend fun onMessageReceived(
+        context: Context,
+        message: ReceivedMessage<ByteArray?>
+    ) {
         if (messages.contains(message.path) && message.data != null) {
 
             // Deserialize data
             val data = serializer.deserialize(message.data)
 
-            // Pass the TypedMessage on
-            onMessageReceived(
+            // Pass the deserialized message on
+            onTypedMessageReceived(
                 context,
-                TypedMessage(
+                ReceivedMessage(
                     message.sourceWatchID,
                     message.path,
                     data
