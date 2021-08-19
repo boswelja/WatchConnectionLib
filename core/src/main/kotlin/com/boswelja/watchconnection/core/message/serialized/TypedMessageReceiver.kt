@@ -9,7 +9,6 @@ import com.boswelja.watchconnection.core.message.ReceivedMessage
  * An extension of [MessageReceiver] that supports deserializing data automatically.
  */
 abstract class TypedMessageReceiver<T>(
-    private val messages: Set<String>,
     private val serializer: DataSerializer<T>
 ) : MessageReceiver() {
 
@@ -24,7 +23,7 @@ abstract class TypedMessageReceiver<T>(
         context: Context,
         message: ReceivedMessage<ByteArray?>
     ) {
-        if (messages.contains(message.path) && message.data != null) {
+        if (serializer.messagePaths.contains(message.path) && message.data != null) {
 
             // Deserialize data
             val data = serializer.deserialize(message.data)

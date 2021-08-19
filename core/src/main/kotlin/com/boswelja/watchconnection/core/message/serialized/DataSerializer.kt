@@ -3,8 +3,11 @@ package com.boswelja.watchconnection.core.message.serialized
 /**
  * A generic serializer implementation, designed to serialize/deserialize classes with some
  * serialization standard.
+ * @param messagePaths A [Set] of [TypedMessage.path]s this serializer supports.
  */
-abstract class DataSerializer<T> {
+abstract class DataSerializer<T>(
+    internal val messagePaths: Set<String>
+) {
 
     /**
      * Serialize a class.

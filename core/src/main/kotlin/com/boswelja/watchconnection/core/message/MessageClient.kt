@@ -3,7 +3,6 @@ package com.boswelja.watchconnection.core.message
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.firstOrNull
 import com.boswelja.watchconnection.core.message.serialized.DataSerializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.merge
  * @param platforms The [MessagePlatform]s this MessageClient should support.
  */
 class MessageClient(
-    private val serializers: Map<Set<String>, DataSerializer<Any>> = mapOf(),
+    private val serializers: Set<DataSerializer<Any>> = setOf(),
     platforms: List<MessagePlatform>
 ) : BaseClient<MessagePlatform>(platforms) {
 
@@ -27,9 +26,9 @@ class MessageClient(
         .map { it.incomingMessages() }
         .merge()
         .map { message ->
+            // Deserialize if possible
             if (message.data != null) {
-                // Deserialize if possible
-                val serializer = serializers.firstOrNull { it.key.contains(message.path) }
+                val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
                 if (serializer != null) {
                     val deserializedData = serializer.deserialize(message.data)
                     return@map ReceivedMessage(
@@ -61,7 +60,7 @@ class MessageClient(
                 data
             } else {
                 // Get serializer and serialize to bytes
-                val serializer = serializers.firstOrNull { it.key.contains(message.path) }
+                val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
                 requireNotNull(serializer) { "No serializer provided for message ${message.path}" }
 
                 serializer.serialize(data)
