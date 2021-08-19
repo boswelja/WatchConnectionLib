@@ -4,6 +4,7 @@ import android.content.Context
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.core.message.MessagePlatform
+import com.boswelja.watchconnection.core.message.MessagePriority
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.MessageClient
@@ -46,13 +47,13 @@ class WearOSMessagePlatform(
         watchId: String,
         message: String,
         data: ByteArray?,
-        priority: Message.Priority
+        priority: MessagePriority
     ): Boolean {
         // Either sendMessage is successful, or ApiException is thrown
         return try {
             val priorityInt = when (priority) {
-                Message.Priority.LOW -> MessageOptions.MESSAGE_PRIORITY_LOW
-                Message.Priority.HIGH -> MessageOptions.MESSAGE_PRIORITY_HIGH
+                MessagePriority.LOW -> MessageOptions.MESSAGE_PRIORITY_LOW
+                MessagePriority.HIGH -> MessageOptions.MESSAGE_PRIORITY_HIGH
             }
             val options = MessageOptions(priorityInt)
             messageClient.sendMessage(watchId, message, data, options).await()

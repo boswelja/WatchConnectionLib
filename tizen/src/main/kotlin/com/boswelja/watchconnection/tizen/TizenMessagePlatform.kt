@@ -3,6 +3,7 @@ package com.boswelja.watchconnection.tizen
 import android.content.Context
 import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.core.message.MessagePlatform
+import com.boswelja.watchconnection.core.message.MessagePriority
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
 import com.samsung.android.sdk.accessory.SAAgentV2
 import java.util.UUID
@@ -66,6 +67,6 @@ class TizenMessagePlatform(context: Context) : MessagePlatform {
         watchId: String,
         message: String,
         data: ByteArray?,
-        priority: Message.Priority
+        priority: MessagePriority
     ): Boolean = accessoryAgent.sendMessage(watchId, message, data)
 }

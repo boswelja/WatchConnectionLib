@@ -33,6 +33,6 @@ class MessageClient(
         to: Watch,
         message: String,
         data: ByteArray? = null,
-        priority: Message.Priority = Message.Priority.LOW
+        priority: MessagePriority = MessagePriority.LOW
     ) = platforms[to.platform]?.sendMessage(to.platformId, message, data, priority) == true
 }

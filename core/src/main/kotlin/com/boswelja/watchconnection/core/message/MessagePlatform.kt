@@ -26,6 +26,6 @@ interface MessagePlatform : Platform {
         watchId: String,
         message: String,
         data: ByteArray? = null,
-        priority: Message.Priority = Message.Priority.LOW
+        priority: MessagePriority = MessagePriority.LOW
     ): Boolean
 }
