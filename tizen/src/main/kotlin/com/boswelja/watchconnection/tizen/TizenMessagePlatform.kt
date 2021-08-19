@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
 import com.boswelja.watchconnection.core.message.MessagePriority
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
@@ -42,10 +42,10 @@ class TizenMessagePlatform(context: Context) : MessagePlatform {
     }
 
     @ExperimentalCoroutinesApi
-    override fun incomingMessages(): Flow<Message> = callbackFlow {
+    override fun incomingMessages(): Flow<ByteArrayMessage> = callbackFlow {
         val receiver = object : MessageReceiver() {
             override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
-                val messageData = Message(
+                val messageData = ByteArrayMessage(
                     watchId, message, data
                 )
                 trySend(

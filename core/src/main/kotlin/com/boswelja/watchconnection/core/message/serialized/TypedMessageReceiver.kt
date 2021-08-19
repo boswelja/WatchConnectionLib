@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.core.message.serialized
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessageReceiver
 
 /**
@@ -20,8 +20,8 @@ abstract class TypedMessageReceiver<T>(
      */
     abstract suspend fun onMessageReceived(context: Context, message: TypedMessage<T>)
 
-    final override suspend fun onMessageReceived(context: Context, message: Message) {
-        if (messages.contains(message.message) && message.data != null) {
+    final override suspend fun onMessageReceived(context: Context, message: ByteArrayMessage) {
+        if (messages.contains(message.path) && message.data != null) {
 
             // Deserialize data
             val data = serializer.deserialize(message.data)
@@ -30,8 +30,8 @@ abstract class TypedMessageReceiver<T>(
             onMessageReceived(
                 context,
                 TypedMessage(
-                    message.sourceWatchId,
-                    message.message,
+                    message.sourceWatchID,
+                    message.path,
                     data
                 )
             )

@@ -16,7 +16,7 @@ import strikt.assertions.isTrue
 class MessageClientTest {
 
     private val watches = createWatchesFor(5, ConcreteDiscoveryPlatform.PLATFORM)
-    private val message = Message(UUID.randomUUID(), "", null)
+    private val message = ByteArrayMessage(UUID.randomUUID(), "", null)
     private val platform = ConcreteMessagePlatform(message)
 
     @Test

@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.wearos
 
 import android.content.Context
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
 import com.boswelja.watchconnection.core.message.MessagePriority
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
@@ -26,9 +26,9 @@ class WearOSMessagePlatform(
     override val platformIdentifier: String = WEAROS_PLATFORM
 
     @ExperimentalCoroutinesApi
-    override fun incomingMessages(): Flow<Message> = callbackFlow {
+    override fun incomingMessages(): Flow<ByteArrayMessage> = callbackFlow {
         val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
-            val message = Message(
+            val message = ByteArrayMessage(
                 Watch.createUUID(platformIdentifier, messageEvent.sourceNodeId),
                 messageEvent.path,
                 messageEvent.data

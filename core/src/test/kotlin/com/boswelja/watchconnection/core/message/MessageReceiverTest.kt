@@ -64,7 +64,7 @@ class MessageReceiverTest {
         val receivedMessage = withTimeoutOrNull(TIMEOUT) {
             messageReceiver.receivedMessage.mapNotNull { it }.firstOrNull()
         }
-        val expectedMessage = Message(id, message, data)
+        val expectedMessage = ByteArrayMessage(id, message, data)
         expectThat(receivedMessage).isEqualTo(expectedMessage)
     }
 

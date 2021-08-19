@@ -18,11 +18,11 @@ abstract class MessageReceiver : BroadcastReceiver() {
     /**
      * Called when a message has been received. While this is a suspendable function, the limits
      * of [BroadcastReceiver.goAsync] still apply.
-     * @param message The [Message] that was received.
+     * @param message The [ByteArrayMessage] that was received.
      */
     abstract suspend fun onMessageReceived(
         context: Context,
-        message: Message
+        message: ByteArrayMessage
     )
 
     final override fun onReceive(context: Context?, intent: Intent?) {
@@ -41,7 +41,7 @@ abstract class MessageReceiver : BroadcastReceiver() {
                 // Pass it on to user code
                 onMessageReceived(
                     context,
-                    Message(watchId, message, data)
+                    ByteArrayMessage(watchId, message, data)
                 )
 
                 // Let the BroadcastReceiver know we're done
