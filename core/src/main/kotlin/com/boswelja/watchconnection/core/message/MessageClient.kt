@@ -7,6 +7,7 @@ import com.boswelja.watchconnection.core.firstOrNull
 import com.boswelja.watchconnection.core.message.serialized.DataSerializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 
 /**
@@ -21,9 +22,25 @@ class MessageClient(
     /**
      * A [Flow] of [ReceivedMessage]s received by all [Platform]s. See [MessagePlatform.incomingMessages].
      */
-    @ExperimentalCoroutinesApi
-    fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> =
-        platforms.values.map { it.incomingMessages() }.merge()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun incomingMessages(): Flow<ReceivedMessage<*>> = platforms.values
+        .map { it.incomingMessages() }
+        .merge()
+        .map { message ->
+            if (message.data != null) {
+                // Deserialize if possible
+                val serializer = serializers.firstOrNull { it.key.contains(message.path) }
+                if (serializer != null) {
+                    val deserializedData = serializer.deserialize(message.data)
+                    return@map ReceivedMessage(
+                        message.sourceWatchID,
+                        message.path,
+                        deserializedData
+                    )
+                }
+            }
+            message
+        }
 
     /**
      * Send a message to a [Watch]. See [MessagePlatform.sendMessage].
