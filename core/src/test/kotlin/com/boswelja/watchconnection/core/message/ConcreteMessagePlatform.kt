@@ -1,16 +1,17 @@
 package com.boswelja.watchconnection.core.message
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 class ConcreteMessagePlatform(
-    private val incomingMessage: ReceivedMessage<ByteArray?>
+    platformId: String
 ) : MessagePlatform {
 
-    override val platformIdentifier: String = PLATFORM
+    val incomingMessages = MutableSharedFlow<ReceivedMessage<ByteArray?>>()
 
-    override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> =
-        flow { emit(incomingMessage) }
+    override val platformIdentifier: String = platformId
+
+    override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = incomingMessages
 
     override suspend fun sendMessage(
         watchId: String,
@@ -20,8 +21,10 @@ class ConcreteMessagePlatform(
     ): Boolean {
         return true
     }
+}
 
-    companion object {
-        const val PLATFORM = "platform"
+fun createPlatforms(count: Int): List<ConcreteMessagePlatform> {
+    return (0 until count).map {
+        ConcreteMessagePlatform("platform$it")
     }
 }
