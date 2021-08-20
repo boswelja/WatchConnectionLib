@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.wearos
 
-import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessagePriority
+import com.boswelja.watchconnection.core.message.ReceivedMessage
 import com.boswelja.watchconnection.createMessagesFor
 import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
 import com.google.android.gms.wearable.MessageOptions
@@ -84,10 +84,10 @@ class WearOSMessagePlatformTest {
 
         // Start collecting messages
         val job = Job()
-        val collectedMessages = mutableListOf<ByteArrayMessage>()
+        val collectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
         scope.launch(job) {
             messagePlatform.incomingMessages().take(messageCount).collect {
-                collectedMessages += it
+                collectedMessages.add(it)
                 println("Got $it")
             }
             println("Finished collection")

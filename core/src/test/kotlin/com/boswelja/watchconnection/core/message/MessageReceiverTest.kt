@@ -4,24 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_DATA
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_MESSAGE
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_WATCH_ID
 import com.boswelja.watchconnection.core.message.Messages.ACTION_MESSAGE_RECEIVED
-import io.mockk.mockk
 import java.util.UUID
 import kotlin.random.Random
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import strikt.api.expectThat
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNull
+import strikt.assertions.contains
+import strikt.assertions.isEmpty
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -32,7 +29,7 @@ class MessageReceiverTest {
 
     @Before
     fun setUp() {
-        context = mockk()
+        context = InstrumentationRegistry.getInstrumentation().targetContext
         messageReceiver = ConcreteMessageReceiver()
     }
 
@@ -41,10 +38,7 @@ class MessageReceiverTest {
         // Create an Intent with no data
         val intent = Intent("action")
         messageReceiver.onReceive(context, intent)
-        val message = withTimeoutOrNull(TIMEOUT) {
-            messageReceiver.receivedMessage.mapNotNull { it }.firstOrNull()
-        }
-        expectThat(message).isNull()
+        expectThat(messageReceiver.receivedMessages).isEmpty()
     }
 
     @Test
@@ -61,14 +55,7 @@ class MessageReceiverTest {
             messageReceiver.onReceive(context, intent)
         }
 
-        val receivedMessage = withTimeoutOrNull(TIMEOUT) {
-            messageReceiver.receivedMessage.mapNotNull { it }.firstOrNull()
-        }
-        val expectedMessage = ByteArrayMessage(id, message, data)
-        expectThat(receivedMessage).isEqualTo(expectedMessage)
-    }
-
-    companion object {
-        private const val TIMEOUT = 250L
+        val expectedMessage = ReceivedMessage(id, message, data)
+        expectThat(messageReceiver.receivedMessages).contains(expectedMessage)
     }
 }

@@ -4,12 +4,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ConcreteMessagePlatform(
-    private val incomingMessage: ByteArrayMessage
+    private val incomingMessage: ReceivedMessage<ByteArray?>
 ) : MessagePlatform {
 
     override val platformIdentifier: String = PLATFORM
 
-    override fun incomingMessages(): Flow<ByteArrayMessage> = flow { emit(incomingMessage) }
+    override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> =
+        flow { emit(incomingMessage) }
 
     override suspend fun sendMessage(
         watchId: String,
