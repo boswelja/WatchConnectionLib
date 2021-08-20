@@ -27,18 +27,19 @@ class MessageClient(
         .merge()
         .map { message ->
             // Deserialize if possible
-            if (message.data != null) {
-                val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
-                if (serializer != null) {
-                    val deserializedData = serializer.deserialize(message.data)
-                    return@map ReceivedMessage(
-                        message.sourceWatchID,
-                        message.path,
-                        deserializedData
-                    )
-                }
+            val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
+            if (serializer != null) {
+                requireNotNull(message.data) { "Expected data with message $message" }
+
+                val deserializedData = serializer.deserialize(message.data)
+                ReceivedMessage(
+                    message.sourceWatchID,
+                    message.path,
+                    deserializedData
+                )
+            } else {
+                message
             }
-            message
         }
 
     /**

@@ -23,7 +23,8 @@ abstract class TypedMessageReceiver<T>(
         context: Context,
         message: ReceivedMessage<ByteArray?>
     ) {
-        if (serializer.messagePaths.contains(message.path) && message.data != null) {
+        if (serializer.messagePaths.contains(message.path)) {
+            requireNotNull(message.data) { "Expected data with message $message" }
 
             // Deserialize data
             val data = serializer.deserialize(message.data)
