@@ -22,4 +22,12 @@ abstract class DataSerializer<T>(
      * @return The deserialized class [T].
      */
     abstract suspend fun deserialize(bytes: ByteArray): T
+
+    /**
+     * This exists to effectively allow serializing [T] after type erasure.
+     */
+    @Suppress("UNCHECKED_CAST")
+    internal suspend fun serializeAny(data: Any): ByteArray {
+        return serialize(data as T)
+    }
 }

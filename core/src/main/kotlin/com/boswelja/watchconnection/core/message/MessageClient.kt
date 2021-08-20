@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.merge
  * @param platforms The [MessagePlatform]s this MessageClient should support.
  */
 class MessageClient(
-    private val serializers: Set<DataSerializer<Any>> = setOf(),
+    private val serializers: List<DataSerializer<*>> = listOf(),
     platforms: List<MessagePlatform>
 ) : BaseClient<MessagePlatform>(platforms) {
 
@@ -57,14 +57,12 @@ class MessageClient(
         requireNotNull(platform) { "No platform registered for watch $to" }
 
         val bytes = message.data?.let { data ->
-            if (data is ByteArray) {
-                data
+            val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
+            if (serializer != null) {
+                serializer.serializeAny(data)
             } else {
-                // Get serializer and serialize to bytes
-                val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
-                requireNotNull(serializer) { "No serializer provided for message ${message.path}" }
-
-                serializer.serialize(data)
+                require(data is ByteArray) { "No serializer registered for ${data::class}" }
+                data
             }
         }
 
