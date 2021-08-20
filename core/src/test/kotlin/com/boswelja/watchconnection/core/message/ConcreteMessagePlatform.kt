@@ -1,5 +1,6 @@
 package com.boswelja.watchconnection.core.message
 
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -8,6 +9,8 @@ class ConcreteMessagePlatform(
 ) : MessagePlatform {
 
     val incomingMessages = MutableSharedFlow<ReceivedMessage<ByteArray?>>()
+
+    val sentMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
 
     override val platformIdentifier: String = platformId
 
@@ -19,6 +22,9 @@ class ConcreteMessagePlatform(
         data: ByteArray?,
         priority: MessagePriority
     ): Boolean {
+        sentMessages.add(
+            ReceivedMessage(UUID.fromString(watchId), message, data)
+        )
         return true
     }
 }
