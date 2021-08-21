@@ -23,7 +23,7 @@ class ConcreteMessagePlatform(
         priority: MessagePriority
     ): Boolean {
         sentMessages.add(
-            ReceivedMessage(UUID.fromString(watchId), message, data)
+            ReceivedMessage(UUID.randomUUID(), message, data)
         )
         return true
     }
