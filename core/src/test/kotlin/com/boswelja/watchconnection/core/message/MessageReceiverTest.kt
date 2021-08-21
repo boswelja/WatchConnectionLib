@@ -11,7 +11,6 @@ import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA
 import com.boswelja.watchconnection.core.message.Messages.ACTION_MESSAGE_RECEIVED
 import java.util.UUID
 import kotlin.random.Random
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,7 +33,7 @@ class MessageReceiverTest {
     }
 
     @Test
-    fun `onReceive does nothing for incorrect actions`(): Unit = runBlocking {
+    fun `onReceive does nothing for incorrect actions`() {
         // Create an Intent with no data
         val intent = Intent("action")
         messageReceiver.onReceive(context, intent)
@@ -42,7 +41,7 @@ class MessageReceiverTest {
     }
 
     @Test
-    fun `onReceive passes variables to onMessageReceived`(): Unit = runBlocking {
+    fun `onReceive passes variables to onMessageReceived`() {
         val id = UUID.randomUUID()
         val message = "message"
         val data = Random.nextBytes(10)
