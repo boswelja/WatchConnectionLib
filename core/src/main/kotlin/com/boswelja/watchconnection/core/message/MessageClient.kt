@@ -56,14 +56,16 @@ class MessageClient(
         val platform = platforms[to.platform]
         requireNotNull(platform) { "No platform registered for watch $to" }
 
-        val bytes = message.data?.let { data ->
-            val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
-            if (serializer != null) {
-                serializer.serializeAny(data)
-            } else {
-                require(data is ByteArray) { "No serializer registered for ${data::class}" }
-                data
+        val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
+        val data = message.data
+        val bytes = if (serializer != null) {
+            requireNotNull(data) { "Expected data with message $message" }
+            serializer.serializeAny(data)
+        } else {
+            require(data is ByteArray?) {
+                "Invalid data $data. Did you forget to add a serializer?"
             }
+            data
         }
 
         return platform.sendMessage(to.platformId, message.path, bytes, priority)
