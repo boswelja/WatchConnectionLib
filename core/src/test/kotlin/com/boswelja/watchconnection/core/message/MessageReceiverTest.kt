@@ -1,5 +1,6 @@
 package com.boswelja.watchconnection.core.message
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -9,8 +10,15 @@ import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_MESSAGE
 import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_WATCH_ID
 import com.boswelja.watchconnection.core.message.Messages.ACTION_MESSAGE_RECEIVED
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
 import java.util.UUID
 import kotlin.random.Random
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,13 +31,25 @@ import strikt.assertions.isEmpty
 @Config(sdk = [Build.VERSION_CODES.R])
 class MessageReceiverTest {
 
+    private val receiverFinished = MutableStateFlow(false)
+
     private lateinit var context: Context
     private lateinit var messageReceiver: ConcreteMessageReceiver
 
     @Before
     fun setUp() {
+        runBlocking { receiverFinished.emit(true) }
+        val pendingResult = mockk<BroadcastReceiver.PendingResult>()
+        every { pendingResult.finish() } answers {
+            runBlocking { receiverFinished.emit(true) }
+        }
+
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        messageReceiver = ConcreteMessageReceiver()
+        messageReceiver = spyk(ConcreteMessageReceiver())
+        every { messageReceiver.goAsync() } answers {
+            runBlocking { receiverFinished.emit(false) }
+            pendingResult
+        }
     }
 
     @Test
@@ -37,6 +57,13 @@ class MessageReceiverTest {
         // Create an Intent with no data
         val intent = Intent("action")
         messageReceiver.onReceive(context, intent)
+
+        runBlocking {
+            withTimeout(2000) {
+                receiverFinished.first { it }
+            }
+        }
+
         expectThat(messageReceiver.receivedMessages).isEmpty()
     }
 
@@ -52,6 +79,12 @@ class MessageReceiverTest {
             putExtra(EXTRA_DATA, data)
         }.also { intent ->
             messageReceiver.onReceive(context, intent)
+        }
+
+        runBlocking {
+            withTimeout(2000) {
+                receiverFinished.first { it }
+            }
         }
 
         val expectedMessage = ReceivedMessage(id, message, data)
