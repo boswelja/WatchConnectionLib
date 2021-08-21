@@ -5,20 +5,6 @@ import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.ReceivedMessage
 import kotlin.random.Random
 
-fun createWatchesFor(count: Int, platformIdentifier: String): List<Watch> {
-    return (0 until count).map {
-        Watch(
-            name = "Watch $it",
-            "platform$count",
-            platformIdentifier
-        )
-    }
-}
-
-fun createCapabilities(count: Int): List<String> {
-    return (0 until count).map { "capability$it" }
-}
-
 /**
  * Returns a list of pairs. Each pair contains the source watch ID (note this is not the watches UID
  * assigned by WatchConnectionLib), and a fake [ByteArrayMessage].
