@@ -88,9 +88,7 @@ class WearOSMessagePlatformTest {
         scope.launch(job) {
             messagePlatform.incomingMessages().take(messageCount).collect {
                 collectedMessages.add(it)
-                println("Got $it")
             }
-            println("Finished collection")
         }
 
         // Send the dummy messages
