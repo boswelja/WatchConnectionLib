@@ -5,7 +5,7 @@ package com.boswelja.watchconnection.core.message.serialized
  * serialization standard.
  * @param messagePaths A [Set] of [TypedMessage.path]s this serializer supports.
  */
-abstract class DataSerializer<T>(
+abstract class MessageSerializer<T>(
     internal val messagePaths: Set<String>
 ) {
 

@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.core.message.serialized
 
 const val MessagePath = "message-path"
 
-object ConcreteDataSerializer : DataSerializer<ConcreteDataType>(
+object ConcreteMessageSerializer : MessageSerializer<ConcreteDataType>(
     messagePaths = setOf(MessagePath)
 ) {
     override suspend fun serialize(data: ConcreteDataType): ByteArray {

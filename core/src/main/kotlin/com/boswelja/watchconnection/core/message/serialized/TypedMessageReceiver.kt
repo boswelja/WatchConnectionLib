@@ -9,7 +9,7 @@ import com.boswelja.watchconnection.core.message.ReceivedMessage
  * An extension of [MessageReceiver] that supports deserializing data automatically.
  */
 abstract class TypedMessageReceiver<T>(
-    private val serializer: DataSerializer<T>
+    private val serializer: MessageSerializer<T>
 ) : MessageReceiver() {
 
     /**

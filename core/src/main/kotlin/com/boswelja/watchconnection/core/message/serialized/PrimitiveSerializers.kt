@@ -3,41 +3,41 @@ package com.boswelja.watchconnection.core.message.serialized
 import java.math.BigInteger
 
 /**
- * A [DataSerializer] for [String]s.
+ * A [MessageSerializer] for [String]s.
  */
 class StringSerializer(
     messagePaths: Set<String>
-) : DataSerializer<String>(messagePaths) {
+) : MessageSerializer<String>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): String = String(bytes, Charsets.UTF_8)
     override suspend fun serialize(data: String): ByteArray = data.toByteArray(Charsets.UTF_8)
 }
 
 /**
- * A [DataSerializer] for [Int]s.
+ * A [MessageSerializer] for [Int]s.
  */
 class IntSerializer(
     messagePaths: Set<String>
-) : DataSerializer<Int>(messagePaths) {
+) : MessageSerializer<Int>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Int = BigInteger(bytes).toInt()
     override suspend fun serialize(data: Int): ByteArray = data.toBigInteger().toByteArray()
 }
 
 /**
- * A [DataSerializer] for [Long]s.
+ * A [MessageSerializer] for [Long]s.
  */
 class LongSerializer(
     messagePaths: Set<String>
-) : DataSerializer<Long>(messagePaths) {
+) : MessageSerializer<Long>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Long = BigInteger(bytes).toLong()
     override suspend fun serialize(data: Long): ByteArray = data.toBigInteger().toByteArray()
 }
 
 /**
- * A [DataSerializer] for [Boolean]s.
+ * A [MessageSerializer] for [Boolean]s.
  */
 class BooleanSerializer(
     messagePaths: Set<String>
-) : DataSerializer<Boolean>(messagePaths) {
+) : MessageSerializer<Boolean>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Boolean = bytes[0].toInt() == 1
     override suspend fun serialize(data: Boolean): ByteArray = byteArrayOf(if (data) 1 else 0)
 }

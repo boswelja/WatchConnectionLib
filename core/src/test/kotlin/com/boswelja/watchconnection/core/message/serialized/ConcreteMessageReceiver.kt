@@ -4,7 +4,7 @@ import android.content.Context
 import com.boswelja.watchconnection.core.message.ReceivedMessage
 
 class ConcreteMessageReceiver : TypedMessageReceiver<ConcreteDataType>(
-    serializer = ConcreteDataSerializer
+    serializer = ConcreteMessageSerializer
 ) {
     val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
 

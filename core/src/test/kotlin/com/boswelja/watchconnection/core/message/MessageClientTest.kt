@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.core.message
 
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.message.serialized.ConcreteDataSerializer
 import com.boswelja.watchconnection.core.message.serialized.ConcreteDataType
+import com.boswelja.watchconnection.core.message.serialized.ConcreteMessageSerializer
 import com.boswelja.watchconnection.core.message.serialized.MessagePath
 import com.boswelja.watchconnection.core.message.serialized.TypedMessage
 import com.boswelja.watchconnection.createWatchesFor
@@ -25,7 +25,7 @@ import strikt.assertions.isNull
 
 class MessageClientTest {
 
-    private val serializers = listOf(ConcreteDataSerializer)
+    private val serializers = listOf(ConcreteMessageSerializer)
 
     private lateinit var dummyWatches: Map<String, List<Watch>>
     private lateinit var platforms: List<ConcreteMessagePlatform>
@@ -209,7 +209,7 @@ class MessageClientTest {
     @Test
     fun `incomingMessages deserializes messages when possible`() {
         val expectedData = ConcreteDataType("Data")
-        val dataBytes = runBlocking { ConcreteDataSerializer.serialize(expectedData) }
+        val dataBytes = runBlocking { ConcreteMessageSerializer.serialize(expectedData) }
 
         // Start collecting incoming messages
         val receivedMessages = mutableListOf<ReceivedMessage<*>>()
@@ -285,7 +285,7 @@ class MessageClientTest {
         val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
         val scope = TestCoroutineScope()
         scope.launch {
-            client.incomingMessages(ConcreteDataSerializer)
+            client.incomingMessages(ConcreteMessageSerializer)
                 .catch { cause ->
                     expectThat(cause is ClassCastException)
                 }.collect { message ->
@@ -321,7 +321,7 @@ class MessageClientTest {
         val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
         val scope = TestCoroutineScope()
         scope.launch {
-            client.incomingMessages(ConcreteDataSerializer)
+            client.incomingMessages(ConcreteMessageSerializer)
                 .collect { message ->
                     receivedMessages.add(message)
                 }
@@ -337,7 +337,7 @@ class MessageClientTest {
                         val message = ReceivedMessage<ByteArray?>(
                             watch.id,
                             MessagePath,
-                            ConcreteDataSerializer.serialize(data)
+                            ConcreteMessageSerializer.serialize(data)
                         )
                         platform.incomingMessages.emit(message)
                         expectedMessages.add(message)

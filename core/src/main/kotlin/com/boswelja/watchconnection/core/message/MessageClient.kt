@@ -3,7 +3,7 @@ package com.boswelja.watchconnection.core.message
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.message.serialized.DataSerializer
+import com.boswelja.watchconnection.core.message.serialized.MessageSerializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.merge
 
 /**
  * MessageClient takes a number of [MessagePlatform]s, and provides a common interface between them.
- * @param serializers A list of [DataSerializer] to use when serializing/deserializing messages.
+ * @param serializers A list of [MessageSerializer] to use when serializing/deserializing messages.
  * @param platforms The [MessagePlatform]s this MessageClient should support.
  */
 class MessageClient(
-    private val serializers: List<DataSerializer<*>> = listOf(),
+    private val serializers: List<MessageSerializer<*>> = listOf(),
     platforms: List<MessagePlatform>
 ) : BaseClient<MessagePlatform>(platforms) {
 
@@ -31,7 +31,7 @@ class MessageClient(
 
     /**
      * A [Flow] of [ReceivedMessage]s received by all [Platform]s. Messages collected here will be
-     * deserialized automatically by the [DataSerializer]s you passed in when constructing this
+     * deserialized automatically by the [MessageSerializer]s you passed in when constructing this
      * [MessageClient] where possible.
      */
     fun incomingMessages(): Flow<ReceivedMessage<*>> = rawIncomingMessages()
@@ -55,10 +55,10 @@ class MessageClient(
     /**
      * A [Flow] of [ReceivedMessage]s from all platforms. Messages collected here will only ever be
      * messages that [serializer] can deserialize, thus guaranteeing the data type [T].
-     * @param serializer The [DataSerializer] to use for deserializing.
+     * @param serializer The [MessageSerializer] to use for deserializing.
      */
     fun <T> incomingMessages(
-        serializer: DataSerializer<T>
+        serializer: MessageSerializer<T>
     ): Flow<ReceivedMessage<T>> = rawIncomingMessages()
         .mapNotNull { message ->
             if (serializer.messagePaths.contains(message.path)) {
