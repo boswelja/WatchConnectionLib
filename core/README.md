@@ -23,6 +23,28 @@ val messageClient = MessageClient(
 )
 ```
 
+#### Data serialization
+
+`MessageClient` can automatically serialize and deserialize message data for you, as long as a `MessageSerializer` is provided.
+
+```kotlin
+object MyDataSerializer : MessageSerializer<MyType>(
+    messagePaths = setOf( // A set of message paths that will have serialized data for 'MyType'
+        "message-path-1",
+        "message-path-2"
+    )
+) {
+    override suspend fun deserialize(bytes: ByteArray): MyType {
+        // Deserialize bytes to 'MyType'
+    }
+    override suspend fun serialize(data: MyType): ByteArray {
+        // Serialize data to 'ByteArray'
+    }
+}
+```
+
+We provide some serializers for `String`, `Int`, `Long` and `Boolean` by default. To use these, you only need to construct them with a set of message paths.
+
 #### Sending messages
 
 To send a typed message, call the appropriate function on your `MessageClient` instance.
