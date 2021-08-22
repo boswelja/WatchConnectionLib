@@ -27,7 +27,7 @@ class DiscoveryClientTest {
 
     @Test
     fun `DiscoveryClient flows allWatches from all platforms`(): Unit = runBlocking {
-        val client = DiscoveryClient(platform)
+        val client = DiscoveryClient(listOf(platform))
         client.allWatches().take(1).collect {
             expectThat(it).containsExactlyInAnyOrder(allWatches)
         }
@@ -35,7 +35,7 @@ class DiscoveryClientTest {
 
     @Test
     fun `DiscoveryClient flows watchesWithApp from all platforms`(): Unit = runBlocking {
-        val client = DiscoveryClient(platform)
+        val client = DiscoveryClient(listOf(platform))
         client.watchesWithApp().take(1).collect {
             expectThat(it).containsExactlyInAnyOrder(watchesWithApp)
         }
@@ -43,7 +43,7 @@ class DiscoveryClientTest {
 
     @Test
     fun `DiscoveryClient flows capabilities from the correct platform`(): Unit = runBlocking {
-        val client = DiscoveryClient(platform)
+        val client = DiscoveryClient(listOf(platform))
         allWatches.forEach { watch ->
             client.getCapabilitiesFor(watch)!!.take(1).collect {
                 expectThat(it).containsExactlyInAnyOrder(capabilities)
@@ -53,7 +53,7 @@ class DiscoveryClientTest {
 
     @Test
     fun `DiscoveryClient flows status from the correct platform`(): Unit = runBlocking {
-        val client = DiscoveryClient(platform)
+        val client = DiscoveryClient(listOf(platform))
         allWatches.forEach { watch ->
             client.getStatusFor(watch)!!.take(1).collect {
                 expectThat(it).isEqualTo(status)

@@ -1,26 +1,36 @@
 package com.boswelja.watchconnection.core.message
 
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 class ConcreteMessagePlatform(
-    private val incomingMessage: Message
+    platformId: String
 ) : MessagePlatform {
 
-    override val platformIdentifier: String = PLATFORM
+    val incomingMessages = MutableSharedFlow<ReceivedMessage<ByteArray?>>()
 
-    override fun incomingMessages(): Flow<Message> = flow { emit(incomingMessage) }
+    val sentMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
+
+    override val platformIdentifier: String = platformId
+
+    override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = incomingMessages
 
     override suspend fun sendMessage(
         watchId: String,
         message: String,
         data: ByteArray?,
-        priority: Message.Priority
+        priority: MessagePriority
     ): Boolean {
+        sentMessages.add(
+            ReceivedMessage(UUID.randomUUID(), message, data)
+        )
         return true
     }
+}
 
-    companion object {
-        const val PLATFORM = "platform"
+fun createPlatforms(count: Int): List<ConcreteMessagePlatform> {
+    return (0 until count).map {
+        ConcreteMessagePlatform("platform$it")
     }
 }

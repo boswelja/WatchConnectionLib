@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.combine
  * @param platforms The [DiscoveryPlatform]s this MessageClient should support.
  */
 class DiscoveryClient(
-    vararg platforms: DiscoveryPlatform
-) : BaseClient<DiscoveryPlatform>(*platforms) {
+    platforms: List<DiscoveryPlatform>
+) : BaseClient<DiscoveryPlatform>(platforms) {
 
     /**
      * Get a [Flow] of all [Watch]es found by all [Platform]s.

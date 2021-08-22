@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.core
 
 abstract class BaseClient<T : Platform>(
-    vararg platforms: T
+    platforms: List<T>
 ) {
     /** A map of platform IDs to their handlers */
     protected val platforms = HashMap<String, T>()

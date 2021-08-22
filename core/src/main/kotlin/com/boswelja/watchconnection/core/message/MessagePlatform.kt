@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 interface MessagePlatform : Platform {
 
     /**
-     * A [Flow] of [Message]s received by this platform.
+     * A [Flow] of [ByteArrayMessage]s received by this platform.
      */
-    fun incomingMessages(): Flow<Message>
+    fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>>
 
     /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't
@@ -26,6 +26,6 @@ interface MessagePlatform : Platform {
         watchId: String,
         message: String,
         data: ByteArray? = null,
-        priority: Message.Priority = Message.Priority.LOW
+        priority: MessagePriority = MessagePriority.LOW
     ): Boolean
 }

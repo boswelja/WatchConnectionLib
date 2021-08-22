@@ -1,6 +1,7 @@
 package com.boswelja.watchconnection.wearos
 
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.core.message.MessagePriority
+import com.boswelja.watchconnection.core.message.ReceivedMessage
 import com.boswelja.watchconnection.createMessagesFor
 import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
 import com.google.android.gms.wearable.MessageOptions
@@ -38,7 +39,7 @@ class WearOSMessagePlatformTest {
 
         // Send the message
         runBlocking {
-            messagePlatform.sendMessage(watchId, message, priority = Message.Priority.HIGH)
+            messagePlatform.sendMessage(watchId, message, priority = MessagePriority.HIGH)
         }
 
         // Verify the call was made
@@ -59,7 +60,7 @@ class WearOSMessagePlatformTest {
 
         // Send the message
         runBlocking {
-            messagePlatform.sendMessage(watchId, message, priority = Message.Priority.LOW)
+            messagePlatform.sendMessage(watchId, message, priority = MessagePriority.LOW)
         }
 
         // Verify the call was made
@@ -83,19 +84,17 @@ class WearOSMessagePlatformTest {
 
         // Start collecting messages
         val job = Job()
-        val collectedMessages = mutableListOf<Message>()
+        val collectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
         scope.launch(job) {
             messagePlatform.incomingMessages().take(messageCount).collect {
-                collectedMessages += it
-                println("Got $it")
+                collectedMessages.add(it)
             }
-            println("Finished collection")
         }
 
         // Send the dummy messages
         messages.forEach {
             messageClientTestRule.receiveMessage(
-                it.first, it.second.message, it.second.data
+                it.first, it.second.path, it.second.data
             )
         }
 
