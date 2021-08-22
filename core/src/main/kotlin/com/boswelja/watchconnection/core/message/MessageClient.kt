@@ -7,10 +7,12 @@ import com.boswelja.watchconnection.core.message.serialized.DataSerializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 
 /**
  * MessageClient takes a number of [MessagePlatform]s, and provides a common interface between them.
+ * @param serializers A list of [DataSerializer] to use when serializing/deserializing messages.
  * @param platforms The [MessagePlatform]s this MessageClient should support.
  */
 class MessageClient(
@@ -19,12 +21,20 @@ class MessageClient(
 ) : BaseClient<MessagePlatform>(platforms) {
 
     /**
-     * A [Flow] of [ReceivedMessage]s received by all [Platform]s. See [MessagePlatform.incomingMessages].
+     * A [Flow] of [ReceivedMessage]s received by all platforms. Messages collected here have no
+     * additional processing performed, and thus only contain the raw data in bytes.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun incomingMessages(): Flow<ReceivedMessage<*>> = platforms.values
+    fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>> = platforms.values
         .map { it.incomingMessages() }
         .merge()
+
+    /**
+     * A [Flow] of [ReceivedMessage]s received by all [Platform]s. Messages collected here will be
+     * deserialized automatically by the [DataSerializer]s you passed in when constructing this
+     * [MessageClient] where possible.
+     */
+    fun incomingMessages(): Flow<ReceivedMessage<*>> = rawIncomingMessages()
         .map { message ->
             // Deserialize if possible
             val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
@@ -40,6 +50,27 @@ class MessageClient(
             } else {
                 message
             }
+        }
+
+    /**
+     * A [Flow] of [ReceivedMessage]s from all platforms. Messages collected here will only ever be
+     * messages that [serializer] can deserialize, thus guaranteeing the data type [T].
+     * @param serializer The [DataSerializer] to use for deserializing.
+     */
+    fun <T> incomingMessages(
+        serializer: DataSerializer<T>
+    ): Flow<ReceivedMessage<T>> = rawIncomingMessages()
+        .mapNotNull { message ->
+            if (serializer.messagePaths.contains(message.path)) {
+                requireNotNull(message.data) { "Expected data with message $message" }
+
+                val deserializedData = serializer.deserialize(message.data)
+                ReceivedMessage(
+                    message.sourceWatchID,
+                    message.path,
+                    deserializedData
+                )
+            } else null
         }
 
     /**
