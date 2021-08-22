@@ -174,6 +174,39 @@ class MessageClientTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
+    fun `rawIncomingMessages flows messages from platforms`() {
+        // Start collecting incoming messages
+        val receivedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
+        val scope = TestCoroutineScope()
+        scope.launch {
+            client.rawIncomingMessages().collect { message ->
+                receivedMessages.add(message)
+            }
+        }
+
+        // Mock sending messages
+        val expectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
+        runBlocking {
+            platforms.forEach { platform ->
+                val watches = dummyWatches[platform.platformIdentifier]!!
+                watches.forEach { watch ->
+                    val message = ReceivedMessage<ByteArray?>(
+                        watch.id,
+                        "message",
+                        ByteArray(10) { 1 }
+                    )
+                    platform.incomingMessages.emit(message)
+                    expectedMessages.add(message)
+                }
+            }
+        }
+
+        // Check all messages were received
+        expectThat(receivedMessages).containsExactlyInAnyOrder(expectedMessages)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun `incomingMessages deserializes messages when possible`() {
         val expectedData = ConcreteDataType("Data")
         val dataBytes = runBlocking { ConcreteDataSerializer.serialize(expectedData) }
@@ -227,7 +260,6 @@ class MessageClientTest {
         }
 
         // Mock sending messages
-        val expectedMessages = mutableListOf<ReceivedMessage<*>>()
         runBlocking {
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
@@ -238,12 +270,93 @@ class MessageClientTest {
                         null
                     )
                     platform.incomingMessages.emit(message)
-                    expectedMessages.add(message)
                 }
             }
         }
 
         // Check all messages were received
         expectThat(receivedMessages).isEmpty()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `incomingMessages(serializer) throws exception when serializable message data is null`() {
+        // Start collecting incoming messages
+        val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
+        val scope = TestCoroutineScope()
+        scope.launch {
+            client.incomingMessages(ConcreteDataSerializer)
+                .catch { cause ->
+                    expectThat(cause is ClassCastException)
+                }.collect { message ->
+                    receivedMessages.add(message)
+                }
+        }
+
+        // Mock sending messages
+        runBlocking {
+            platforms.forEach { platform ->
+                val watches = dummyWatches[platform.platformIdentifier]!!
+                watches.forEach { watch ->
+                    val message = ReceivedMessage<ByteArray?>(
+                        watch.id,
+                        MessagePath,
+                        null
+                    )
+                    platform.incomingMessages.emit(message)
+                }
+            }
+        }
+
+        // Check all messages were received
+        expectThat(receivedMessages).isEmpty()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `incomingMessages(serializer) only emits supported messages`() {
+        val data = ConcreteDataType("data")
+
+        // Start collecting incoming messages
+        val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
+        val scope = TestCoroutineScope()
+        scope.launch {
+            client.incomingMessages(ConcreteDataSerializer)
+                .collect { message ->
+                    receivedMessages.add(message)
+                }
+        }
+
+        // Mock sending messages
+        val expectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
+        runBlocking {
+            platforms.forEach { platform ->
+                val watches = dummyWatches[platform.platformIdentifier]!!
+                watches.forEachIndexed { index, watch ->
+                    if (index % 2 == 0) {
+                        val message = ReceivedMessage<ByteArray?>(
+                            watch.id,
+                            MessagePath,
+                            ConcreteDataSerializer.serialize(data)
+                        )
+                        platform.incomingMessages.emit(message)
+                        expectedMessages.add(message)
+                    } else {
+                        val message = ReceivedMessage<ByteArray?>(
+                            watch.id,
+                            "invalid-path",
+                            null
+                        )
+                        platform.incomingMessages.emit(message)
+                    }
+                }
+            }
+        }
+
+        // Check all messages were received
+        expectThat(receivedMessages).all {
+            get { path }.isEqualTo(MessagePath)
+            get { data }.isEqualTo(data)
+        }
     }
 }
