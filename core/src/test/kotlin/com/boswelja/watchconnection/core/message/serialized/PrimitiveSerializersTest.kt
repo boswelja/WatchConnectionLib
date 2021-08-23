@@ -42,4 +42,22 @@ class PrimitiveSerializersTest {
         val deserializedData = serializer.deserialize(bytes)
         expectThat(deserializedData).isEqualTo(data)
     }
+
+    @Test
+    fun floatSerializer(): Unit = runBlocking {
+        val data = 0.1f
+        val serializer = FloatSerializer(setOf())
+        val bytes = serializer.serialize(data)
+        val deserializedData = serializer.deserialize(bytes)
+        expectThat(deserializedData).isEqualTo(data)
+    }
+
+    @Test
+    fun doubleSerializer(): Unit = runBlocking {
+        val data = 0.1
+        val serializer = DoubleSerializer(setOf())
+        val bytes = serializer.serialize(data)
+        val deserializedData = serializer.deserialize(bytes)
+        expectThat(deserializedData).isEqualTo(data)
+    }
 }
