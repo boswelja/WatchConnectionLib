@@ -19,6 +19,15 @@ abstract class TypedMessageReceiver<T>(
      */
     abstract suspend fun onTypedMessageReceived(context: Context, message: ReceivedMessage<T>)
 
+    /**
+     * Called when [serializer] thows an exception deserializing data. When overriding this, do not
+     * call super. The default behavior is to throw the exception.
+     * @param exception The [Exception] thrown.
+     */
+    open suspend fun onDeserializeException(exception: Exception) {
+        throw exception
+    }
+
     final override suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<ByteArray?>
@@ -27,17 +36,24 @@ abstract class TypedMessageReceiver<T>(
             requireNotNull(message.data) { "Expected data with message $message" }
 
             // Deserialize data
-            val data = serializer.deserialize(message.data)
+            val data = try {
+                serializer.deserialize(message.data)
+            } catch (e: Exception) {
+                onDeserializeException(exception = e)
+                null
+            }
 
-            // Pass the deserialized message on
-            onTypedMessageReceived(
-                context,
-                ReceivedMessage(
-                    message.sourceWatchID,
-                    message.path,
-                    data
+            if (data != null) {
+                // Pass the deserialized message on
+                onTypedMessageReceived(
+                    context,
+                    ReceivedMessage(
+                        message.sourceWatchID,
+                        message.path,
+                        data
+                    )
                 )
-            )
+            }
         }
     }
 }
