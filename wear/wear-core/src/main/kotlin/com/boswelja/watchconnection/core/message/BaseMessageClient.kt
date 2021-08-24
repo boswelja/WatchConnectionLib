@@ -26,12 +26,12 @@ abstract class BaseMessageClient(
 
     /**
      * Send a message to a target with the given ID. Note that a successful response doesn't
-     * guarantee delivery.
+     * guarantee delivery. If possible, use [sendMessage] instead for serialization support.
      * @param targetId The target ID of the device to send the message to.
      * @param message The message to send.
      * @return true if sending was successful, false otherwise.
      */
-    internal abstract suspend fun sendMessage(
+    abstract suspend fun sendRawMessage(
         targetId: String,
         message: Message<ByteArray?>,
         priority: MessagePriority = MessagePriority.LOW
@@ -106,6 +106,6 @@ abstract class BaseMessageClient(
             data
         }
 
-        return sendMessage(to.internalId, ByteArrayMessage(message.path, bytes), priority)
+        return sendRawMessage(to.internalId, ByteArrayMessage(message.path, bytes), priority)
     }
 }
