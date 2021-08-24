@@ -1,4 +1,4 @@
-# Wear OS
+# platform-wearos
 
 Provides an interface for connecting to Wear OS smartwatches via Google's Wearable support library.
 

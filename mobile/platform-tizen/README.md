@@ -1,4 +1,4 @@
-# Tizen
+# platform-tizen
 
 Provides an interface for connecting to Tizen smartwatches via Samsung's Accessory SDK.
 

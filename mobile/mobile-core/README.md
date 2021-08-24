@@ -1,4 +1,4 @@
-# Core
+# mobile-core
 
 Provides all the base classes, interfaces and enums for implementing platforms, as well as classes to easily manage multiple platforms.
 
