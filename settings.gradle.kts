@@ -2,7 +2,8 @@ include(
     ":common",
     ":mobile:mobile-core",
     ":mobile:platform-wearos",
-    ":mobile:platform-tizen"
+    ":mobile:platform-tizen",
+    "wear:wear-core"
 )
 
 enableFeaturePreview("VERSION_CATALOGS")
