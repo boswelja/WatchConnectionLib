@@ -15,6 +15,8 @@ import strikt.api.expectThat
 import strikt.assertions.containsExactly
 import strikt.assertions.isNotNull
 
+private const val TIMEOUT = 250L
+
 class WearOSDiscoveryPlatformTest {
 
     private val appCapability = "app-capability"
@@ -100,9 +102,5 @@ class WearOSDiscoveryPlatformTest {
 
         // If status isn't null, we got something
         expectThat(status).isNotNull()
-    }
-
-    companion object {
-        private const val TIMEOUT = 250L
     }
 }

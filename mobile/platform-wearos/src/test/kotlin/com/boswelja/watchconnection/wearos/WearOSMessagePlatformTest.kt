@@ -6,19 +6,21 @@ import com.boswelja.watchconnection.createMessagesFor
 import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
 import com.google.android.gms.wearable.MessageOptions
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.withTimeout
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.containsExactlyInAnyOrder
+
+private const val TIMEOUT = 250L
 
 class WearOSMessagePlatformTest {
 
@@ -39,7 +41,9 @@ class WearOSMessagePlatformTest {
 
         // Send the message
         runBlocking {
-            messagePlatform.sendMessage(watchId, message, priority = MessagePriority.HIGH)
+            withTimeout(TIMEOUT) {
+                messagePlatform.sendMessage(watchId, message, priority = MessagePriority.HIGH)
+            }
         }
 
         // Verify the call was made
@@ -60,7 +64,9 @@ class WearOSMessagePlatformTest {
 
         // Send the message
         runBlocking {
-            messagePlatform.sendMessage(watchId, message, priority = MessagePriority.LOW)
+            withTimeout(TIMEOUT) {
+                messagePlatform.sendMessage(watchId, message, priority = MessagePriority.LOW)
+            }
         }
 
         // Verify the call was made
@@ -80,7 +86,7 @@ class WearOSMessagePlatformTest {
         val messageCount = 10
         val messages = createMessagesFor(messageCount, messagePlatform.platformIdentifier)
 
-        val scope = CoroutineScope(Dispatchers.Default)
+        val scope = TestCoroutineScope()
 
         // Start collecting messages
         val job = Job()
@@ -97,9 +103,6 @@ class WearOSMessagePlatformTest {
                 it.first, it.second.path, it.second.data
             )
         }
-
-        // Wait for collection to finish
-        job.complete()
 
         // Make sure we got all the messages
         expectThat(collectedMessages).containsExactlyInAnyOrder(messages.map { it.second })
