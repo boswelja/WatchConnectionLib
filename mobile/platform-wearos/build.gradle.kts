@@ -14,6 +14,8 @@ android {
         minSdk = Sdk.min
         targetSdk = Sdk.target
         consumerProguardFile("proguard-rules.pro")
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -23,12 +25,21 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    testOptions.unitTests {
+        isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
     api(projects.mobile.core)
-    api(fileTree("libs"))
     api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.playservices)
+    api(libs.play.services.wearable)
+
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+    testImplementation(libs.strikt.core)
+    testImplementation(libs.mockk.core)
 }
 
 // Bundle sources with binaries
@@ -45,9 +56,9 @@ publishing {
         create(
             "release",
             configureMavenPublication(
-                "tizen",
-                "Samsung Tizen support for Watch Connection Library",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/tizen",
+                "platform-wearos",
+                "Wear OS support for Watch Connection Library",
+                "https://github.com/boswelja/WatchConnectionLib/blob/main/wearos",
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")
