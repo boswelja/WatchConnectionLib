@@ -1,6 +1,7 @@
 package com.boswelja.watchconnection.core.discovery
 
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.Status
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

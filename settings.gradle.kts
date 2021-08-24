@@ -1,4 +1,5 @@
 include(
+    ":common",
     ":core",
     ":wearos",
     ":tizen"

@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.message
+package com.boswelja.watchconnection.common.message
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,10 +6,10 @@ import android.content.Intent
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_DATA
-import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_MESSAGE
-import com.boswelja.watchconnection.core.message.MessageReceiver.Companion.EXTRA_WATCH_ID
-import com.boswelja.watchconnection.core.message.Messages.ACTION_MESSAGE_RECEIVED
+import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXTRA_DATA
+import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXTRA_MESSAGE
+import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXTRA_WATCH_ID
+import com.boswelja.watchconnection.common.message.Messages.ACTION_MESSAGE_RECEIVED
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk

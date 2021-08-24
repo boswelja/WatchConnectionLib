@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.message
+package com.boswelja.watchconnection.common.message
 
 /**
  * Constants for defining a message priority.

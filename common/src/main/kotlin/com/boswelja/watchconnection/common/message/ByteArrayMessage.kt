@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.message
+package com.boswelja.watchconnection.common.message
 
 /**
  * A data class containing information about a received message.

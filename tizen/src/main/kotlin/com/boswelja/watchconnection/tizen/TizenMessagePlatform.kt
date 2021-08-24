@@ -1,9 +1,9 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
-import com.boswelja.watchconnection.core.message.MessagePriority
-import com.boswelja.watchconnection.core.message.ReceivedMessage
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
 import com.samsung.android.sdk.accessory.SAAgentV2
 import java.util.UUID

@@ -1,10 +1,10 @@
 package com.boswelja.watchconnection.wearos
 
 import android.content.Context
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
-import com.boswelja.watchconnection.core.message.MessagePriority
-import com.boswelja.watchconnection.core.message.ReceivedMessage
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.MessageClient

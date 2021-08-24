@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.wearos
 
-import com.boswelja.watchconnection.core.message.MessagePriority
-import com.boswelja.watchconnection.core.message.ReceivedMessage
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.createMessagesFor
 import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
 import com.google.android.gms.wearable.MessageOptions

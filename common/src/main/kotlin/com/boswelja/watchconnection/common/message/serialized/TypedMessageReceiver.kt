@@ -1,9 +1,9 @@
-package com.boswelja.watchconnection.core.message.serialized
+package com.boswelja.watchconnection.common.message.serialized
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import com.boswelja.watchconnection.core.message.MessageReceiver
-import com.boswelja.watchconnection.core.message.ReceivedMessage
+import com.boswelja.watchconnection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 
 /**
  * An extension of [MessageReceiver] that supports deserializing data automatically.

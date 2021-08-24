@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.message.serialized
+package com.boswelja.watchconnection.common.message.serialized
 
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

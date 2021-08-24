@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.message
+package com.boswelja.watchconnection.common.message
 
 import android.annotation.SuppressLint
 import android.content.ComponentName

@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-    api(projects.common)
     api(libs.kotlinx.coroutines.core)
 
     testImplementation(libs.androidx.test.ext)
@@ -58,9 +57,9 @@ publishing {
         create(
             "release",
             configureMavenPublication(
-                "core",
-                "Watch Connection Library core components",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/core",
+                "common",
+                "Watch Connection Library common components",
+                "https://github.com/boswelja/WatchConnectionLib/blob/main/common",
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")

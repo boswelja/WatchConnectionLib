@@ -1,9 +1,9 @@
-package com.boswelja.watchconnection.core.message.serialized
+package com.boswelja.watchconnection.common.message.serialized
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.boswelja.watchconnection.core.message.ReceivedMessage
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.Before

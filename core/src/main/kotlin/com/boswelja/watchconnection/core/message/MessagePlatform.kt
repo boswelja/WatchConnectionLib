@@ -1,7 +1,8 @@
 package com.boswelja.watchconnection.core.message
 
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.Platform
-import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -10,14 +11,14 @@ import kotlinx.coroutines.flow.Flow
 interface MessagePlatform : Platform {
 
     /**
-     * A [Flow] of [ByteArrayMessage]s received by this platform.
+     * A [Flow] of [ReceivedMessage]s received by this platform.
      */
     fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>>
 
     /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't
      * guarantee delivery.
-     * @param watchId See [Watch.platformId].
+     * @param watchId See [com.boswelja.watchconnection.common.Watch.platformId].
      * @param message The message to send.
      * @param data The data to send with the message, if any.
      * @return true if sending was successful, false otherwise.

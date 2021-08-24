@@ -1,5 +1,6 @@
 package com.boswelja.watchconnection.core.discovery
 
+import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.createCapabilities
 import com.boswelja.watchconnection.createWatchesFor
 import kotlinx.coroutines.ExperimentalCoroutinesApi

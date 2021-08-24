@@ -1,13 +1,12 @@
 package com.boswelja.watchconnection
 
-import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.message.ByteArrayMessage
-import com.boswelja.watchconnection.core.message.ReceivedMessage
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlin.random.Random
 
 /**
  * Returns a list of pairs. Each pair contains the source watch ID (note this is not the watches UID
- * assigned by WatchConnectionLib), and a fake [ByteArrayMessage].
+ * assigned by WatchConnectionLib), and a fake [ReceivedMessage].
  */
 fun createMessagesFor(
     count: Int,

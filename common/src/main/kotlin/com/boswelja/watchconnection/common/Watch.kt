@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core
+package com.boswelja.watchconnection.common
 
 import android.os.Parcelable
 import java.util.UUID

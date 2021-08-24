@@ -1,6 +1,6 @@
-package com.boswelja.watchconnection.core.message.serialized
+package com.boswelja.watchconnection.common.message.serialized
 
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.common.message.Message
 
 /**
  * A data class containing information about a message.

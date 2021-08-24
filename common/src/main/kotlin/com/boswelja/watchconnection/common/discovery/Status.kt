@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.discovery
+package com.boswelja.watchconnection.common.discovery
 
 enum class Status {
     CONNECTING,

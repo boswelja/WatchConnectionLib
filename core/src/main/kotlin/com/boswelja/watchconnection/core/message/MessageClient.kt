@@ -1,9 +1,12 @@
 package com.boswelja.watchconnection.core.message
 
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
-import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.message.serialized.MessageSerializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -39,9 +42,10 @@ class MessageClient(
             // Deserialize if possible
             val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
             if (serializer != null) {
-                requireNotNull(message.data) { "Expected data with message $message" }
+                val data = message.data
+                requireNotNull(data) { "Expected data with message $message" }
 
-                val deserializedData = serializer.deserialize(message.data)
+                val deserializedData = serializer.deserialize(data)
                 ReceivedMessage(
                     message.sourceWatchID,
                     message.path,
@@ -62,9 +66,10 @@ class MessageClient(
     ): Flow<ReceivedMessage<T>> = rawIncomingMessages()
         .mapNotNull { message ->
             if (serializer.messagePaths.contains(message.path)) {
-                requireNotNull(message.data) { "Expected data with message $message" }
+                val data = message.data
+                requireNotNull(data) { "Expected data with message $message" }
 
-                val deserializedData = serializer.deserialize(message.data)
+                val deserializedData = serializer.deserialize(data)
                 ReceivedMessage(
                     message.sourceWatchID,
                     message.path,

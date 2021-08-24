@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core.message.serialized
+package com.boswelja.watchconnection.common.message.serialized
 
 /**
  * A generic serializer implementation, designed to serialize/deserialize classes with some
@@ -6,7 +6,7 @@ package com.boswelja.watchconnection.core.message.serialized
  * @param messagePaths A [Set] of [TypedMessage.path]s this serializer supports.
  */
 abstract class MessageSerializer<T>(
-    internal val messagePaths: Set<String>
+    val messagePaths: Set<String>
 ) {
 
     /**
@@ -27,7 +27,7 @@ abstract class MessageSerializer<T>(
      * This exists to effectively allow serializing [T] after type erasure.
      */
     @Suppress("UNCHECKED_CAST")
-    internal suspend fun serializeAny(data: Any): ByteArray {
+    suspend fun serializeAny(data: Any): ByteArray {
         return serialize(data as T)
     }
 }
