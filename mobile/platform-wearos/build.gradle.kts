@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    api(projects.mobile.core)
+    api(projects.mobile.mobileCore)
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.playservices)
     api(libs.play.services.wearable)
@@ -58,7 +58,7 @@ publishing {
             configureMavenPublication(
                 "platform-wearos",
                 "Wear OS support for Watch Connection Library",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/wearos",
+                "https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-wearos",
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")

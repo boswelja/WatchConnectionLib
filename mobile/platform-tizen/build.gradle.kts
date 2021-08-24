@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    api(projects.mobile.core)
+    api(projects.mobile.mobileCore)
     api(fileTree("libs"))
     api(libs.kotlinx.coroutines.core)
 }
@@ -47,7 +47,7 @@ publishing {
             configureMavenPublication(
                 "platform-tizen",
                 "Samsung Tizen support for Watch Connection Library",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/tizen",
+                "https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-tizen",
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")

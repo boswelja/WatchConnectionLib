@@ -58,9 +58,9 @@ publishing {
         create(
             "release",
             configureMavenPublication(
-                "core",
-                "Watch Connection Library core components",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/core",
+                "mobile-core",
+                "Watch Connection Library mobile-core components",
+                "https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core",
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")
