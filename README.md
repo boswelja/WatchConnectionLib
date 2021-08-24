@@ -4,32 +4,12 @@ A kotlin-first Android library to provide a shared API for interacting with mult
 
 ## Modules
 
-### [Core](https://github.com/boswelja/WatchConnectionLib/blob/main/core)
+### Mobile
 
-### [Wear OS](https://github.com/boswelja/WatchConnectionLib/blob/main/wearos)
+#### [mobile-core](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core)
 
-### [Tizen](https://github.com/boswelja/WatchConnectionLib/blob/main/tizen)
+### [platform-wearos](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-wearos)
+
+### [platform-tizen](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-tizen)
 
 ### More coming soon
-
-## Usage
-
-### This library is still in development, APIs are subject to change without notice
-
-Add module dependencies for platforms you want to support:
-```kotlin
-dependencies {
-    // Wear OS support
-    implementation("io.github.boswelja.watchconnection:wearos:$watchConnectionVersion")
-    // Tizen support
-    implementation("io.github.boswelja.watchconnection:tizen:$watchConnectionVersion")
-}
-```
-
-Next, you'll want to create an instance of `WatchPlatformManager` and pass in all your desired `WatchPlatform`s provided by your selected modules (see each modules documentation for more info in creating their respective platform handlers). The result should look something like this:
-```kotlin
-val connectionClient = WatchPlatformManager(
-    wearOSPlatform,
-    tizenPlatform
-)
-```
