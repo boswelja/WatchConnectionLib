@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    api(projects.core)
+    api(projects.mobile.core)
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.playservices)
     api(libs.play.services.wearable)

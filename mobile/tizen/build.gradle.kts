@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    api(projects.core)
+    api(projects.mobile.core)
     api(fileTree("libs"))
     api(libs.kotlinx.coroutines.core)
 }
