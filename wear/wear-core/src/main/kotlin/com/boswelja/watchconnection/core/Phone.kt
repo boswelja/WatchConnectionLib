@@ -7,3 +7,5 @@ open class Phone(
     open val name: String,
     open val internalId: String
 )
+
+fun uidFor(internalId: String): UUID = UUID.nameUUIDFromBytes(internalId.toByteArray())
