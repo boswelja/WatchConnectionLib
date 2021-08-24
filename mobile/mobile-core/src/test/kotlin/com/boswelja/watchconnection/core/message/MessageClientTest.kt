@@ -3,10 +3,10 @@ package com.boswelja.watchconnection.core.message
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.ByteArrayMessage
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.ConcreteDataType
-import com.boswelja.watchconnection.common.message.serialized.ConcreteMessageSerializer
-import com.boswelja.watchconnection.common.message.serialized.MessagePath
 import com.boswelja.watchconnection.common.message.serialized.TypedMessage
+import com.boswelja.watchconnection.core.message.serialized.ConcreteDataType
+import com.boswelja.watchconnection.core.message.serialized.ConcreteMessageSerializer
+import com.boswelja.watchconnection.core.message.serialized.MessagePath
 import com.boswelja.watchconnection.createWatchesFor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
