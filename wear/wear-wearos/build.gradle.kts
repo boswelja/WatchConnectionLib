@@ -60,8 +60,8 @@ publishing {
         create(
             "release",
             configureMavenPublication(
-                "wearos",
-                "Watch Connection Library wearos components",
+                "wear-wearos",
+                "Watch Connection Library wear-wearos components",
                 "https://github.com/boswelja/WatchConnectionLib/blob/main/wear/wearos",
                 project.configurations.implementation.get().allDependencies
             ) {
