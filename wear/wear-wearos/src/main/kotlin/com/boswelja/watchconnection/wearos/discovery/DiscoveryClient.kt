@@ -26,6 +26,7 @@ class DiscoveryClient(
     private val capabilities: List<String>,
     private val scanRepeatInterval: Long = 5000
 ) : BaseDiscoveryClient() {
+
     private val nodeClient = Wearable.getNodeClient(context.applicationContext)
     private val capabilityClient = Wearable.getCapabilityClient(context.applicationContext)
 
