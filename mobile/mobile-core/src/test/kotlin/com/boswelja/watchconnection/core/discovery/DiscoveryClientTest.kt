@@ -7,10 +7,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
-import strikt.api.expectThat
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
 
 @ExperimentalCoroutinesApi
 class DiscoveryClientTest {
@@ -30,7 +28,7 @@ class DiscoveryClientTest {
     fun `DiscoveryClient flows allWatches from all platforms`(): Unit = runBlocking {
         val client = DiscoveryClient(listOf(platform))
         client.allWatches().take(1).collect {
-            expectThat(it).containsExactlyInAnyOrder(allWatches)
+            Assert.assertEquals(allWatches, it)
         }
     }
 
@@ -38,7 +36,7 @@ class DiscoveryClientTest {
     fun `DiscoveryClient flows watchesWithApp from all platforms`(): Unit = runBlocking {
         val client = DiscoveryClient(listOf(platform))
         client.watchesWithApp().take(1).collect {
-            expectThat(it).containsExactlyInAnyOrder(watchesWithApp)
+            Assert.assertEquals(watchesWithApp, it)
         }
     }
 
@@ -47,7 +45,7 @@ class DiscoveryClientTest {
         val client = DiscoveryClient(listOf(platform))
         allWatches.forEach { watch ->
             client.getCapabilitiesFor(watch)!!.take(1).collect {
-                expectThat(it).containsExactlyInAnyOrder(capabilities)
+                Assert.assertEquals(capabilities, it)
             }
         }
     }
@@ -57,7 +55,7 @@ class DiscoveryClientTest {
         val client = DiscoveryClient(listOf(platform))
         allWatches.forEach { watch ->
             client.getStatusFor(watch)!!.take(1).collect {
-                expectThat(it).isEqualTo(status)
+                Assert.assertEquals(status, it)
             }
         }
     }

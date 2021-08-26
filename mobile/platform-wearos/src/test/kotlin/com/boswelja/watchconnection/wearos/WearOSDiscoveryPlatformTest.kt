@@ -8,12 +8,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import strikt.api.expectThat
-import strikt.assertions.containsExactly
-import strikt.assertions.isNotNull
 
 private const val TIMEOUT = 250L
 
@@ -50,7 +48,7 @@ class WearOSDiscoveryPlatformTest {
             }
         }
 
-        expectThat(watches.map { it.internalId }).containsExactly(nodes.map { it.id })
+        Assert.assertEquals(nodes.map { it.id }, watches.map { it.internalId })
     }
 
     @ExperimentalCoroutinesApi
@@ -67,7 +65,7 @@ class WearOSDiscoveryPlatformTest {
             }
         }
 
-        expectThat(watches.map { it.internalId }).containsExactly(nodes.map { it.id })
+        Assert.assertEquals(nodes.map { it.id }, watches.map { it.internalId })
     }
 
     @ExperimentalCoroutinesApi
@@ -87,7 +85,7 @@ class WearOSDiscoveryPlatformTest {
         }
 
         // We've just mocked all capabilities, so check for them all
-        expectThat(capabilities).containsExactly(capabilities)
+        Assert.assertEquals(this.capabilities, capabilities)
     }
 
     @ExperimentalCoroutinesApi
@@ -101,6 +99,6 @@ class WearOSDiscoveryPlatformTest {
         }
 
         // If status isn't null, we got something
-        expectThat(status).isNotNull()
+        Assert.assertNotNull(status)
     }
 }

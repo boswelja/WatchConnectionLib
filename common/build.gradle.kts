@@ -38,7 +38,6 @@ dependencies {
     testImplementation(libs.androidx.test.ext)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
-    testImplementation(libs.strikt.core)
     testImplementation(libs.mockk.core)
     testImplementation(libs.robolectric)
 }

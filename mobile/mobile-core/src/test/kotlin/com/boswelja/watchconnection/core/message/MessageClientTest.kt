@@ -14,16 +14,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import strikt.api.expectThat
-import strikt.api.expectThrows
-import strikt.assertions.all
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.count
-import strikt.assertions.isEmpty
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNull
 
 class MessageClientTest {
 
@@ -64,15 +57,15 @@ class MessageClientTest {
             }
 
             // Check received messages
-            expectThat(platform.sentMessages) {
-                count().isEqualTo(watches.count())
-                all { get { data }.isEqualTo(expectedBytes) }
+            Assert.assertEquals(watches.count(), platform.sentMessages.count())
+            platform.sentMessages.forEach {
+                Assert.assertArrayEquals(expectedBytes, it.data)
             }
         }
     }
 
     @Test
-    fun `sendMessage throws exception if serializable message has null data`(): Unit = runBlocking {
+    fun `sendMessage throws exception if serializable message has null data`() {
         // Create a dummy message with wrong data type
         val message = TypedMessage(
             MessagePath,
@@ -84,10 +77,12 @@ class MessageClientTest {
             val watches = dummyWatches[platform.platformIdentifier]!!
 
             watches.forEach { watch ->
-                expectThrows<IllegalArgumentException> { client.sendMessage(watch, message) }
+                Assert.assertThrows(IllegalArgumentException::class.java) {
+                    runBlocking { client.sendMessage(watch, message) }
+                }
             }
 
-            expectThat(platform.sentMessages).isEmpty()
+            Assert.assertEquals(0, platform.sentMessages.count())
         }
     }
 
@@ -109,9 +104,9 @@ class MessageClientTest {
             }
 
             // Check received messages
-            expectThat(platform.sentMessages) {
-                count().isEqualTo(watches.count())
-                all { get { data }.isEqualTo(expectedBytes) }
+            Assert.assertEquals(watches.count(), platform.sentMessages.count())
+            platform.sentMessages.forEach {
+                Assert.assertArrayEquals(expectedBytes, it.data)
             }
         }
     }
@@ -134,9 +129,9 @@ class MessageClientTest {
                 }
 
                 // Check received messages
-                expectThat(platform.sentMessages) {
-                    count().isEqualTo(watches.count())
-                    all { get { data }.isNull() }
+                Assert.assertEquals(watches.count(), platform.sentMessages.count())
+                platform.sentMessages.forEach {
+                    Assert.assertNull(it.data)
                 }
             }
         }
@@ -171,7 +166,7 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        expectThat(receivedMessages).containsExactlyInAnyOrder(expectedMessages)
+        Assert.assertEquals(expectedMessages, receivedMessages)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -204,7 +199,7 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        expectThat(receivedMessages).containsExactlyInAnyOrder(expectedMessages)
+        Assert.assertEquals(expectedMessages, receivedMessages)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -240,9 +235,9 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        expectThat(receivedMessages) {
-            count().isEqualTo(expectedMessages.count())
-            all { get { data }.isEqualTo(expectedData) }
+        Assert.assertEquals(expectedMessages.count(), receivedMessages.count())
+        receivedMessages.forEach {
+            Assert.assertEquals(expectedData, it.data)
         }
     }
 
@@ -255,7 +250,7 @@ class MessageClientTest {
         scope.launch {
             client.incomingMessages()
                 .catch { cause ->
-                    expectThat(cause is ClassCastException)
+                    Assert.assertTrue(cause is ClassCastException)
                 }.collect { message ->
                     receivedMessages.add(message)
                 }
@@ -277,7 +272,7 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        expectThat(receivedMessages).isEmpty()
+        Assert.assertEquals(0, receivedMessages.count())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -289,7 +284,7 @@ class MessageClientTest {
         scope.launch {
             client.incomingMessages(ConcreteMessageSerializer)
                 .catch { cause ->
-                    expectThat(cause is ClassCastException)
+                    Assert.assertTrue(cause is ClassCastException)
                 }.collect { message ->
                     receivedMessages.add(message)
                 }
@@ -311,7 +306,7 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        expectThat(receivedMessages).isEmpty()
+        Assert.assertEquals(0, receivedMessages.count())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -356,9 +351,9 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        expectThat(receivedMessages).all {
-            get { path }.isEqualTo(MessagePath)
-            get { data }.isEqualTo(data)
+        receivedMessages.forEach {
+            Assert.assertEquals(MessagePath, it.path)
+            Assert.assertEquals(data, it.data)
         }
     }
 }

@@ -14,11 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.withTimeout
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import strikt.api.expectThat
-import strikt.assertions.containsExactlyInAnyOrder
 
 private const val TIMEOUT = 250L
 
@@ -105,6 +104,6 @@ class WearOSMessagePlatformTest {
         }
 
         // Make sure we got all the messages
-        expectThat(collectedMessages).containsExactlyInAnyOrder(messages.map { it.second })
+        Assert.assertEquals(messages.map { it.second }, collectedMessages)
     }
 }

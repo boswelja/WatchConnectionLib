@@ -6,15 +6,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import strikt.api.expectThat
-import strikt.api.expectThrows
-import strikt.assertions.isEmpty
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNotNull
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -38,20 +34,22 @@ class TypedMessageReceiverTest {
             )
         )
 
-        expectThat(receiver.receivedMessages).isEmpty()
+        Assert.assertEquals(0, receiver.receivedMessages.count())
     }
 
     @Test
-    fun `receiver throws exception when expected data is missing`(): Unit = runBlocking {
-        expectThrows<IllegalArgumentException> {
-            receiver.onMessageReceived(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                ReceivedMessage(
-                    UUID.randomUUID(),
-                    MessagePath,
-                    null
+    fun `receiver throws exception when expected data is missing`() {
+        Assert.assertThrows(IllegalArgumentException::class.java) {
+            runBlocking {
+                receiver.onMessageReceived(
+                    InstrumentationRegistry.getInstrumentation().targetContext,
+                    ReceivedMessage(
+                        UUID.randomUUID(),
+                        MessagePath,
+                        null
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -70,9 +68,8 @@ class TypedMessageReceiverTest {
         )
 
         // Check data was deserialized correctly
-        expectThat(receiver.receivedMessages.firstOrNull())
-            .isNotNull()
-            .get("data") { data.data }
-            .isEqualTo(testString)
+        val message = receiver.receivedMessages.firstOrNull()
+        Assert.assertNotNull(message)
+        Assert.assertEquals(testString, message!!.data.data)
     }
 }
