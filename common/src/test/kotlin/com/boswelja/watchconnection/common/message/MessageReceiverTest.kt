@@ -86,6 +86,6 @@ class MessageReceiverTest {
         }
 
         val expectedMessage = ReceivedMessage(id, message, data)
-        Assert.assertEquals(expectedMessage, messageReceiver.receivedMessages)
+        Assert.assertEquals(expectedMessage, messageReceiver.receivedMessages.first())
     }
 }
