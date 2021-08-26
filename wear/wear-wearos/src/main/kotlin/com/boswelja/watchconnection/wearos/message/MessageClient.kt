@@ -6,7 +6,7 @@ import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.core.message.BaseMessageClient
-import com.boswelja.watchconnection.core.uidFor
+import com.boswelja.watchconnection.core.Phone
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageOptions
 import com.google.android.gms.wearable.Wearable
@@ -33,7 +33,7 @@ class MessageClient internal constructor(
         val listener = MessageClient.OnMessageReceivedListener {
             val data = if (it.data.isNotEmpty()) it.data else null
             trySend(
-                ReceivedMessage(uidFor(it.sourceNodeId), it.path, data)
+                ReceivedMessage(Phone.uidFor(it.sourceNodeId), it.path, data)
             )
         }
         messageClient.addListener(listener)

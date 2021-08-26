@@ -1,6 +1,5 @@
 package com.boswelja.watchconnection.core.message
 
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.ByteArrayMessage
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessagePriority

@@ -1,9 +1,9 @@
 package com.boswelja.watchconnection.core.discovery
 
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -50,7 +50,7 @@ class DiscoveryClient(
      * @return A [Flow] of capability strings declared by the watch.
      */
     fun getCapabilitiesFor(watch: Watch): Flow<List<String>>? {
-        return platforms[watch.platform]?.getCapabilitiesFor(watch.platformId)
+        return platforms[watch.platform]?.getCapabilitiesFor(watch.internalId)
     }
 
     /**
@@ -60,6 +60,6 @@ class DiscoveryClient(
      * this instance.
      */
     fun getStatusFor(watch: Watch): Flow<Status>? {
-        return platforms[watch.platform]?.getStatusFor(watch.platformId)
+        return platforms[watch.platform]?.getStatusFor(watch.internalId)
     }
 }

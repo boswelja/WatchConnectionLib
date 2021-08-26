@@ -50,7 +50,7 @@ class WearOSDiscoveryPlatformTest {
             }
         }
 
-        expectThat(watches.map { it.platformId }).containsExactly(nodes.map { it.id })
+        expectThat(watches.map { it.internalId }).containsExactly(nodes.map { it.id })
     }
 
     @ExperimentalCoroutinesApi
@@ -67,7 +67,7 @@ class WearOSDiscoveryPlatformTest {
             }
         }
 
-        expectThat(watches.map { it.platformId }).containsExactly(nodes.map { it.id })
+        expectThat(watches.map { it.internalId }).containsExactly(nodes.map { it.id })
     }
 
     @ExperimentalCoroutinesApi

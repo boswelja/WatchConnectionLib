@@ -4,7 +4,6 @@ import android.content.Context
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Phone
 import com.boswelja.watchconnection.core.discovery.BaseDiscoveryClient
-import com.boswelja.watchconnection.core.uidFor
 import com.boswelja.watchconnection.wearos.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
@@ -33,7 +32,6 @@ class DiscoveryClient(
     override suspend fun pairedPhone(): Phone {
         val node = nodeClient.connectedNodes.await().first()
         return Phone(
-            uidFor(node.id),
             node.displayName,
             node.id
         )

@@ -1,6 +1,6 @@
 package com.boswelja.watchconnection
 
-import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.core.Watch
 
 fun createWatchesFor(count: Int, platformIdentifier: String): List<Watch> {
     return (0 until count).map {

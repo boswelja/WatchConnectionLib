@@ -1,6 +1,7 @@
-package com.boswelja.watchconnection.common
+package com.boswelja.watchconnection.core
 
 import android.os.Parcelable
+import com.boswelja.watchconnection.common.Device
 import java.util.UUID
 import kotlinx.parcelize.Parcelize
 
@@ -15,20 +16,20 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 open class Watch(
-    open val id: UUID,
-    open val name: String,
-    open val platformId: String,
+    override val id: UUID,
+    override val name: String,
+    override val internalId: String,
     open val platform: String
-) : Parcelable {
+) : Parcelable, Device(id, name, internalId) {
 
     constructor(
         name: String,
-        platformId: String,
+        internalId: String,
         platform: String
     ) : this(
-        createUUID(platform, platformId),
+        createUUID(platform, internalId),
         name,
-        platformId,
+        internalId,
         platform
     )
 
