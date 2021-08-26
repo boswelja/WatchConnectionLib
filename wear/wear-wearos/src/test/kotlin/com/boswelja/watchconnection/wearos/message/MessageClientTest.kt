@@ -17,11 +17,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import strikt.api.expectThat
-import strikt.assertions.count
-import strikt.assertions.isEqualTo
 
 class MessageClientTest {
 
@@ -90,6 +88,6 @@ class MessageClientTest {
         }
 
         // Check the result
-        expectThat(collectedMessages).count().isEqualTo(messageCount)
+        Assert.assertEquals(messageCount, collectedMessages.count())
     }
 }
