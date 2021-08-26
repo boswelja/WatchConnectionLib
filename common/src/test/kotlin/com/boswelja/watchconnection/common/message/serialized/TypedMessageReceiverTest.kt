@@ -70,6 +70,6 @@ class TypedMessageReceiverTest {
         // Check data was deserialized correctly
         val message = receiver.receivedMessages.firstOrNull()
         Assert.assertNotNull(message)
-        Assert.assertEquals(testString, message!!.data)
+        Assert.assertEquals(testString, message!!.data.data)
     }
 }
