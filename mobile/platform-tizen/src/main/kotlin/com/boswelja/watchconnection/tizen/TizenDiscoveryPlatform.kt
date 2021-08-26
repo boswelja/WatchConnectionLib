@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.Status
+import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,7 +50,7 @@ class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform {
 
     @ExperimentalCoroutinesApi
     override fun getStatusFor(watchId: String): Flow<Status> = allWatches().map { allWatches ->
-        if (allWatches.any { it.platformId == watchId }) Status.CONNECTED
+        if (allWatches.any { it.internalId == watchId }) Status.CONNECTED
         else Status.DISCONNECTED
     }
 }

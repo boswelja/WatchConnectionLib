@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection
 
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.core.Watch
 import kotlin.random.Random
 
 /**

@@ -1,12 +1,12 @@
 package com.boswelja.watchconnection.core.message
 
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -104,6 +104,6 @@ class MessageClient(
             data
         }
 
-        return platform.sendMessage(to.platformId, message.path, bytes, priority)
+        return platform.sendMessage(to.internalId, message.path, bytes, priority)
     }
 }

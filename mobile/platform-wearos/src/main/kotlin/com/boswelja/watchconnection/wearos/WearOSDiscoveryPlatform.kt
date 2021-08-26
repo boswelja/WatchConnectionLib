@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.wearos
 
 import android.content.Context
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.Status
+import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.wearable.CapabilityClient
