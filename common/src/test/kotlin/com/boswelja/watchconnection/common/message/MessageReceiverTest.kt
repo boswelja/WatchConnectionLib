@@ -19,13 +19,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import strikt.api.expectThat
-import strikt.assertions.contains
-import strikt.assertions.isEmpty
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -64,7 +62,7 @@ class MessageReceiverTest {
             }
         }
 
-        expectThat(messageReceiver.receivedMessages).isEmpty()
+        Assert.assertEquals(0, messageReceiver.receivedMessages.count())
     }
 
     @Test
@@ -88,6 +86,6 @@ class MessageReceiverTest {
         }
 
         val expectedMessage = ReceivedMessage(id, message, data)
-        expectThat(messageReceiver.receivedMessages).contains(expectedMessage)
+        Assert.assertEquals(expectedMessage, messageReceiver.receivedMessages)
     }
 }
