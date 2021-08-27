@@ -5,8 +5,8 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
-import com.boswelja.watchconnection.core.message.BaseMessageClient
 import com.boswelja.watchconnection.core.Phone
+import com.boswelja.watchconnection.core.message.BaseMessageClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageOptions
 import com.google.android.gms.wearable.Wearable
@@ -21,7 +21,7 @@ import kotlinx.coroutines.tasks.await
  * @param context [Context].
  * @param serializers The list of [MessageSerializer]s to use by default for serialization.
  */
-class MessageClient internal constructor(
+class MessageClient(
     context: Context,
     serializers: List<MessageSerializer<*>>
 ) : BaseMessageClient(serializers) {
