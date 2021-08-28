@@ -33,8 +33,8 @@ android {
 dependencies {
     api(projects.mobile.mobileCore)
     api(libs.kotlinx.coroutines.core)
-    api(libs.kotlinx.coroutines.playservices)
-    api(libs.play.services.wearable)
+    implementation(libs.kotlinx.coroutines.playservices)
+    implementation(libs.play.services.wearable)
 
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
