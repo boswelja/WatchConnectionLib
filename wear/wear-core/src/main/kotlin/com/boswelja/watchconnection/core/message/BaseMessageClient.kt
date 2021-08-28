@@ -26,12 +26,10 @@ abstract class BaseMessageClient(
     /**
      * Send a message to a target with the given ID. Note that a successful response doesn't
      * guarantee delivery. If possible, use [sendMessage] instead for serialization support.
-     * @param targetId The target ID of the device to send the message to.
      * @param message The message to send.
      * @return true if sending was successful, false otherwise.
      */
     abstract suspend fun sendRawMessage(
-        targetId: String,
         message: Message<ByteArray?>,
         priority: MessagePriority = MessagePriority.LOW
     ): Boolean
@@ -84,12 +82,10 @@ abstract class BaseMessageClient(
 
     /**
      * Send a message to a [Phone].
-     * @param to The [Watch] to send the message to.
      * @param message The [Message] to send.
      * @return true if sending the message was successful, false otherwise.
      */
     suspend fun sendMessage(
-        to: Phone,
         message: Message<Any?>,
         priority: MessagePriority = MessagePriority.LOW
     ): Boolean {
@@ -105,6 +101,6 @@ abstract class BaseMessageClient(
             data
         }
 
-        return sendRawMessage(to.internalId, ByteArrayMessage(message.path, bytes), priority)
+        return sendRawMessage(ByteArrayMessage(message.path, bytes), priority)
     }
 }

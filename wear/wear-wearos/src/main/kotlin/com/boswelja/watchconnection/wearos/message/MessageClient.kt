@@ -26,7 +26,9 @@ class MessageClient(
     serializers: List<MessageSerializer<*>>
 ) : BaseMessageClient(serializers) {
 
+    private val nodeClient by lazy { Wearable.getNodeClient(context.applicationContext) }
     private val messageClient = Wearable.getMessageClient(context.applicationContext)
+    private var phone: Phone? = null
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
@@ -43,13 +45,16 @@ class MessageClient(
     }
 
     override suspend fun sendRawMessage(
-        targetId: String,
         message: Message<ByteArray?>,
         priority: MessagePriority
     ): Boolean {
         return try {
+            if (phone == null) {
+                val node = nodeClient.connectedNodes.await().first()
+                phone = Phone(node.displayName, node.id)
+            }
             messageClient.sendMessage(
-                targetId,
+                phone!!.internalId,
                 message.path,
                 message.data,
                 MessageOptions(priority.toGMSPriority())
