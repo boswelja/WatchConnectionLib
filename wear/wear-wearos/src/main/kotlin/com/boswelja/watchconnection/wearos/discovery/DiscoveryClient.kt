@@ -30,7 +30,7 @@ class DiscoveryClient(
     private val capabilityClient = Wearable.getCapabilityClient(context.applicationContext)
 
     override suspend fun pairedPhone(): Phone {
-        val node = nodeClient.connectedNodes.await().first()
+        val node = nodeClient.connectedNodes.await().first { it.isNearby }
         return Phone(
             node.displayName,
             node.id
