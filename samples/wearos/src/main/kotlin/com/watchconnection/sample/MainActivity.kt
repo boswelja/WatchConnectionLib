@@ -28,6 +28,7 @@ import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
 import com.watchconnection.sample.discovery.DiscoveryScreen
+import com.watchconnection.sample.message.MessageScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -92,19 +93,23 @@ fun MainScreen(
             )
         }
     }
-//    AnimatedVisibility(
-//        visible = messageScreenVisible,
-//        enter = fadeIn(),
-//        exit = ExitTransition.None
-//    ) {
-//        val state = rememberSwipeToDismissBoxState()
-//        LaunchedEffect(state.currentValue) {
-//            if (state.currentValue == SwipeDismissTarget.Dismissal) {
-//                discoveryScreenVisible = false
-//            }
-//        }
-//        SwipeToDismissBox(state = state) {
-//            // TODO
-//        }
-//    }
+    AnimatedVisibility(
+        visible = messageScreenVisible,
+        enter = fadeIn(),
+        exit = ExitTransition.None
+    ) {
+        val state = rememberSwipeToDismissBoxState()
+        LaunchedEffect(state.currentValue) {
+            if (state.currentValue == SwipeDismissTarget.Dismissal) {
+                messageScreenVisible = false
+            }
+        }
+        SwipeToDismissBox(state = state) {
+            MessageScreen(
+                Modifier
+                    .background(MaterialTheme.colors.background)
+                    .then(modifier)
+            )
+        }
+    }
 }
