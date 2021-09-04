@@ -3,10 +3,12 @@
     <string name="app_name">WatchConnectionLib Sample</string>
 
     <string name="loading">Loading</string>
-    <string name="paired_phone">Paired Phone</string>
 
     <string name="discovery_screen_title">DiscoveryClient</string>
     <string name="discovery_screen_summary">Capability &amp; connections</string>
+    <string name="paired_phone">Paired Phone</string>
+    <string name="phone_capabilities">Phone Capabilities</string>
+    <string name="no_capabilities">No capabilities</string>
 
     <string name="message_screen_title">MessageClient</string>
     <string name="message_screen_summary">Communications</string>

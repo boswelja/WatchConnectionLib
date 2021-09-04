@@ -15,6 +15,7 @@ class DiscoveryViewModel(application: Application) : AndroidViewModel(applicatio
 
     var pairedPhone by mutableStateOf<Phone?>(null)
     val status = discoveryClient.phoneStatus()
+    val phoneCapabilities = discoveryClient.phoneCapabilities()
 
     init {
         viewModelScope.launch {
