@@ -4,4 +4,10 @@
 
     <string name="loading">Loading</string>
     <string name="paired_phone">Paired Phone</string>
+
+    <string name="discovery_screen_title">DiscoveryClient</string>
+    <string name="discovery_screen_summary">Capability &amp; connections</string>
+
+    <string name="message_screen_title">MessageClient</string>
+    <string name="message_screen_summary">Communications</string>
 </resources>
