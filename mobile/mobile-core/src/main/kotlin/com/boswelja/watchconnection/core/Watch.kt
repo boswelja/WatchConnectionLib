@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * The standardised Watch representation.
- * @param id A unique ID assigned to this watch. See [UUID].
+ * @param uid A unique ID assigned to this watch. See [UUID].
  * @param name The display name of this watch.
  * @param platformId The ID of this watch assigned by it's platform. You should not need to use
  * this outside of the calling platform.
@@ -16,11 +16,11 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 open class Watch(
-    override val id: UUID,
+    override val uid: UUID,
     override val name: String,
     override val internalId: String,
     open val platform: String
-) : Parcelable, Device(id, name, internalId) {
+) : Parcelable, Device(uid, name, internalId) {
 
     constructor(
         name: String,
@@ -35,11 +35,11 @@ open class Watch(
 
     override fun equals(other: Any?): Boolean {
         if (other !is Watch) return super.equals(other)
-        return other.id == id
+        return other.uid == uid
     }
 
     override fun hashCode(): Int {
-        return id.hashCode()
+        return uid.hashCode()
     }
 
     companion object {

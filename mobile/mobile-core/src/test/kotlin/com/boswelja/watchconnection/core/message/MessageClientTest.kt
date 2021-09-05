@@ -155,7 +155,7 @@ class MessageClientTest {
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
                     val message = ReceivedMessage<ByteArray?>(
-                        watch.id,
+                        watch.uid,
                         "message",
                         null
                     )
@@ -188,7 +188,7 @@ class MessageClientTest {
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
                     val message = ReceivedMessage<ByteArray?>(
-                        watch.id,
+                        watch.uid,
                         "message",
                         ByteArray(10) { 1 }
                     )
@@ -224,7 +224,7 @@ class MessageClientTest {
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
                     val message = ReceivedMessage<ByteArray?>(
-                        watch.id,
+                        watch.uid,
                         MessagePath,
                         dataBytes
                     )
@@ -262,7 +262,7 @@ class MessageClientTest {
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
                     val message = ReceivedMessage<ByteArray?>(
-                        watch.id,
+                        watch.uid,
                         MessagePath,
                         null
                     )
@@ -296,7 +296,7 @@ class MessageClientTest {
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
                     val message = ReceivedMessage<ByteArray?>(
-                        watch.id,
+                        watch.uid,
                         MessagePath,
                         null
                     )
@@ -332,7 +332,7 @@ class MessageClientTest {
                 watches.forEachIndexed { index, watch ->
                     if (index % 2 == 0) {
                         val message = ReceivedMessage<ByteArray?>(
-                            watch.id,
+                            watch.uid,
                             MessagePath,
                             ConcreteMessageSerializer.serialize(data)
                         )
@@ -340,7 +340,7 @@ class MessageClientTest {
                         expectedMessages.add(message)
                     } else {
                         val message = ReceivedMessage<ByteArray?>(
-                            watch.id,
+                            watch.uid,
                             "invalid-path",
                             null
                         )

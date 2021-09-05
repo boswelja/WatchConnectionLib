@@ -1,9 +1,7 @@
 package com.boswelja.watchconnection.common.message
 
-import java.util.UUID
-
 data class ReceivedMessage<T>(
-    val sourceWatchID: UUID,
+    val sourceUid: String,
     val path: String,
     val data: T
 )

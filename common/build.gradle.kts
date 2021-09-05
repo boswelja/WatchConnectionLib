@@ -15,7 +15,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.kotlinx.coroutines.core)
-                api(libs.multiplatform.uuid)
             }
         }
         val androidMain by getting {

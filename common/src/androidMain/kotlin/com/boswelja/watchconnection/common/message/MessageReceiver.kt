@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ abstract class MessageReceiver : BroadcastReceiver() {
             val pendingResult = goAsync()
             coroutineScope.launch {
                 // Collect data from intent
-                val watchId = UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID))
+                val watchId = intent.getStringExtra(EXTRA_WATCH_ID)!!
                 val message = intent.getStringExtra(EXTRA_MESSAGE)!!
                 val data = intent.getByteArrayExtra(EXTRA_DATA)
 
@@ -58,27 +57,25 @@ abstract class MessageReceiver : BroadcastReceiver() {
         const val EXTRA_DATA = "data"
 
         /**
-         * Sent when a message is received from any supported [MessagePlatform]. Implement
+         * Sent when a message is received from any supported platform. Implement
          * [MessageReceiver] to receive this intent.
          */
         const val ACTION_MESSAGE_RECEIVED =
             "com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED"
 
         /**
-         * Build and send [ACTION_MESSAGE_RECEIVED] broadcast to all manifest receivers. This should not
-         * be called from application code, and is only exposed for [MessagePlatform] use.
+         * Build and send [ACTION_MESSAGE_RECEIVED] broadcast to all manifest receivers.
          * @param context [Context].
-         * @param watchId The ID of the watch that sent the message. See
-         * [com.boswelja.watchconnection.core.Watch.id].
+         * @param sourceUid The ID of the watch that sent the message.
          * @param message The com.boswelja.watchconnection.common.message received.
          * @param data The data sent with the message, or null if there was no data.
          */
         @SuppressLint("QueryPermissionsNeeded")
-        fun sendBroadcast(context: Context, watchId: UUID, message: String, data: ByteArray?) {
+        fun sendBroadcast(context: Context, sourceUid: String, message: String, data: ByteArray?) {
             Intent(ACTION_MESSAGE_RECEIVED).apply {
-                putExtra(MessageReceiver.EXTRA_WATCH_ID, watchId.toString())
-                putExtra(MessageReceiver.EXTRA_MESSAGE, message)
-                if (data?.isNotEmpty() == true) putExtra(MessageReceiver.EXTRA_DATA, data)
+                putExtra(EXTRA_WATCH_ID, sourceUid)
+                putExtra(EXTRA_MESSAGE, message)
+                if (data?.isNotEmpty() == true) putExtra(EXTRA_DATA, data)
             }.also { intent ->
                 // Get all registered message receivers and send the intent to them. We can suppress
                 // query permission warning since we're only targeting the package this lib is in.

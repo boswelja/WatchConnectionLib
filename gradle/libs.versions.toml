@@ -7,7 +7,6 @@ junit = "4.13.2"
 mockk = "1.12.0"
 playServicesWearable = "17.1.0"
 robolectric = "4.6.1"
-uuid = "0.3.0"
 
 [libraries]
 androidx-arch-test = { module = "androidx.arch.core:core-testing", version.ref = "androidxArchTest" }
@@ -21,4 +20,3 @@ mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
-multiplatform-uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }

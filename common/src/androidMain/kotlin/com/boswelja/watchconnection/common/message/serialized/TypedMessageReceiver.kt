@@ -48,7 +48,7 @@ abstract class TypedMessageReceiver<T>(
                 onTypedMessageReceived(
                     context,
                     ReceivedMessage(
-                        message.sourceWatchID,
+                        message.sourceUid,
                         message.path,
                         data
                     )
