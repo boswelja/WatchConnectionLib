@@ -4,12 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.ACTION_MESSAGE_RECEIVED
 import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXTRA_DATA
 import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXTRA_MESSAGE
 import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXTRA_WATCH_ID
-import com.boswelja.watchconnection.common.message.Messages.ACTION_MESSAGE_RECEIVED
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -19,13 +18,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.robolectric.annotation.Config
 
-@RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class MessageReceiverTest {
 
@@ -34,7 +31,7 @@ class MessageReceiverTest {
     private lateinit var context: Context
     private lateinit var messageReceiver: ConcreteMessageReceiver
 
-    @Before
+    @BeforeEach
     fun setUp() {
         runBlocking { receiverFinished.emit(true) }
         val pendingResult = mockk<BroadcastReceiver.PendingResult>()
@@ -62,7 +59,7 @@ class MessageReceiverTest {
             }
         }
 
-        Assert.assertEquals(0, messageReceiver.receivedMessages.count())
+        assertEquals(0, messageReceiver.receivedMessages.count())
     }
 
     @Test
@@ -86,6 +83,6 @@ class MessageReceiverTest {
         }
 
         val expectedMessage = ReceivedMessage(id, message, data)
-        Assert.assertEquals(expectedMessage, messageReceiver.receivedMessages.first())
+        assertEquals(expectedMessage, messageReceiver.receivedMessages.first())
     }
 }

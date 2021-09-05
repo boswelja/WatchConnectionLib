@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.common.message.serialized
 
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class PrimitiveSerializersTest {
 
@@ -12,7 +12,7 @@ class PrimitiveSerializersTest {
         val serializer = StringSerializer(setOf())
         val bytes = serializer.serialize(data)
         val deserializedData = serializer.deserialize(bytes)
-        Assert.assertEquals(data, deserializedData)
+        assertEquals(data, deserializedData)
     }
 
     @Test
@@ -21,7 +21,7 @@ class PrimitiveSerializersTest {
         val serializer = IntSerializer(setOf())
         val bytes = serializer.serialize(data)
         val deserializedData = serializer.deserialize(bytes)
-        Assert.assertEquals(data, deserializedData)
+        assertEquals(data, deserializedData)
     }
 
     @Test
@@ -30,7 +30,7 @@ class PrimitiveSerializersTest {
         val serializer = LongSerializer(setOf())
         val bytes = serializer.serialize(data)
         val deserializedData = serializer.deserialize(bytes)
-        Assert.assertEquals(data, deserializedData)
+        assertEquals(data, deserializedData)
     }
 
     @Test
@@ -39,7 +39,7 @@ class PrimitiveSerializersTest {
         val serializer = BooleanSerializer(setOf())
         val bytes = serializer.serialize(data)
         val deserializedData = serializer.deserialize(bytes)
-        Assert.assertEquals(data, deserializedData)
+        assertEquals(data, deserializedData)
     }
 
     @Test
@@ -48,7 +48,7 @@ class PrimitiveSerializersTest {
         val serializer = FloatSerializer(setOf())
         val bytes = serializer.serialize(data)
         val deserializedData = serializer.deserialize(bytes)
-        Assert.assertEquals(data, deserializedData)
+        assertEquals(data, deserializedData)
     }
 
     @Test
@@ -57,6 +57,6 @@ class PrimitiveSerializersTest {
         val serializer = DoubleSerializer(setOf())
         val bytes = serializer.serialize(data)
         val deserializedData = serializer.deserialize(bytes)
-        Assert.assertEquals(data, deserializedData, 0.00001)
+        assertEquals(data, deserializedData, 0.00001)
     }
 }

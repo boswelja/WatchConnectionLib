@@ -1,24 +1,23 @@
 package com.boswelja.watchconnection.common.message.serialized
 
 import android.os.Build
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.robolectric.annotation.Config
 
-@RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class TypedMessageReceiverTest {
 
     private lateinit var receiver: ConcreteMessageReceiver
 
-    @Before
+    @BeforeEach
     fun setUp() {
         receiver = ConcreteMessageReceiver()
     }
@@ -34,12 +33,12 @@ class TypedMessageReceiverTest {
             )
         )
 
-        Assert.assertEquals(0, receiver.receivedMessages.count())
+        assertEquals(0, receiver.receivedMessages.count())
     }
 
     @Test
     fun `receiver throws exception when expected data is missing`() {
-        Assert.assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(IllegalArgumentException::class.java) {
             runBlocking {
                 receiver.onMessageReceived(
                     InstrumentationRegistry.getInstrumentation().targetContext,
@@ -69,7 +68,7 @@ class TypedMessageReceiverTest {
 
         // Check data was deserialized correctly
         val message = receiver.receivedMessages.firstOrNull()
-        Assert.assertNotNull(message)
-        Assert.assertEquals(testString, message!!.data.data)
+        assertNotNull(message)
+        assertEquals(testString, message!!.data.data)
     }
 }
