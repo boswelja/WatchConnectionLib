@@ -3,7 +3,6 @@ package com.boswelja.watchconnection.common.message.serialized
 import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -27,7 +26,7 @@ class TypedMessageReceiverTest {
         receiver.onMessageReceived(
             InstrumentationRegistry.getInstrumentation().targetContext,
             ReceivedMessage(
-                UUID.randomUUID(),
+                "uid",
                 "invalid-path",
                 "data".toByteArray()
             )
@@ -43,7 +42,7 @@ class TypedMessageReceiverTest {
                 receiver.onMessageReceived(
                     InstrumentationRegistry.getInstrumentation().targetContext,
                     ReceivedMessage(
-                        UUID.randomUUID(),
+                        "uid",
                         MessagePath,
                         null
                     )
@@ -60,7 +59,7 @@ class TypedMessageReceiverTest {
         receiver.onMessageReceived(
             InstrumentationRegistry.getInstrumentation().targetContext,
             ReceivedMessage(
-                UUID.randomUUID(),
+                "uid",
                 MessagePath,
                 testString.toByteArray()
             )

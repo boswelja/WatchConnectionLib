@@ -12,7 +12,6 @@ import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.EXT
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -64,12 +63,12 @@ class MessageReceiverTest {
 
     @Test
     fun `onReceive passes variables to onMessageReceived`() {
-        val id = UUID.randomUUID()
+        val id = "uid"
         val message = "message"
         val data = Random.nextBytes(10)
 
         Intent(ACTION_MESSAGE_RECEIVED).apply {
-            putExtra(EXTRA_WATCH_ID, id.toString())
+            putExtra(EXTRA_WATCH_ID, id)
             putExtra(EXTRA_MESSAGE, message)
             putExtra(EXTRA_DATA, data)
         }.also { intent ->
