@@ -1,7 +1,6 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("kotlin-parcelize")
     id("org.jetbrains.dokka") version "1.5.0"
     `maven-publish`
     signing
