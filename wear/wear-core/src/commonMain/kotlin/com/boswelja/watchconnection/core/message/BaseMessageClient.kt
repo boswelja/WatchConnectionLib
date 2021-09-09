@@ -49,7 +49,7 @@ abstract class BaseMessageClient(
 
                 val deserializedData = serializer.deserialize(data)
                 ReceivedMessage(
-                    message.sourceWatchID,
+                    message.sourceUid,
                     message.path,
                     deserializedData
                 )
@@ -73,7 +73,7 @@ abstract class BaseMessageClient(
 
                 val deserializedData = serializer.deserialize(data)
                 ReceivedMessage(
-                    message.sourceWatchID,
+                    message.sourceUid,
                     message.path,
                     deserializedData
                 )
