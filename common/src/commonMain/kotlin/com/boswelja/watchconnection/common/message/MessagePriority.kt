@@ -3,7 +3,7 @@ package com.boswelja.watchconnection.common.message
 /**
  * Constants for defining a message priority.
  */
-enum class MessagePriority {
+public enum class MessagePriority {
     /**
      * Indicates the message is of low priority, and can be delayed.
      */

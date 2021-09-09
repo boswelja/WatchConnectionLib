@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * A [BroadcastReceiver] for receiving messages from watches of all supported platforms.
  */
-abstract class MessageReceiver : BroadcastReceiver() {
+public abstract class MessageReceiver : BroadcastReceiver() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -21,7 +21,7 @@ abstract class MessageReceiver : BroadcastReceiver() {
      * of [BroadcastReceiver.goAsync] still apply.
      * @param message The [ReceivedMessage] that was received.
      */
-    abstract suspend fun onMessageReceived(
+    public abstract suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<ByteArray?>
     )
@@ -51,7 +51,7 @@ abstract class MessageReceiver : BroadcastReceiver() {
         }
     }
 
-    companion object {
+    internal companion object {
         const val EXTRA_WATCH_ID = "watch_id"
         const val EXTRA_MESSAGE = "message"
         const val EXTRA_DATA = "data"

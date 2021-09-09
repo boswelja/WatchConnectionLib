@@ -8,7 +8,7 @@ import com.boswelja.watchconnection.common.message.ReceivedMessage
 /**
  * An extension of [MessageReceiver] that supports deserializing data automatically.
  */
-abstract class TypedMessageReceiver<T>(
+public abstract class TypedMessageReceiver<T>(
     private val serializer: MessageSerializer<T>
 ) : MessageReceiver() {
 
@@ -17,14 +17,17 @@ abstract class TypedMessageReceiver<T>(
      * of [BroadcastReceiver.goAsync] still apply.
      * @param message The [ReceivedMessage] that was received.
      */
-    abstract suspend fun onTypedMessageReceived(context: Context, message: ReceivedMessage<T>)
+    public abstract suspend fun onTypedMessageReceived(
+        context: Context,
+        message: ReceivedMessage<T>
+    )
 
     /**
      * Called when [serializer] thows an exception deserializing data. When overriding this, do not
      * call super. The default behavior is to throw the exception.
      * @param exception The [Exception] thrown.
      */
-    open suspend fun onDeserializeException(exception: Exception) {
+    public open suspend fun onDeserializeException(exception: Exception) {
         throw exception
     }
 

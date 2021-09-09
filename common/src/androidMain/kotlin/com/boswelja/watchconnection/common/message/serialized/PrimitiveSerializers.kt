@@ -5,7 +5,7 @@ import java.nio.ByteBuffer
 /**
  * A [MessageSerializer] for [String]s.
  */
-class StringSerializer(
+public class StringSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<String>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): String = String(bytes, Charsets.UTF_8)
@@ -15,7 +15,7 @@ class StringSerializer(
 /**
  * A [MessageSerializer] for [Int]s.
  */
-class IntSerializer(
+public class IntSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<Int>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Int = ByteBuffer.wrap(bytes).int
@@ -26,7 +26,7 @@ class IntSerializer(
 /**
  * A [MessageSerializer] for [Long]s.
  */
-class LongSerializer(
+public class LongSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<Long>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Long = ByteBuffer.wrap(bytes).long
@@ -37,7 +37,7 @@ class LongSerializer(
 /**
  * A [MessageSerializer] for [Boolean]s.
  */
-class BooleanSerializer(
+public class BooleanSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<Boolean>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Boolean = bytes[0].toInt() == 1
@@ -47,7 +47,7 @@ class BooleanSerializer(
 /**
  * A [MessageSerializer] for [Float].
  */
-class FloatSerializer(
+public class FloatSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<Float>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Float = ByteBuffer.wrap(bytes).float
@@ -58,7 +58,7 @@ class FloatSerializer(
 /**
  * A [MessageSerializer] for [Double].
  */
-class DoubleSerializer(
+public class DoubleSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<Double>(messagePaths) {
     override suspend fun deserialize(bytes: ByteArray): Double = ByteBuffer.wrap(bytes).double

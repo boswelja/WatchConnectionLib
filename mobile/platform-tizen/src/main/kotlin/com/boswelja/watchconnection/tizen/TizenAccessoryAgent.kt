@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.common.message.MessageReceiver.Companion.sendBroadcast
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.tizen.Constants.CAPABILITY_MESSAGE
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
@@ -53,7 +52,8 @@ class TizenAccessoryAgent internal constructor(
                     messageListeners.forEach {
                         it.onMessageReceived(watchId, message, data)
                     }
-                    sendBroadcast(applicationContext, watchId, message, data)
+                    // TODO Fix this
+                    // sendBroadcast(applicationContext, watchId, message, data)
                 }
             }
         }
