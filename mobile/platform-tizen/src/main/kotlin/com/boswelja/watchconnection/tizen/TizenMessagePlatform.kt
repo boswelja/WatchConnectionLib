@@ -6,7 +6,6 @@ import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
 import com.samsung.android.sdk.accessory.SAAgentV2
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +43,7 @@ class TizenMessagePlatform(context: Context) : MessagePlatform {
     @ExperimentalCoroutinesApi
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         val receiver = object : MessageReceiver() {
-            override fun onMessageReceived(watchId: UUID, message: String, data: ByteArray?) {
+            override fun onMessageReceived(watchId: String, message: String, data: ByteArray?) {
                 val messageData = ReceivedMessage(
                     watchId, message, data
                 )
