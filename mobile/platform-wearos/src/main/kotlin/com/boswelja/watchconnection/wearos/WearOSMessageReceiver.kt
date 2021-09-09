@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.wearos
 
-import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 
@@ -11,13 +9,13 @@ import com.google.android.gms.wearable.WearableListenerService
  */
 class WearOSMessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
-        messageEvent?.let { event ->
-            // Get watch ID
-            val watchId = Watch.createUUID(WEAROS_PLATFORM, event.sourceNodeId)
-
-            // Send message broadcast
-            // TODO Fix this
-            // MessageReceiver.sendBroadcast(this, watchId, event.path, event.data)
-        }
+//        messageEvent?.let { event ->
+//            // TODO Fix this
+//            // Get watch ID
+//            val watchId = Watch.createUUID(WEAROS_PLATFORM, event.sourceNodeId)
+//
+//            // Send message broadcast
+//            MessageReceiver.sendBroadcast(this, watchId, event.path, event.data)
+//        }
     }
 }

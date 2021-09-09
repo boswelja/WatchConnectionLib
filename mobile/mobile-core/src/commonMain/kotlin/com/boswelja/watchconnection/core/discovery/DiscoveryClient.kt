@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.combine
  * them.
  * @param platforms The [DiscoveryPlatform]s this MessageClient should support.
  */
-class DiscoveryClient(
+public class DiscoveryClient(
     platforms: List<DiscoveryPlatform>
 ) : BaseClient<DiscoveryPlatform>(platforms) {
 
@@ -21,7 +21,7 @@ class DiscoveryClient(
      * Get a [Flow] of all [Watch]es found by all [Platform]s.
      */
     @ExperimentalCoroutinesApi
-    fun allWatches(): Flow<List<Watch>> =
+    public fun allWatches(): Flow<List<Watch>> =
         combine(platforms.values.map { it.allWatches() }) { flows ->
             val list = mutableListOf<Watch>()
             flows.forEach { watches ->
@@ -35,7 +35,7 @@ class DiscoveryClient(
      * [Platform]s.
      */
     @ExperimentalCoroutinesApi
-    fun watchesWithApp(): Flow<List<Watch>> =
+    public fun watchesWithApp(): Flow<List<Watch>> =
         combine(platforms.values.map { it.watchesWithApp() }) { flows ->
             val list = mutableListOf<Watch>()
             flows.forEach { watches ->
@@ -49,7 +49,7 @@ class DiscoveryClient(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    fun getCapabilitiesFor(watch: Watch): Flow<List<String>>? {
+    public fun getCapabilitiesFor(watch: Watch): Flow<List<String>>? {
         return platforms[watch.platform]?.getCapabilitiesFor(watch.internalId)
     }
 
@@ -59,7 +59,7 @@ class DiscoveryClient(
      * @return The [Flow] of [Status]. May be null if the given watches platform doesn't exist in
      * this instance.
      */
-    fun getStatusFor(watch: Watch): Flow<Status>? {
+    public fun getStatusFor(watch: Watch): Flow<Status>? {
         return platforms[watch.platform]?.getStatusFor(watch.internalId)
     }
 }

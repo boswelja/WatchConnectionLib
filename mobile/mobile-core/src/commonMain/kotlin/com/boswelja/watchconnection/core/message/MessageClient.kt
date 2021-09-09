@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.merge
  * @param serializers A list of [MessageSerializer] to use when serializing/deserializing messages.
  * @param platforms The [MessagePlatform]s this MessageClient should support.
  */
-class MessageClient(
+public class MessageClient(
     private val serializers: List<MessageSerializer<*>> = listOf(),
     platforms: List<MessagePlatform>
 ) : BaseClient<MessagePlatform>(platforms) {
@@ -28,7 +28,7 @@ class MessageClient(
      * additional processing performed, and thus only contain the raw data in bytes.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>> = platforms.values
+    public fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>> = platforms.values
         .map { it.incomingMessages() }
         .merge()
 
@@ -37,7 +37,7 @@ class MessageClient(
      * deserialized automatically by the [MessageSerializer]s you passed in when constructing this
      * [MessageClient] where possible.
      */
-    fun incomingMessages(): Flow<ReceivedMessage<*>> = rawIncomingMessages()
+    public fun incomingMessages(): Flow<ReceivedMessage<*>> = rawIncomingMessages()
         .map { message ->
             // Deserialize if possible
             val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
@@ -61,7 +61,7 @@ class MessageClient(
      * messages that [serializer] can deserialize, thus guaranteeing the data type [T].
      * @param serializer The [MessageSerializer] to use for deserializing.
      */
-    fun <T> incomingMessages(
+    public fun <T> incomingMessages(
         serializer: MessageSerializer<T>
     ): Flow<ReceivedMessage<T>> = rawIncomingMessages()
         .mapNotNull { message ->
@@ -84,7 +84,7 @@ class MessageClient(
      * @param message The [Message] to send.
      * @return true if sending the message was successful, false otherwise.
      */
-    suspend fun sendMessage(
+    public suspend fun sendMessage(
         to: Watch,
         message: Message<Any?>,
         priority: MessagePriority = MessagePriority.LOW

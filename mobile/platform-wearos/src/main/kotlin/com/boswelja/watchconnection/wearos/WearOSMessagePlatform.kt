@@ -29,7 +29,7 @@ class WearOSMessagePlatform(
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
             val message = ReceivedMessage(
-                Watch.createUUID(platformIdentifier, messageEvent.sourceNodeId),
+                platformIdentifier + messageEvent.sourceNodeId, // TODO This is a no-go
                 messageEvent.path,
                 messageEvent.data
             )

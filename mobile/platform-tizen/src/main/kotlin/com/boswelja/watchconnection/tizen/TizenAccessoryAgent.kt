@@ -48,7 +48,8 @@ class TizenAccessoryAgent internal constructor(
                     // Capability message, assume we have data
                     handleCapabilityMessage(peerAgent, messageData!!)
                 } else {
-                    val watchId = Watch.createUUID(TIZEN_PLATFORM, peerAgent.accessory.accessoryId)
+                    // TODO This is a no-go
+                    val watchId = TIZEN_PLATFORM + peerAgent.accessory.accessoryId
                     messageListeners.forEach {
                         it.onMessageReceived(watchId, message, data)
                     }

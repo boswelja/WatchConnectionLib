@@ -11,14 +11,14 @@ import com.boswelja.watchconnection.common.Device
  * @param platform The platform identifier string of this watch. You shouldn't need to use this
  * outside the calling platform.
  */
-open class Watch(
+public open class Watch(
     override val uid: String,
     override val name: String,
-    val internalId: String,
-    open val platform: String
+    public val internalId: String,
+    public open val platform: String
 ) : Device(uid, name) {
 
-    constructor(
+    public constructor(
         name: String,
         internalId: String,
         platform: String
@@ -53,7 +53,7 @@ open class Watch(
         return result
     }
 
-    companion object {
+    internal companion object {
 
         /**
          * Gets a reproducible, unique ID from the provided info.

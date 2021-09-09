@@ -1,10 +1,10 @@
 package com.boswelja.watchconnection.core
 
-abstract class BaseClient<T : Platform>(
+public abstract class BaseClient<T : Platform>(
     platforms: List<T>
 ) {
     /** A map of platform IDs to their handlers */
-    protected val platforms = HashMap<String, T>()
+    protected val platforms: HashMap<String, T> = HashMap()
 
     init {
         // Throw exception if no platforms were provided.
