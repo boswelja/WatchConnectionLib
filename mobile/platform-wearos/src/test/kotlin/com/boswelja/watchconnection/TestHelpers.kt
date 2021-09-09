@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection
 
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.core.Watch
 import kotlin.random.Random
 
 /**
@@ -16,7 +15,7 @@ fun createMessagesFor(
         Pair(
             it.toString(),
             ReceivedMessage(
-                Watch.createUUID(platform, it.toString()),
+                platform + it.toString(),
                 it.toString(),
                 Random.nextBytes(8)
             )
