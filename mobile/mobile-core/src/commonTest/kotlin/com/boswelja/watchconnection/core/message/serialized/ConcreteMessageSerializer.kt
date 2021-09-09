@@ -8,10 +8,10 @@ object ConcreteMessageSerializer : MessageSerializer<ConcreteDataType>(
     messagePaths = setOf(MessagePath)
 ) {
     override suspend fun serialize(data: ConcreteDataType): ByteArray {
-        return data.data.toByteArray()
+        return data.data.encodeToByteArray()
     }
 
     override suspend fun deserialize(bytes: ByteArray): ConcreteDataType {
-        return ConcreteDataType(String(bytes))
+        return ConcreteDataType(bytes.decodeToString())
     }
 }

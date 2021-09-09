@@ -8,25 +8,29 @@ import com.boswelja.watchconnection.core.message.serialized.ConcreteDataType
 import com.boswelja.watchconnection.core.message.serialized.ConcreteMessageSerializer
 import com.boswelja.watchconnection.core.message.serialized.MessagePath
 import com.boswelja.watchconnection.createWatchesFor
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineScope
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
 
 class MessageClientTest {
 
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
     private val serializers = listOf(ConcreteMessageSerializer)
 
     private lateinit var dummyWatches: Map<String, List<Watch>>
     private lateinit var platforms: List<ConcreteMessagePlatform>
     private lateinit var client: MessageClient
 
-    @Before
+    @BeforeTest
     fun setUp() {
         platforms = createPlatforms(5)
         client = MessageClient(
@@ -40,32 +44,34 @@ class MessageClientTest {
     }
 
     @Test
-    fun `sendMessage serializes message if serializer registered`(): Unit = runBlocking {
-        // Create a dummy message
-        val message = TypedMessage(
-            MessagePath,
-            ConcreteDataType("data")
-        )
-        val expectedBytes = message.data.data.toByteArray()
+    fun sendMessageSerializesMessageIfSerializerRegistered() {
+        scope.launch {
+            // Create a dummy message
+            val message = TypedMessage(
+                MessagePath,
+                ConcreteDataType("data")
+            )
+            val expectedBytes = message.data.data.encodeToByteArray()
 
-        // Test against all platforms and all watches to be safe
-        platforms.forEach { platform ->
-            val watches = dummyWatches[platform.platformIdentifier]!!
+            // Test against all platforms and all watches to be safe
+            platforms.forEach { platform ->
+                val watches = dummyWatches[platform.platformIdentifier]!!
 
-            watches.forEach { watch ->
-                client.sendMessage(watch, message)
-            }
+                watches.forEach { watch ->
+                    client.sendMessage(watch, message)
+                }
 
-            // Check received messages
-            Assert.assertEquals(watches.count(), platform.sentMessages.count())
-            platform.sentMessages.forEach {
-                Assert.assertArrayEquals(expectedBytes, it.data)
+                // Check received messages
+                assertEquals(watches.count(), platform.sentMessages.count())
+                platform.sentMessages.forEach {
+                    assertEquals(expectedBytes, it.data)
+                }
             }
         }
     }
 
     @Test
-    fun `sendMessage throws exception if serializable message has null data`() {
+    fun sendMessageThrowsExceptionIfSerializableMessageHasNullData() {
         // Create a dummy message with wrong data type
         val message = TypedMessage(
             MessagePath,
@@ -77,43 +83,45 @@ class MessageClientTest {
             val watches = dummyWatches[platform.platformIdentifier]!!
 
             watches.forEach { watch ->
-                Assert.assertThrows(IllegalArgumentException::class.java) {
-                    runBlocking { client.sendMessage(watch, message) }
+                assertFailsWith<IllegalArgumentException> {
+                    scope.launch { client.sendMessage(watch, message) }
                 }
             }
 
-            Assert.assertEquals(0, platform.sentMessages.count())
+            assertEquals(0, platform.sentMessages.count())
         }
     }
 
     @Test
-    fun `sendMessage sends non-serializable ByteArray message correctly`(): Unit = runBlocking {
-        // Create a dummy message
-        val expectedBytes = "data".toByteArray()
-        val message = ByteArrayMessage(
-            "nonserialized-path",
-            expectedBytes
-        )
+    fun sendMessageSendsNonSerializableByteArrayMessageCorrectly() {
+        scope.launch {
+            // Create a dummy message
+            val expectedBytes = "data".encodeToByteArray()
+            val message = ByteArrayMessage(
+                "nonserialized-path",
+                expectedBytes
+            )
 
-        // Test against all platforms and all watches to be safe
-        platforms.forEach { platform ->
-            val watches = dummyWatches[platform.platformIdentifier]!!
+            // Test against all platforms and all watches to be safe
+            platforms.forEach { platform ->
+                val watches = dummyWatches[platform.platformIdentifier]!!
 
-            watches.forEach { watch ->
-                client.sendMessage(watch, message)
-            }
+                watches.forEach { watch ->
+                    client.sendMessage(watch, message)
+                }
 
-            // Check received messages
-            Assert.assertEquals(watches.count(), platform.sentMessages.count())
-            platform.sentMessages.forEach {
-                Assert.assertArrayEquals(expectedBytes, it.data)
+                // Check received messages
+                assertEquals(watches.count(), platform.sentMessages.count())
+                platform.sentMessages.forEach {
+                    assertEquals(expectedBytes, it.data)
+                }
             }
         }
     }
 
     @Test
-    fun `sendMessage sends non-serializable ByteArray message with null data correctly`(): Unit =
-        runBlocking {
+    fun sendMessageSendsNonSerializableByteArrayMessageWithNullDataCorrectly() {
+        scope.launch {
             // Create a dummy message
             val message = ByteArrayMessage(
                 "nonserialized-path",
@@ -129,19 +137,19 @@ class MessageClientTest {
                 }
 
                 // Check received messages
-                Assert.assertEquals(watches.count(), platform.sentMessages.count())
+                assertEquals(watches.count(), platform.sentMessages.count())
                 platform.sentMessages.forEach {
-                    Assert.assertNull(it.data)
+                    assertNull(it.data)
                 }
             }
         }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `incomingMessages flows messages from platforms`() {
+    fun incomingMessagesFlowsMessagesFromPlatforms() {
         // Start collecting incoming messages
         val receivedMessages = mutableListOf<ReceivedMessage<*>>()
-        val scope = TestCoroutineScope()
         scope.launch {
             client.incomingMessages().collect { message ->
                 receivedMessages.add(message)
@@ -150,7 +158,7 @@ class MessageClientTest {
 
         // Mock sending messages
         val expectedMessages = mutableListOf<ReceivedMessage<*>>()
-        runBlocking {
+        scope.launch {
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
@@ -166,15 +174,14 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        Assert.assertEquals(expectedMessages, receivedMessages)
+        assertEquals(expectedMessages, receivedMessages)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `rawIncomingMessages flows messages from platforms`() {
+    fun rawIncomingMessagesFlowsMessagesFromPlatforms() {
         // Start collecting incoming messages
         val receivedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
-        val scope = TestCoroutineScope()
         scope.launch {
             client.rawIncomingMessages().collect { message ->
                 receivedMessages.add(message)
@@ -183,7 +190,7 @@ class MessageClientTest {
 
         // Mock sending messages
         val expectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
-        runBlocking {
+        scope.launch {
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
@@ -199,27 +206,26 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        Assert.assertEquals(expectedMessages, receivedMessages)
+        assertEquals(expectedMessages, receivedMessages)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `incomingMessages deserializes messages when possible`() {
-        val expectedData = ConcreteDataType("Data")
-        val dataBytes = runBlocking { ConcreteMessageSerializer.serialize(expectedData) }
-
-        // Start collecting incoming messages
-        val receivedMessages = mutableListOf<ReceivedMessage<*>>()
-        val scope = TestCoroutineScope()
+    fun incomingMessagesDeserializesMessagesWhenPossible() {
         scope.launch {
-            client.incomingMessages().collect { message ->
-                receivedMessages.add(message)
-            }
-        }
+            val expectedData = ConcreteDataType("Data")
+            val dataBytes = ConcreteMessageSerializer.serialize(expectedData)
 
-        // Mock sending messages
-        val expectedMessages = mutableListOf<ReceivedMessage<*>>()
-        runBlocking {
+            // Start collecting incoming messages
+            val receivedMessages = mutableListOf<ReceivedMessage<*>>()
+            scope.launch {
+                client.incomingMessages().collect { message ->
+                    receivedMessages.add(message)
+                }
+            }
+
+            // Mock sending messages
+            val expectedMessages = mutableListOf<ReceivedMessage<*>>()
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
@@ -232,32 +238,31 @@ class MessageClientTest {
                     expectedMessages.add(message)
                 }
             }
-        }
 
-        // Check all messages were received
-        Assert.assertEquals(expectedMessages.count(), receivedMessages.count())
-        receivedMessages.forEach {
-            Assert.assertEquals(expectedData, it.data)
+            // Check all messages were received
+            assertEquals(expectedMessages.count(), receivedMessages.count())
+            receivedMessages.forEach {
+                assertEquals(expectedData, it.data)
+            }
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `incomingMessages throws exception when serializable message data is null`() {
+    fun incomingMessagesThrowsExceptionWhenSerializableMessageDataIsNull() {
         // Start collecting incoming messages
         val receivedMessages = mutableListOf<ReceivedMessage<*>>()
-        val scope = TestCoroutineScope()
         scope.launch {
             client.incomingMessages()
                 .catch { cause ->
-                    Assert.assertTrue(cause is ClassCastException)
+                    assertTrue(cause is ClassCastException)
                 }.collect { message ->
                     receivedMessages.add(message)
                 }
         }
 
         // Mock sending messages
-        runBlocking {
+        scope.launch {
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
@@ -272,26 +277,25 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        Assert.assertEquals(0, receivedMessages.count())
+        assertEquals(0, receivedMessages.count())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `incomingMessages(serializer) throws exception when serializable message data is null`() {
+    fun incomingMessagesWithSerializerThrowsExceptionWhenSerializableMessageDataIsNull() {
         // Start collecting incoming messages
         val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
-        val scope = TestCoroutineScope()
         scope.launch {
             client.incomingMessages(ConcreteMessageSerializer)
                 .catch { cause ->
-                    Assert.assertTrue(cause is ClassCastException)
+                    assertTrue(cause is ClassCastException)
                 }.collect { message ->
                     receivedMessages.add(message)
                 }
         }
 
         // Mock sending messages
-        runBlocking {
+        scope.launch {
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEach { watch ->
@@ -306,17 +310,16 @@ class MessageClientTest {
         }
 
         // Check all messages were received
-        Assert.assertEquals(0, receivedMessages.count())
+        assertEquals(0, receivedMessages.count())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `incomingMessages(serializer) only emits supported messages`() {
+    fun incomingMessagesWithSerializerOnlyEmitsSupportedMessages() {
         val data = ConcreteDataType("data")
 
         // Start collecting incoming messages
         val receivedMessages = mutableListOf<ReceivedMessage<ConcreteDataType>>()
-        val scope = TestCoroutineScope()
         scope.launch {
             client.incomingMessages(ConcreteMessageSerializer)
                 .collect { message ->
@@ -326,7 +329,7 @@ class MessageClientTest {
 
         // Mock sending messages
         val expectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
-        runBlocking {
+        scope.launch {
             platforms.forEach { platform ->
                 val watches = dummyWatches[platform.platformIdentifier]!!
                 watches.forEachIndexed { index, watch ->
@@ -352,8 +355,8 @@ class MessageClientTest {
 
         // Check all messages were received
         receivedMessages.forEach {
-            Assert.assertEquals(MessagePath, it.path)
-            Assert.assertEquals(data, it.data)
+            assertEquals(MessagePath, it.path)
+            assertEquals(data, it.data)
         }
     }
 }

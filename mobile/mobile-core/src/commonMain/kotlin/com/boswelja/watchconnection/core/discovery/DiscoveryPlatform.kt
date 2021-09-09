@@ -22,14 +22,14 @@ interface DiscoveryPlatform : Platform {
 
     /**
      * Get a flow of capabilities found for a [Watch] with a given ID.
-     * @param watchId See [Watch.platformId].
+     * @param watchId See [Watch.internalId].
      * @return A [Flow] of capability strings declared by the watch.
      */
     fun getCapabilitiesFor(watchId: String): Flow<List<String>>
 
     /**
      * Gets a [Flow] of [Status] for the watch with the given ID.
-     * @param watchId See [Watch.platformId].
+     * @param watchId See [Watch.internalId].
      * @return The [Flow] of [Status].
      */
     fun getStatusFor(watchId: String): Flow<Status>

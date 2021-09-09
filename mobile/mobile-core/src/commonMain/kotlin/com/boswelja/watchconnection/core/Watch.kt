@@ -1,9 +1,6 @@
 package com.boswelja.watchconnection.core
 
-import android.os.Parcelable
 import com.boswelja.watchconnection.common.Device
-import java.util.UUID
-import kotlinx.parcelize.Parcelize
 
 /**
  * The standardised Watch representation.
@@ -14,13 +11,12 @@ import kotlinx.parcelize.Parcelize
  * @param platform The platform identifier string of this watch. You shouldn't need to use this
  * outside the calling platform.
  */
-@Parcelize
 open class Watch(
     override val uid: String,
     override val name: String,
     val internalId: String,
     open val platform: String
-) : Parcelable, Device(uid, name) {
+) : Device(uid, name) {
 
     constructor(
         name: String,
@@ -34,18 +30,33 @@ open class Watch(
     )
 
     override fun equals(other: Any?): Boolean {
-        if (other !is Watch) return super.equals(other)
-        return other.uid == uid
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        if (!super.equals(other)) return false
+
+        other as Watch
+
+        if (uid != other.uid) return false
+        if (name != other.name) return false
+        if (internalId != other.internalId) return false
+        if (platform != other.platform) return false
+
+        return true
     }
 
     override fun hashCode(): Int {
-        return uid.hashCode()
+        var result = super.hashCode()
+        result = 31 * result + uid.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + internalId.hashCode()
+        result = 31 * result + platform.hashCode()
+        return result
     }
 
     companion object {
 
         /**
-         * Gets a reproducible [UUID] from the provided info.
+         * Gets a reproducible, unique ID from the provided info.
          * @param platform See [Platform.platformIdentifier].
          * @param platformId See [Watch.internalId].
          */
