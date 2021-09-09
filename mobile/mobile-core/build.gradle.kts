@@ -12,9 +12,12 @@ description = "Watch Connection Library mobile-core components"
 
 kotlin {
     explicitApi()
+
     android {
         publishLibraryVariants("release")
     }
+    iosArm64()
+
     sourceSets {
         val commonMain by getting {
             dependencies {

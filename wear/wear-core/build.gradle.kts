@@ -12,9 +12,12 @@ description = "Watch Connection Library wear-core components"
 
 kotlin {
     explicitApi()
+
     android {
         publishLibraryVariants("release")
     }
+    watchosArm64()
+
     sourceSets {
         val commonMain by getting {
             dependencies {

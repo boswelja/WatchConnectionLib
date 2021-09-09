@@ -8,9 +8,13 @@ plugins {
 
 kotlin {
     explicitApi()
+
     android {
         publishLibraryVariants("release")
     }
+    iosArm64()
+    watchosArm64()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
