@@ -1,8 +1,7 @@
 package com.boswelja.watchconnection.core.message
 
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.message.serialized.ConcreteDataType
 import com.boswelja.watchconnection.core.message.serialized.ConcreteMessageSerializer
@@ -47,7 +46,7 @@ class MessageClientTest {
     fun sendMessageSerializesMessageIfSerializerRegistered() {
         scope.launch {
             // Create a dummy message
-            val message = TypedMessage(
+            val message = Message(
                 MessagePath,
                 ConcreteDataType("data")
             )
@@ -73,7 +72,7 @@ class MessageClientTest {
     @Test
     fun sendMessageThrowsExceptionIfSerializableMessageHasNullData() {
         // Create a dummy message with wrong data type
-        val message = TypedMessage(
+        val message = Message(
             MessagePath,
             null
         )
@@ -97,7 +96,7 @@ class MessageClientTest {
         scope.launch {
             // Create a dummy message
             val expectedBytes = "data".encodeToByteArray()
-            val message = ByteArrayMessage(
+            val message = Message(
                 "nonserialized-path",
                 expectedBytes
             )
@@ -123,7 +122,7 @@ class MessageClientTest {
     fun sendMessageSendsNonSerializableByteArrayMessageWithNullDataCorrectly() {
         scope.launch {
             // Create a dummy message
-            val message = ByteArrayMessage(
+            val message = Message(
                 "nonserialized-path",
                 null
             )

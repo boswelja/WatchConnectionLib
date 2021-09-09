@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.wearos.message
 
 import android.content.Context
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.google.android.gms.tasks.Tasks
@@ -43,14 +43,14 @@ class MessageClientTest {
     fun sendRawMessage() {
         // Set up data and mocks
         val targetId = "target"
-        val message = ByteArrayMessage("message", ByteArray(10))
+        val message = Message("message", ByteArray(10))
         every {
             gmsMessageClient.sendMessage(any(), any(), any(), any())
         } returns Tasks.forResult(1)
 
         // Make the call
         runBlocking {
-            messageClient.sendRawMessage(targetId, message, MessagePriority.HIGH)
+            messageClient.sendRawMessage(message, MessagePriority.HIGH)
         }
 
         // Verify the result

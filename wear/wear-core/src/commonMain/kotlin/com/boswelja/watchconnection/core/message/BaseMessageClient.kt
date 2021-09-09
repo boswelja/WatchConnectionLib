@@ -1,6 +1,5 @@
 package com.boswelja.watchconnection.core.message
 
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
@@ -101,6 +100,6 @@ abstract class BaseMessageClient(
             data
         }
 
-        return sendRawMessage(ByteArrayMessage(message.path, bytes), priority)
+        return sendRawMessage(Message(message.path, bytes), priority)
     }
 }
