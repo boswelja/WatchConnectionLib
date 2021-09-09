@@ -55,7 +55,7 @@ class DiscoveryClient(
                     .getCapability(capability, CapabilityClient.FILTER_ALL)
                     .await()
                 // If node is found with same ID as watch, emit capability
-                if (capabilityInfo.nodes.any { it.id == phone.internalId })
+                if (capabilityInfo.nodes.any { it.id == phone.uid })
                     discoveredCapabilities += capabilityInfo.name
             }
             emit(discoveredCapabilities)
@@ -71,12 +71,12 @@ class DiscoveryClient(
         repeating(interval = scanRepeatInterval) {
             val capabilityInfo = capabilityClient
                 .getCapability(appCapability, CapabilityClient.FILTER_ALL).await()
-            if (capabilityInfo.nodes.any { it.id == phone.internalId }) {
+            if (capabilityInfo.nodes.any { it.id == phone.uid }) {
                 try {
                     // runBlocking should be safe here, since we're within a Flow
                     val connectedNodes = nodeClient.connectedNodes.await()
                     // Got connected nodes, check if it contains our desired node
-                    val node = connectedNodes.firstOrNull { it.id == phone.internalId }
+                    val node = connectedNodes.firstOrNull { it.id == phone.uid }
                     val status = node?.let {
                         if (node.isNearby) Status.CONNECTED_NEARBY
                         else Status.CONNECTED

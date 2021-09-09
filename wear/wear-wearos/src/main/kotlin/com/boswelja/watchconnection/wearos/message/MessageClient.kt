@@ -35,7 +35,7 @@ class MessageClient(
         val listener = MessageClient.OnMessageReceivedListener {
             val data = if (it.data.isNotEmpty()) it.data else null
             trySend(
-                ReceivedMessage(Phone.uidFor(it.sourceNodeId), it.path, data)
+                ReceivedMessage(it.sourceNodeId, it.path, data)
             )
         }
         messageClient.addListener(listener)
@@ -54,7 +54,7 @@ class MessageClient(
                 phone = Phone(node.displayName, node.id)
             }
             messageClient.sendMessage(
-                phone!!.internalId,
+                phone!!.uid,
                 message.path,
                 message.data,
                 MessageOptions(priority.toGMSPriority())
