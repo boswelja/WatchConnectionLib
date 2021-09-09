@@ -7,20 +7,20 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * The standardised Watch representation.
- * @param uid A unique ID assigned to this watch. See [UUID].
+ * @param uid A unique ID assigned to this watch.
  * @param name The display name of this watch.
- * @param platformId The ID of this watch assigned by it's platform. You should not need to use
+ * @param internalId The ID of this watch assigned by it's platform. You should not need to use
  * this outside of the calling platform.
  * @param platform The platform identifier string of this watch. You shouldn't need to use this
  * outside the calling platform.
  */
 @Parcelize
 open class Watch(
-    override val uid: UUID,
+    override val uid: String,
     override val name: String,
-    override val internalId: String,
+    val internalId: String,
     open val platform: String
-) : Parcelable, Device(uid, name, internalId) {
+) : Parcelable, Device(uid, name) {
 
     constructor(
         name: String,
@@ -47,9 +47,8 @@ open class Watch(
         /**
          * Gets a reproducible [UUID] from the provided info.
          * @param platform See [Platform.platformIdentifier].
-         * @param platformId See [Watch.platformId].
+         * @param platformId See [Watch.internalId].
          */
-        fun createUUID(platform: String, platformId: String): UUID =
-            UUID.nameUUIDFromBytes((platform + platformId).toByteArray(Charsets.UTF_8))
+        fun createUUID(platform: String, platformId: String): String = platform + platformId
     }
 }

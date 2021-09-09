@@ -47,7 +47,7 @@ class MessageClient(
 
                 val deserializedData = serializer.deserialize(data)
                 ReceivedMessage(
-                    message.sourceWatchID,
+                    message.sourceUid,
                     message.path,
                     deserializedData
                 )
@@ -71,7 +71,7 @@ class MessageClient(
 
                 val deserializedData = serializer.deserialize(data)
                 ReceivedMessage(
-                    message.sourceWatchID,
+                    message.sourceUid,
                     message.path,
                     deserializedData
                 )
