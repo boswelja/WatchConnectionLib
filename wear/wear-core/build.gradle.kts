@@ -11,6 +11,7 @@ version = Publishing.version ?: "0.1.0"
 description = "Watch Connection Library wear-core components"
 
 kotlin {
+    explicitApi()
     android {
         publishLibraryVariants("release")
     }

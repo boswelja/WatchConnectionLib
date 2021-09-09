@@ -13,14 +13,14 @@ import kotlinx.coroutines.flow.mapNotNull
  * The base class for managing 'Messaging'. This class manages sending and receiving messages,
  * including automatic serialization where possible.
  */
-abstract class BaseMessageClient(
+public abstract class BaseMessageClient(
     private val serializers: List<MessageSerializer<*>> = listOf()
 ) {
 
     /**
      * A [Flow] of [ReceivedMessage]s received by this device.
      */
-    abstract fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>>
+    public abstract fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>>
 
     /**
      * Send a message to a target with the given ID. Note that a successful response doesn't
@@ -28,7 +28,7 @@ abstract class BaseMessageClient(
      * @param message The message to send.
      * @return true if sending was successful, false otherwise.
      */
-    abstract suspend fun sendRawMessage(
+    public abstract suspend fun sendRawMessage(
         message: Message<ByteArray?>,
         priority: MessagePriority = MessagePriority.LOW
     ): Boolean
@@ -38,7 +38,7 @@ abstract class BaseMessageClient(
      * the [MessageSerializer]s you passed in when constructing this [BaseMessageClient] where
      * possible.
      */
-    fun incomingMessages(): Flow<ReceivedMessage<*>> = rawIncomingMessages()
+    public fun incomingMessages(): Flow<ReceivedMessage<*>> = rawIncomingMessages()
         .map { message ->
             // Deserialize if possible
             val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
@@ -62,7 +62,7 @@ abstract class BaseMessageClient(
      * [serializer] can deserialize, thus guaranteeing the data type [T].
      * @param serializer The [MessageSerializer] to use for deserializing.
      */
-    fun <T> incomingMessages(
+    public fun <T> incomingMessages(
         serializer: MessageSerializer<T>
     ): Flow<ReceivedMessage<T>> = rawIncomingMessages()
         .mapNotNull { message ->
@@ -84,7 +84,7 @@ abstract class BaseMessageClient(
      * @param message The [Message] to send.
      * @return true if sending the message was successful, false otherwise.
      */
-    suspend fun sendMessage(
+    public suspend fun sendMessage(
         message: Message<Any?>,
         priority: MessagePriority = MessagePriority.LOW
     ): Boolean {
