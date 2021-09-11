@@ -3,10 +3,10 @@ package com.boswelja.watchconnection.core.discovery
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.createCapabilities
 import com.boswelja.watchconnection.createWatchesFor
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class DiscoveryClientTest {
 
-    private val testScope = CoroutineScope(Dispatchers.Main.immediate)
+    private val testScope = CoroutineScope(EmptyCoroutineContext)
     private val allWatches = createWatchesFor(5, ConcreteDiscoveryPlatform.PLATFORM)
     private val watchesWithApp = createWatchesFor(3, ConcreteDiscoveryPlatform.PLATFORM)
     private val capabilities = createCapabilities(4)
