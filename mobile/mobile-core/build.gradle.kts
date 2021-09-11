@@ -23,15 +23,13 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(libs.kotlinx.coroutines.core)
                 api(projects.common)
+                api(libs.kotlinx.coroutines.core)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation(libs.mockk.core)
-                implementation(libs.robolectric)
+                implementation(kotlin("test"))
             }
         }
         val androidMain by getting {
