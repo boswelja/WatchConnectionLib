@@ -1,4 +1,5 @@
 import Publishing.configureMavenPublication
+import Publishing.repoUrlFor
 
 plugins {
     id("com.android.library")
@@ -47,7 +48,7 @@ publishing {
             configureMavenPublication(
                 "platform-tizen",
                 "Samsung Tizen support for Watch Connection Library",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-tizen",
+                repoUrlFor("mobile/platform-tizen"),
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")

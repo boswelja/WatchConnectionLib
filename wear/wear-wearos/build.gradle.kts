@@ -1,4 +1,5 @@
 import Publishing.configureMavenPublication
+import Publishing.repoUrlFor
 
 plugins {
     id("com.android.library")
@@ -61,7 +62,7 @@ publishing {
             configureMavenPublication(
                 "wear-wearos",
                 "Watch Connection Library wear-wearos components",
-                "https://github.com/boswelja/WatchConnectionLib/blob/main/wear/wearos",
+                repoUrlFor("wear/wearos"),
                 project.configurations.implementation.get().allDependencies
             ) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")

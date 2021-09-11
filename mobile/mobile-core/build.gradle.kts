@@ -1,3 +1,5 @@
+import Publishing.repoUrlFor
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -78,9 +80,7 @@ afterEvaluate {
             pom {
                 name.set(this@afterEvaluate.name)
                 description.set(this@afterEvaluate.description)
-                url.set(
-                    "https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core"
-                )
+                url.set(repoUrlFor("mobile/mobile-core"))
                 licenses(Publishing.licenses)
                 developers(Publishing.developers)
                 scm(Publishing.scm)

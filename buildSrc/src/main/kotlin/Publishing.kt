@@ -9,6 +9,8 @@ import org.gradle.api.publish.maven.MavenPublication
 
 object Publishing {
 
+    val baseRepoUrl = "https://github.com/boswelja/WatchConnectionLib/blob/main/"
+
     val version: String?
         get() = System.getenv("VERSION")
 
@@ -35,7 +37,7 @@ object Publishing {
     val licenses: Action<MavenPomLicenseSpec> = Action {
         license {
             name.set("Apache 2.0")
-            url.set("https://github.com/boswelja/WatchConnectionLib/blob/main/LICENSE")
+            url.set(repoUrlFor("LICENSE"))
         }
     }
 
@@ -44,7 +46,7 @@ object Publishing {
             id.set("boswelja")
             name.set("Jack Boswell")
             email.set("boswelja@outlook.com")
-            url.set("https://boswelja.github.io")
+            url.set("https://github.com/boswelja")
         }
     }
 
@@ -58,6 +60,8 @@ object Publishing {
             }
         }
     }
+
+    fun repoUrlFor(path: String): String = baseRepoUrl + path
 
     fun configureMavenPublication(
         artifactId: String,
