@@ -21,7 +21,7 @@ import kotlinx.coroutines.tasks.await
  * @param context [Context].
  * @param serializers The list of [MessageSerializer]s to use by default for serialization.
  */
-class MessageClient(
+public class MessageClient(
     context: Context,
     serializers: List<MessageSerializer<*>>
 ) : BaseMessageClient(serializers) {

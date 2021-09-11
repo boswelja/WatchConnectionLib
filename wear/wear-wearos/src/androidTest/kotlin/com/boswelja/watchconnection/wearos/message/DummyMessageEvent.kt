@@ -2,7 +2,7 @@ package com.boswelja.watchconnection.wearos.message
 
 import com.google.android.gms.wearable.MessageEvent
 
-class DummyMessageEvent(
+public class DummyMessageEvent(
     private val sourceNodeId: String,
     private val message: String,
     private val data: ByteArray = ByteArray(0)

@@ -12,23 +12,23 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verify
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-class MessageClientTest {
+public class MessageClientTest {
 
     private lateinit var context: Context
     private lateinit var gmsMessageClient: GMSMessageClient
     private lateinit var messageClient: MessageClient
 
-    @Before
-    fun setUp() {
+    @BeforeEach
+    public fun setUp() {
         context = mockk()
         every { context.applicationContext } returns context
         gmsMessageClient = mockk()
@@ -40,7 +40,7 @@ class MessageClientTest {
     }
 
     @Test
-    fun sendRawMessage() {
+    public fun sendRawMessage() {
         // Set up data and mocks
         val targetId = "target"
         val message = Message("message", ByteArray(10))
@@ -66,7 +66,7 @@ class MessageClientTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun rawIncomingMessages() {
+    public fun rawIncomingMessages() {
         // Set up data and mocks
         val messageCount = 10
         var listener: GMSMessageClient.OnMessageReceivedListener? = null
@@ -88,6 +88,6 @@ class MessageClientTest {
         }
 
         // Check the result
-        Assert.assertEquals(messageCount, collectedMessages.count())
+        assertEquals(messageCount, collectedMessages.count())
     }
 }

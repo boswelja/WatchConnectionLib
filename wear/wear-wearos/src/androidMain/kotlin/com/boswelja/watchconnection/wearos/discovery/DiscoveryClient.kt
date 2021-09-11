@@ -19,7 +19,7 @@ import kotlinx.coroutines.tasks.await
  * @param capabilities The list of expected capabilities.
  * @param scanRepeatInterval The interval at which to repeat scans.
  */
-class DiscoveryClient(
+public class DiscoveryClient(
     context: Context,
     private val appCapability: String,
     private val capabilities: List<String>,

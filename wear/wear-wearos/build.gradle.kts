@@ -1,76 +1,68 @@
-import Publishing.configureMavenPublication
 import Publishing.repoUrlFor
 
 plugins {
+    kotlin("multiplatform")
     id("com.android.library")
-    kotlin("android")
-    id("kotlin-parcelize")
-    id("maven-publish")
-    id("signing")
+    id("org.jetbrains.dokka") version "1.5.0"
+    `maven-publish`
+    signing
 }
 
+group = Publishing.groupId
+version = Publishing.version ?: "0.1.0"
+description = "Watch Connection Library wear-wearos components"
+
+kotlin {
+    explicitApi()
+
+    android {
+        publishLibraryVariants("release")
+    }
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(projects.wear.wearCore)
+                api(libs.kotlinx.coroutines.core)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.play.services.wearable)
+                implementation(libs.kotlinx.coroutines.playservices)
+            }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit5"))
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.mockk.core)
+            }
+        }
+    }
+}
 android {
     compileSdk = Sdk.target
-
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = Sdk.min
         targetSdk = Sdk.target
         consumerProguardFile("proguard-rules.pro")
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+}
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
-    testOptions.unitTests {
-        isIncludeAndroidResources = true
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
 
-dependencies {
-    api(projects.wear.wearCore)
-    api(libs.kotlinx.coroutines.core)
-    implementation(libs.play.services.wearable)
-    implementation(libs.kotlinx.coroutines.playservices)
-
-    testImplementation(libs.androidx.test.ext)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk.core)
-    testImplementation(libs.robolectric)
-}
-
-// Bundle sources with binaries
-val androidSourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(android.sourceSets["main"].kotlin.name)
-}
-artifacts {
-    archives(androidSourcesJar)
-}
-
-publishing {
-    publications {
-        create(
-            "release",
-            configureMavenPublication(
-                "wear-wearos",
-                "Watch Connection Library wear-wearos components",
-                repoUrlFor("wear/wearos"),
-                project.configurations.implementation.get().allDependencies
-            ) {
-                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-                artifact(androidSourcesJar)
-            }
-        )
+tasks {
+    create<Jar>("javadocJar") {
+        dependsOn(dokkaJavadoc)
+        archiveClassifier.set("javadoc")
+        from(dokkaJavadoc.get().outputDirectory)
     }
-    repositories(Publishing.repositories)
 }
 
 // Create signing config
@@ -81,13 +73,20 @@ signing {
     sign(publishing.publications)
 }
 
-// Make publish task depend on assembleRelease
-tasks.named("publishReleasePublicationToSonatypeRepository") {
-    dependsOn("assembleRelease")
-}
+afterEvaluate {
+    publishing {
+        publications.withType<MavenPublication> {
+            artifact(tasks["javadocJar"])
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+            pom {
+                name.set(this@afterEvaluate.name)
+                description.set(this@afterEvaluate.description)
+                url.set(repoUrlFor("wear/wear-wearos"))
+                licenses(Publishing.licenses)
+                developers(Publishing.developers)
+                scm(Publishing.scm)
+            }
+            repositories(Publishing.repositories)
+        }
     }
 }
