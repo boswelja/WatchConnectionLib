@@ -7,7 +7,7 @@ import com.google.android.gms.wearable.WearableListenerService
  * A [WearableListenerService] to parse [MessageEvent]s and hand them off to
  * [Messages.ACTION_MESSAGE_RECEIVED] receivers.
  */
-class WearOSMessageReceiver : WearableListenerService() {
+public class WearOSMessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
 //        messageEvent?.let { event ->
 //            // TODO Fix this

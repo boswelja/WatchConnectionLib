@@ -3,7 +3,6 @@ package com.boswelja.watchconnection.wearos
 import android.content.Context
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.message.MessagePlatform
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.common.api.ApiException
@@ -17,15 +16,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
-class WearOSMessagePlatform(
+public class WearOSMessagePlatform(
     private val messageClient: MessageClient,
 ) : MessagePlatform {
 
-    constructor(context: Context) : this(Wearable.getMessageClient(context))
+    public constructor(context: Context) : this(Wearable.getMessageClient(context))
 
     override val platformIdentifier: String = WEAROS_PLATFORM
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
             val message = ReceivedMessage(

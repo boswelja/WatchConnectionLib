@@ -1,11 +1,15 @@
 package com.boswelja.watchconnection.wearos
 
+import android.content.Context
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.createMessagesFor
-import com.boswelja.watchconnection.wearos.rules.MessageClientTestRule
+import com.boswelja.watchconnection.wearos.message.DummyMessageClient
+import com.boswelja.watchconnection.wearos.message.DummyMessageEvent
+import com.boswelja.watchconnection.wearos.message.createMessagesFor
 import com.google.android.gms.wearable.MessageOptions
+import io.mockk.mockk
 import io.mockk.verify
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -14,27 +18,26 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.withTimeout
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 private const val TIMEOUT = 250L
 
-class WearOSMessagePlatformTest {
+public class WearOSMessagePlatformTest {
 
-    @get:Rule
-    val messageClientTestRule = MessageClientTestRule()
-
+    private lateinit var context: Context
+    private lateinit var messageClient: DummyMessageClient
     private lateinit var messagePlatform: WearOSMessagePlatform
 
-    @Before
-    fun setUp() {
-        messagePlatform = WearOSMessagePlatform(messageClientTestRule.messageClient)
+    @BeforeEach
+    public fun setUp() {
+        context = mockk()
+        messageClient = DummyMessageClient(context)
+        messagePlatform = WearOSMessagePlatform(messageClient)
     }
 
     @Test
-    fun `sendMessage passes high priority requests to MessageClient`() {
+    public fun `sendMessage passes high priority requests to MessageClient`() {
         val message = "message"
         val watchId = "watchId"
 
@@ -47,7 +50,7 @@ class WearOSMessagePlatformTest {
 
         // Verify the call was made
         verify {
-            messageClientTestRule.messageClient.sendMessage(
+            messageClient.sendMessage(
                 watchId,
                 message,
                 null,
@@ -57,7 +60,7 @@ class WearOSMessagePlatformTest {
     }
 
     @Test
-    fun `sendMessage passes low priority requests to MessageClient`() {
+    public fun `sendMessage passes low priority requests to MessageClient`() {
         val message = "message"
         val watchId = "watchId"
 
@@ -70,7 +73,7 @@ class WearOSMessagePlatformTest {
 
         // Verify the call was made
         verify {
-            messageClientTestRule.messageClient.sendMessage(
+            messageClient.sendMessage(
                 watchId,
                 message,
                 null,
@@ -81,7 +84,7 @@ class WearOSMessagePlatformTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `incomingMessages gets all messages received by OnMessageReceivedListener`() {
+    public fun `incomingMessages gets all messages received by OnMessageReceivedListener`() {
         val messageCount = 10
         val messages = createMessagesFor(messageCount, messagePlatform.platformIdentifier)
 
@@ -97,13 +100,19 @@ class WearOSMessagePlatformTest {
         }
 
         // Send the dummy messages
-        messages.forEach {
-            messageClientTestRule.receiveMessage(
-                it.first, it.second.path, it.second.data
-            )
+        messages.forEach { message ->
+            messageClient.listeners.forEach { listener ->
+                listener.onMessageReceived(
+                    DummyMessageEvent(
+                        message.sourceUid,
+                        message.path,
+                        message.data
+                    )
+                )
+            }
         }
 
         // Make sure we got all the messages
-        Assert.assertEquals(messages.map { it.second }, collectedMessages)
+        assertEquals(messages, collectedMessages)
     }
 }

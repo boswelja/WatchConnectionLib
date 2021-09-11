@@ -1,46 +1,48 @@
 package com.boswelja.watchconnection.wearos
 
-import com.boswelja.watchconnection.wearos.rules.CapabilityClientTestRule
-import com.boswelja.watchconnection.wearos.rules.NodeClientTestRule
-import com.boswelja.watchconnection.wearos.rules.createNodes
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import android.content.Context
+import com.boswelja.watchconnection.wearos.discovery.DummyCapabilityClient
+import com.boswelja.watchconnection.wearos.discovery.DummyNodeClient
+import com.boswelja.watchconnection.wearos.discovery.createNodes
+import io.mockk.mockk
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 private const val TIMEOUT = 250L
 
-class WearOSDiscoveryPlatformTest {
+public class WearOSDiscoveryPlatformTest {
 
     private val appCapability = "app-capability"
     private val capabilities = (0..4).map { it.toString() }
 
-    @get:Rule
-    val capabilityClientTestRule = CapabilityClientTestRule()
-    @get:Rule
-    val nodeClientTestRule = NodeClientTestRule()
-
+    private lateinit var context: Context
+    private lateinit var nodeClient: DummyNodeClient
+    private lateinit var capabilityClient: DummyCapabilityClient
     private lateinit var discoveryPlatform: WearOSDiscoveryPlatform
 
-    @Before
-    fun setUp() {
+    @BeforeEach
+    public fun setUp() {
+        context = mockk()
+        nodeClient = DummyNodeClient(context)
+        capabilityClient = DummyCapabilityClient(context)
         discoveryPlatform = WearOSDiscoveryPlatform(
             appCapability,
             capabilities,
-            nodeClientTestRule.nodeClient,
-            capabilityClientTestRule.capabilityClient
+            nodeClient,
+            capabilityClient
         )
     }
 
     @Test
-    fun `allWatches flows initial value immediately`() {
+    public fun `allWatches flows initial value immediately`() {
         val nodes = createNodes(5)
-        nodeClientTestRule.setConnectedNodes(nodes)
+        nodeClient.connectedNodes.addAll(nodes)
 
         val watches = runBlocking {
             withTimeout(TIMEOUT) {
@@ -48,15 +50,14 @@ class WearOSDiscoveryPlatformTest {
             }
         }
 
-        Assert.assertEquals(nodes.map { it.id }, watches.map { it.internalId })
+        assertEquals(nodes.map { it.id }, watches.map { it.internalId })
     }
 
-    @ExperimentalCoroutinesApi
     @Test
-    fun `watchesWithApp flows initial value immediately`() {
+    public fun `watchesWithApp flows initial value immediately`() {
         // Set the capable nodes
         val nodes = createNodes(5)
-        capabilityClientTestRule.changeCapabilityInfo(appCapability, nodes)
+        capabilityClient.nodesWithCapability[appCapability] = nodes.toMutableSet()
 
         // Take the first emission, if any
         val watches = runBlocking {
@@ -65,16 +66,15 @@ class WearOSDiscoveryPlatformTest {
             }
         }
 
-        Assert.assertEquals(nodes.map { it.id }, watches.map { it.internalId })
+        assertEquals(nodes.map { it.id }, watches.map { it.internalId })
     }
 
-    @ExperimentalCoroutinesApi
     @Test
-    fun `getCapabilitiesFor flows initial value immediately`() {
+    public fun `getCapabilitiesFor flows initial value immediately`() {
         // Set the capable nodes
         val nodes = createNodes(5)
         capabilities.forEach {
-            capabilityClientTestRule.changeCapabilityInfo(it, nodes)
+            capabilityClient.nodesWithCapability[it] = nodes.toMutableSet()
         }
 
         // Take the first emission, if any
@@ -85,12 +85,11 @@ class WearOSDiscoveryPlatformTest {
         }
 
         // We've just mocked all capabilities, so check for them all
-        Assert.assertEquals(this.capabilities, capabilities)
+        assertEquals(this.capabilities, capabilities)
     }
 
-    @ExperimentalCoroutinesApi
     @Test
-    fun `getStatusFor flows initial value immediately`() {
+    public fun `getStatusFor flows initial value immediately`() {
         // Take the first emission, if any
         val status = runBlocking {
             withTimeoutOrNull(TIMEOUT) {
@@ -99,6 +98,6 @@ class WearOSDiscoveryPlatformTest {
         }
 
         // If status isn't null, we got something
-        Assert.assertNotNull(status)
+        assertNotNull(status)
     }
 }

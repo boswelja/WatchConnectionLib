@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class WearOSDiscoveryPlatform(
+public class WearOSDiscoveryPlatform(
     private val appCapability: String,
     private val capabilities: List<String>,
     private val nodeClient: NodeClient,
@@ -24,7 +24,7 @@ class WearOSDiscoveryPlatform(
     private val scanRepeatInterval: Long = 2000
 ) : DiscoveryPlatform {
 
-    constructor(
+    public constructor(
         context: Context,
         appCapability: String,
         capabilities: List<String>,
@@ -53,7 +53,7 @@ class WearOSDiscoveryPlatform(
         }
     }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun watchesWithApp(): Flow<List<Watch>> = callbackFlow {
         // Create capability listener
         val listener = CapabilityClient.OnCapabilityChangedListener { info ->
@@ -105,7 +105,6 @@ class WearOSDiscoveryPlatform(
         }
     }
 
-    @ExperimentalCoroutinesApi
     override fun getStatusFor(watchId: String): Flow<Status> = flow {
         // Start with CONNECTING
         emit(Status.CONNECTING)
