@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
-class TizenAccessoryAgent internal constructor(
+internal class TizenAccessoryAgent internal constructor(
     context: Context,
     accessory: SA
 ) : SAAgentV2(TAG, context) {
@@ -81,14 +81,13 @@ class TizenAccessoryAgent internal constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
     fun allWatches(): Flow<List<Watch>> {
         findPeerJob.cancel()
         findPeerAgents()
         return allWatches
     }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getCapabilitiesFor(watchId: String): Flow<List<String>> {
         var flow = capabilityMap[watchId]
         if (flow == null) {
@@ -109,7 +108,6 @@ class TizenAccessoryAgent internal constructor(
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    @ExperimentalCoroutinesApi
     suspend fun sendMessage(watchId: String, message: String, data: ByteArray?): Boolean {
         val targetAgent = peerMap[watchId] ?: return false
         val bytes = Messages.toByteArray(message, data)

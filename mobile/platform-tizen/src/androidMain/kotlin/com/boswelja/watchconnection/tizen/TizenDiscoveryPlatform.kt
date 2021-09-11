@@ -5,16 +5,15 @@ import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform {
+public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform {
 
     override val platformIdentifier: String = Constants.TIZEN_PLATFORM
 
     private lateinit var accessoryAgent: TizenAccessoryAgent
-    var isReady: Boolean = false
+    public var isReady: Boolean = false
         private set
 
     init {
@@ -38,17 +37,13 @@ class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform {
         )
     }
 
-    @ExperimentalCoroutinesApi
     override fun allWatches(): Flow<List<Watch>> = accessoryAgent.allWatches()
 
-    @ExperimentalCoroutinesApi
     override fun watchesWithApp(): Flow<List<Watch>> = accessoryAgent.allWatches()
 
-    @ExperimentalCoroutinesApi
     override fun getCapabilitiesFor(watchId: String): Flow<List<String>> =
         accessoryAgent.getCapabilitiesFor(watchId)
 
-    @ExperimentalCoroutinesApi
     override fun getStatusFor(watchId: String): Flow<Status> = allWatches().map { allWatches ->
         if (allWatches.any { it.internalId == watchId }) Status.CONNECTED
         else Status.DISCONNECTED

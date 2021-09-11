@@ -11,12 +11,12 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class TizenMessagePlatform(context: Context) : MessagePlatform {
+public class TizenMessagePlatform(context: Context) : MessagePlatform {
 
     override val platformIdentifier: String = TIZEN_PLATFORM
 
     private lateinit var accessoryAgent: TizenAccessoryAgent
-    var isReady: Boolean = false
+    public var isReady: Boolean = false
         private set
 
     init {
@@ -40,7 +40,7 @@ class TizenMessagePlatform(context: Context) : MessagePlatform {
         )
     }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         val receiver = object : MessageReceiver() {
             override fun onMessageReceived(watchId: String, message: String, data: ByteArray?) {
@@ -61,7 +61,6 @@ class TizenMessagePlatform(context: Context) : MessagePlatform {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    @ExperimentalCoroutinesApi
     override suspend fun sendMessage(
         watchId: String,
         message: String,
