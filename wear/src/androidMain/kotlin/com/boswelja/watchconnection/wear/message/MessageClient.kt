@@ -3,8 +3,8 @@ package com.boswelja.watchconnection.wear.message
 import android.content.Context
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.ExperimentalCoroutinesApi

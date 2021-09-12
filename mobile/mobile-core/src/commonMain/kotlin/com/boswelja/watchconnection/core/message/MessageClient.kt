@@ -3,8 +3,8 @@ package com.boswelja.watchconnection.core.message
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
 import kotlinx.coroutines.ExperimentalCoroutinesApi

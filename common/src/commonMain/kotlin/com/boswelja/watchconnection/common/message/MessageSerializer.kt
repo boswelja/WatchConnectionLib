@@ -1,9 +1,9 @@
-package com.boswelja.watchconnection.common.message.serialized
+package com.boswelja.watchconnection.common.message
 
 /**
  * A generic serializer implementation, designed to serialize/deserialize classes with some
  * serialization standard.
- * @param messagePaths A [Set] of [TypedMessage.path]s this serializer supports.
+ * @param messagePaths A [Set] of [Message.path]s this serializer supports.
  */
 public abstract class MessageSerializer<T>(
     public val messagePaths: Set<String>

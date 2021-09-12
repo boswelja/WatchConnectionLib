@@ -1,6 +1,6 @@
 package com.boswelja.watchconnection.core.message.serialized
 
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
+import com.boswelja.watchconnection.common.message.MessageSerializer
 
 const val MessagePath = "message-path"
 
