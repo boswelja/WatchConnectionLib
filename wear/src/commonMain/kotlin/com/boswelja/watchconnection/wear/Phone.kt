@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.core
+package com.boswelja.watchconnection.wear
 
 import com.boswelja.watchconnection.common.Device
 

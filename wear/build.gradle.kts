@@ -10,7 +10,7 @@ plugins {
 
 group = Publishing.groupId
 version = Publishing.version ?: "0.1.0"
-description = "Watch Connection Library wear-wearos components"
+description = "Smartwatch components for Watch Connection Library"
 
 kotlin {
     explicitApi()
@@ -22,8 +22,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(projects.wear.wearCore)
                 api(libs.kotlinx.coroutines.core)
+                api(projects.common)
             }
         }
         val androidMain by getting {
@@ -32,15 +32,9 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.playservices)
             }
         }
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(libs.mockk.core)
-            }
-        }
     }
 }
+
 android {
     compileSdk = Sdk.target
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -81,7 +75,7 @@ afterEvaluate {
             pom {
                 name.set(this@afterEvaluate.name)
                 description.set(this@afterEvaluate.description)
-                url.set(repoUrlFor("wear/wear-wearos"))
+                url.set(repoUrlFor("wear"))
                 licenses(Publishing.licenses)
                 developers(Publishing.developers)
                 scm(Publishing.scm)

@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.wearos
+package com.boswelja.watchconnection.wear
 
 import kotlinx.coroutines.delay
 
