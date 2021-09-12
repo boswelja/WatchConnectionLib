@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.core.message
 
+import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.message.serialized.ConcreteDataType
 import com.boswelja.watchconnection.core.message.serialized.ConcreteMessageSerializer
 import com.boswelja.watchconnection.core.message.serialized.MessagePath

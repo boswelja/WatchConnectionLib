@@ -1,6 +1,6 @@
 package com.boswelja.watchconnection.wear.discovery
 
-import com.boswelja.watchconnection.wear.Phone
+import com.boswelja.watchconnection.common.Phone
 import kotlinx.coroutines.flow.Flow
 
 /**

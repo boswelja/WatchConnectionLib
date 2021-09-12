@@ -1,9 +1,9 @@
 package com.boswelja.watchconnection.wear.message
 
+import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
-import com.boswelja.watchconnection.wear.Phone
 import kotlinx.coroutines.flow.Flow
 
 /**
