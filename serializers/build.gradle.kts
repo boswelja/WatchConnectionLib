@@ -28,6 +28,11 @@ kotlin {
         val androidMain by getting {
             dependencies { }
         }
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit5"))
+            }
+        }
     }
 }
 
