@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.wearos
+package com.boswelja.watchconnection.wearos.message
 
 import android.content.Context
 import com.boswelja.watchconnection.common.message.MessagePriority
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
-public class WearOSMessagePlatform(
+public actual class WearOSMessagePlatform(
     private val messageClient: MessageClient,
 ) : MessagePlatform {
 

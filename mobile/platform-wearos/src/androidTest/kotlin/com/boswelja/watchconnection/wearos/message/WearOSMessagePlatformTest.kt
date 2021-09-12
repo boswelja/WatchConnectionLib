@@ -1,11 +1,8 @@
-package com.boswelja.watchconnection.wearos
+package com.boswelja.watchconnection.wearos.message
 
 import android.content.Context
 import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.wearos.message.DummyMessageClient
-import com.boswelja.watchconnection.wearos.message.DummyMessageEvent
-import com.boswelja.watchconnection.wearos.message.createMessagesFor
 import com.google.android.gms.wearable.MessageOptions
 import io.mockk.mockk
 import io.mockk.verify

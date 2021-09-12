@@ -1,10 +1,11 @@
-package com.boswelja.watchconnection.wearos
+package com.boswelja.watchconnection.wearos.discovery
 
 import android.content.Context
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
+import com.boswelja.watchconnection.wearos.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-public class WearOSDiscoveryPlatform(
+public actual class WearOSDiscoveryPlatform(
     private val appCapability: String,
     private val capabilities: List<String>,
     private val nodeClient: NodeClient,

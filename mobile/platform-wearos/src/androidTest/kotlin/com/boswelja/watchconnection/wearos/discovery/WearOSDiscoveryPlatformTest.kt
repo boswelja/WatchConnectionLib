@@ -1,9 +1,6 @@
-package com.boswelja.watchconnection.wearos
+package com.boswelja.watchconnection.wearos.discovery
 
 import android.content.Context
-import com.boswelja.watchconnection.wearos.discovery.DummyCapabilityClient
-import com.boswelja.watchconnection.wearos.discovery.DummyNodeClient
-import com.boswelja.watchconnection.wearos.discovery.createNodes
 import io.mockk.mockk
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
