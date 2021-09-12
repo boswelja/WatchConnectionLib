@@ -4,10 +4,10 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class PrimitiveSerializersTest {
+public class PrimitiveSerializersTest {
 
     @Test
-    fun stringSerializer(): Unit = runBlocking {
+    public fun stringSerializer(): Unit = runBlocking {
         val data = "data"
         val serializer = StringSerializer(setOf())
         val bytes = serializer.serialize(data)
@@ -16,7 +16,7 @@ class PrimitiveSerializersTest {
     }
 
     @Test
-    fun intSerializer(): Unit = runBlocking {
+    public fun intSerializer(): Unit = runBlocking {
         val data = 123
         val serializer = IntSerializer(setOf())
         val bytes = serializer.serialize(data)
@@ -25,7 +25,7 @@ class PrimitiveSerializersTest {
     }
 
     @Test
-    fun longSerializer(): Unit = runBlocking {
+    public fun longSerializer(): Unit = runBlocking {
         val data = 456L
         val serializer = LongSerializer(setOf())
         val bytes = serializer.serialize(data)
@@ -34,7 +34,7 @@ class PrimitiveSerializersTest {
     }
 
     @Test
-    fun booleanSerializer(): Unit = runBlocking {
+    public fun booleanSerializer(): Unit = runBlocking {
         val data = true
         val serializer = BooleanSerializer(setOf())
         val bytes = serializer.serialize(data)
@@ -43,7 +43,7 @@ class PrimitiveSerializersTest {
     }
 
     @Test
-    fun floatSerializer(): Unit = runBlocking {
+    public fun floatSerializer(): Unit = runBlocking {
         val data = 0.1f
         val serializer = FloatSerializer(setOf())
         val bytes = serializer.serialize(data)
@@ -52,7 +52,7 @@ class PrimitiveSerializersTest {
     }
 
     @Test
-    fun doubleSerializer(): Unit = runBlocking {
+    public fun doubleSerializer(): Unit = runBlocking {
         val data = 0.1
         val serializer = DoubleSerializer(setOf())
         val bytes = serializer.serialize(data)
