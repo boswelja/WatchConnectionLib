@@ -60,17 +60,17 @@ jobs:
           repotoken: ${{ secrets.GITHUB_TOKEN }}
           arguments: "--android"
       - run: bash ./gradlew lint
-      - uses: yutailang0119/action-android-lint@v1.1.0
+      - uses: yutailang0119/action-android-lint@v1.1.1
         if: ${{ always() }}
         continue-on-error: true
         with:
           xml_path: core/build/reports/lint-results-debug.xml
-      - uses: yutailang0119/action-android-lint@v1.1.0
+      - uses: yutailang0119/action-android-lint@v1.1.1
         if: ${{ always() }}
         continue-on-error: true
         with:
           xml_path: wearos/build/reports/lint-results-debug.xml
-      - uses: yutailang0119/action-android-lint@v1.1.0
+      - uses: yutailang0119/action-android-lint@v1.1.1
         if: ${{ always() }}
         continue-on-error: true
         with:
