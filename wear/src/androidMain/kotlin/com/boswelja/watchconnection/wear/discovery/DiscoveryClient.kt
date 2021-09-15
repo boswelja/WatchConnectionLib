@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.wear.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
@@ -77,11 +78,16 @@ public actual class DiscoveryClient(context: Context) {
         }
     }
 
-    public actual fun phoneConnected(): Flow<Boolean> = flow {
+    public actual fun connectionMode(): Flow<ConnectionMode> = flow {
         val phone = pairedPhone()
         repeating(2000L) {
-            val connected = nodeClient.connectedNodes.await().any { it.id == phone.uid }
-            emit(connected)
+            val connectedNodes = nodeClient.connectedNodes.await()
+            val node = connectedNodes.firstOrNull { it.id == phone.uid }
+            val connectionMode = node?.let {
+                // If NodeClient considers the node to be nearby, assume a bluetooth connection
+                if (it.isNearby) ConnectionMode.Bluetooth else ConnectionMode.Internet
+            } ?: ConnectionMode.Disconnected
+            emit(connectionMode)
         }
     }
 }

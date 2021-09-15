@@ -2,6 +2,7 @@ package com.boswelja.watchconnection.wear.discovery
 
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -36,8 +37,8 @@ public expect class DiscoveryClient {
     public fun phoneCapabilities(): Flow<Set<String>>
 
     /**
-     * Get whether the paired [Phone] is currently connected. The returned [Flow] will continue
-     * emitting changes as long as there's an active collector.
+     * Get a [Flow] that emits the current [ConnectionMode] between this watch and the paired
+     * [Phone].
      */
-    public fun phoneConnected(): Flow<Boolean>
+    public fun connectionMode(): Flow<ConnectionMode>
 }
