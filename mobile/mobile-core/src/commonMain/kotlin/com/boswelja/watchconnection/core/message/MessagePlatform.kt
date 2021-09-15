@@ -18,7 +18,7 @@ public interface MessagePlatform : Platform {
     /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't
      * guarantee delivery.
-     * @param watchId See [com.boswelja.watchconnection.core.Watch.internalId].
+     * @param watchId See [com.boswelja.watchconnection.common.Watch.internalId].
      * @param message The message to send.
      * @param data The data to send with the message, if any.
      * @return true if sending was successful, false otherwise.
