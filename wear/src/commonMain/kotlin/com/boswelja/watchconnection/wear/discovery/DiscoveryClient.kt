@@ -1,6 +1,7 @@
 package com.boswelja.watchconnection.wear.discovery
 
 import com.boswelja.watchconnection.common.Phone
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,6 +13,11 @@ public expect class DiscoveryClient {
      * Get the currently paired [Phone].
      */
     public suspend fun pairedPhone(): Phone
+
+    /**
+     * Get the [Watch] representing this watch.
+     */
+    public suspend fun localWatch(): Watch
 
     /**
      * Add a capability to this smartwatch.

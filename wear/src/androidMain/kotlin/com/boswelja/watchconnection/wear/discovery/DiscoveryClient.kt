@@ -3,6 +3,7 @@ package com.boswelja.watchconnection.wear.discovery
 import android.content.Context
 import android.net.Uri
 import com.boswelja.watchconnection.common.Phone
+import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.wear.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
@@ -27,6 +28,15 @@ public actual class DiscoveryClient(context: Context) {
         return Phone(
             node.displayName,
             node.id
+        )
+    }
+
+    public actual suspend fun localWatch(): Watch {
+        val node = nodeClient.localNode.await()
+        return Watch(
+            node.displayName,
+            node.id,
+            ""
         )
     }
 
