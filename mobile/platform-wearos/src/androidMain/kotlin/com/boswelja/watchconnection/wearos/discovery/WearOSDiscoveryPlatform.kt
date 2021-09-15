@@ -2,6 +2,7 @@ package com.boswelja.watchconnection.wearos.discovery
 
 import android.content.Context
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
@@ -133,6 +134,18 @@ public actual class WearOSDiscoveryPlatform(
                 // No watch in capable nodes, app is missing
                 emit(Status.MISSING_APP)
             }
+        }
+    }
+
+    override fun connectionModeFor(watch: Watch): Flow<ConnectionMode> = flow {
+        repeating(scanRepeatInterval) {
+            val connectedNodes = nodeClient.connectedNodes.await()
+            val node = connectedNodes.firstOrNull { it.id == watch.internalId }
+            val connectionMode = node?.let {
+                // If NodeClient considers the node to be nearby, assume a bluetooth connection
+                if (it.isNearby) ConnectionMode.Bluetooth else ConnectionMode.Internet
+            } ?: ConnectionMode.Disconnected
+            emit(connectionMode)
         }
     }
 }

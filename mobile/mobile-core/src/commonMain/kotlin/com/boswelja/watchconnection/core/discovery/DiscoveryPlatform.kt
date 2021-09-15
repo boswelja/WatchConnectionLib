@@ -1,6 +1,7 @@
 package com.boswelja.watchconnection.core.discovery
 
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Platform
 import kotlinx.coroutines.flow.Flow
@@ -33,4 +34,11 @@ public interface DiscoveryPlatform : Platform {
      * @return The [Flow] of [Status].
      */
     public fun getStatusFor(watchId: String): Flow<Status>
+
+    /**
+     * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
+     * mode of a watch.
+     * @param watch The [Watch] whose connection mode to observe.
+     */
+    public fun connectionModeFor(watch: Watch): Flow<ConnectionMode>
 }

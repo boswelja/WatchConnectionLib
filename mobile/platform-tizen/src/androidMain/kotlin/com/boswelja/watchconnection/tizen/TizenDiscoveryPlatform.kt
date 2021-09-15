@@ -2,6 +2,7 @@ package com.boswelja.watchconnection.tizen
 
 import android.content.Context
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
@@ -47,5 +48,12 @@ public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform {
     override fun getStatusFor(watchId: String): Flow<Status> = allWatches().map { allWatches ->
         if (allWatches.any { it.internalId == watchId }) Status.CONNECTED
         else Status.DISCONNECTED
+    }
+
+    override fun connectionModeFor(
+        watch: Watch
+    ): Flow<ConnectionMode> = allWatches().map { allWatches ->
+        if (allWatches.any { it.internalId == watch.internalId }) ConnectionMode.Bluetooth
+        else ConnectionMode.Disconnected
     }
 }
