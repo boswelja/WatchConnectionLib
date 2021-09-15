@@ -9,7 +9,7 @@ import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform {
+public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
 
     override val platformIdentifier: String = Constants.TIZEN_PLATFORM
 

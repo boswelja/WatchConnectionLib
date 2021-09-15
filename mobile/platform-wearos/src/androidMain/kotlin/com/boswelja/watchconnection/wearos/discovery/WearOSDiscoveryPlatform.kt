@@ -24,7 +24,7 @@ public actual class WearOSDiscoveryPlatform(
     private val nodeClient: NodeClient,
     private val capabilityClient: CapabilityClient,
     private val scanRepeatInterval: Long = 2000
-) : DiscoveryPlatform {
+) : DiscoveryPlatform() {
 
     public constructor(
         context: Context,
