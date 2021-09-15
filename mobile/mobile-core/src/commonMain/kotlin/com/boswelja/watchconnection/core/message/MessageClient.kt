@@ -2,7 +2,6 @@ package com.boswelja.watchconnection.core.message
 
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.MessagePriority
 import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.BaseClient
@@ -86,8 +85,7 @@ public class MessageClient(
      */
     public suspend fun sendMessage(
         to: Watch,
-        message: Message<Any?>,
-        priority: MessagePriority = MessagePriority.LOW
+        message: Message<Any?>
     ): Boolean {
         val platform = platforms[to.platform]
         requireNotNull(platform) { "No platform registered for watch $to" }
@@ -104,6 +102,6 @@ public class MessageClient(
             data
         }
 
-        return platform.sendMessage(to.internalId, message.path, bytes, priority)
+        return platform.sendMessage(to.internalId, message.path, bytes, message.priority)
     }
 }

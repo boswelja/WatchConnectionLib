@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.tizen
 
 import android.content.Context
-import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
@@ -65,6 +65,6 @@ public class TizenMessagePlatform(context: Context) : MessagePlatform {
         watchId: String,
         message: String,
         data: ByteArray?,
-        priority: MessagePriority
+        priority: Message.Priority
     ): Boolean = accessoryAgent.sendMessage(watchId, message, data)
 }

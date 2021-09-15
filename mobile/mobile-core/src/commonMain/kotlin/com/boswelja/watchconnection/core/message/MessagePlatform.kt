@@ -1,6 +1,6 @@
 package com.boswelja.watchconnection.core.message
 
-import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.Platform
 import kotlinx.coroutines.flow.Flow
@@ -21,12 +21,13 @@ public interface MessagePlatform : Platform {
      * @param watchId See [com.boswelja.watchconnection.common.Watch.internalId].
      * @param message The message to send.
      * @param data The data to send with the message, if any.
+     * @param priority The message priority.
      * @return true if sending was successful, false otherwise.
      */
     public suspend fun sendMessage(
         watchId: String,
         message: String,
         data: ByteArray? = null,
-        priority: MessagePriority = MessagePriority.LOW
+        priority: Message.Priority
     ): Boolean
 }
