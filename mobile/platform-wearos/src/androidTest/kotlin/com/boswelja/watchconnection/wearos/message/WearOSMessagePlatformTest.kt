@@ -1,7 +1,7 @@
 package com.boswelja.watchconnection.wearos.message
 
 import android.content.Context
-import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.google.android.gms.wearable.MessageOptions
 import io.mockk.mockk
@@ -41,7 +41,7 @@ public class WearOSMessagePlatformTest {
         // Send the message
         runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message, priority = MessagePriority.HIGH)
+                messagePlatform.sendMessage(watchId, message, priority = Message.Priority.HIGH)
             }
         }
 
@@ -64,7 +64,7 @@ public class WearOSMessagePlatformTest {
         // Send the message
         runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message, priority = MessagePriority.LOW)
+                messagePlatform.sendMessage(watchId, message, priority = Message.Priority.LOW)
             }
         }
 

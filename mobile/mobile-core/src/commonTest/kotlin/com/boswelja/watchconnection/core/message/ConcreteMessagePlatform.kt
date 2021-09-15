@@ -1,6 +1,6 @@
 package com.boswelja.watchconnection.core.message
 
-import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +21,7 @@ class ConcreteMessagePlatform(
         watchId: String,
         message: String,
         data: ByteArray?,
-        priority: MessagePriority
+        priority: Message.Priority
     ): Boolean {
         sentMessages.add(
             ReceivedMessage(watchId, message, data)
