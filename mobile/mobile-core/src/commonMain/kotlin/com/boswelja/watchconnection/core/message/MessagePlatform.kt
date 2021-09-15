@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.Flow
 /**
  * [Platform] support for sending and receiving messages.
  */
-public interface MessagePlatform : Platform {
+public abstract class MessagePlatform : Platform {
 
     /**
      * A [Flow] of [ReceivedMessage]s received by this platform.
      */
-    public fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>>
+    public abstract fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>>
 
     /**
      * Send a message to a watch with the given ID. Note that a successful response doesn't
@@ -24,7 +24,7 @@ public interface MessagePlatform : Platform {
      * @param priority The message priority.
      * @return true if sending was successful, false otherwise.
      */
-    public suspend fun sendMessage(
+    public abstract suspend fun sendMessage(
         watchId: String,
         message: String,
         data: ByteArray? = null,

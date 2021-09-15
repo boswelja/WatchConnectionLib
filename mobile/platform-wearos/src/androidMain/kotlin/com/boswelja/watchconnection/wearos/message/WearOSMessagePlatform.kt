@@ -18,7 +18,7 @@ import kotlinx.coroutines.tasks.await
 
 public actual class WearOSMessagePlatform(
     private val messageClient: MessageClient,
-) : MessagePlatform {
+) : MessagePlatform() {
 
     public constructor(context: Context) : this(Wearable.getMessageClient(context))
 

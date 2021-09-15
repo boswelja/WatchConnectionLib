@@ -11,7 +11,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-public class TizenMessagePlatform(context: Context) : MessagePlatform {
+public class TizenMessagePlatform(context: Context) : MessagePlatform() {
 
     override val platformIdentifier: String = TIZEN_PLATFORM
 
