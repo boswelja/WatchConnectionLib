@@ -29,6 +29,14 @@ public abstract class DiscoveryPlatform : Platform {
     public abstract fun getCapabilitiesFor(watchId: String): Flow<List<String>>
 
     /**
+     * Check whether the given watch has a specified capability.
+     * @param watch The [Watch] to check against.
+     * @param capability The capability to look for.
+     * @return a [Flow] of [Boolean], where true indicates the watch has the capability.
+     */
+    public abstract fun hasCapability(watch: Watch, capability: String): Flow<Boolean>
+
+    /**
      * Gets a [Flow] of [Status] for the watch with the given ID.
      * @param watchId See [Watch.internalId].
      * @return The [Flow] of [Status].

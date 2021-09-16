@@ -45,6 +45,9 @@ public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
     override fun getCapabilitiesFor(watchId: String): Flow<List<String>> =
         accessoryAgent.getCapabilitiesFor(watchId)
 
+    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
+        accessoryAgent.getCapabilitiesFor(watch.internalId).map { it.contains(capability) }
+
     override fun getStatusFor(watchId: String): Flow<Status> = allWatches().map { allWatches ->
         if (allWatches.any { it.internalId == watchId }) Status.CONNECTED
         else Status.DISCONNECTED

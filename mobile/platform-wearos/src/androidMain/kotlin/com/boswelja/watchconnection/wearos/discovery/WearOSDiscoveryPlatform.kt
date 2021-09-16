@@ -107,6 +107,19 @@ public actual class WearOSDiscoveryPlatform(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> = callbackFlow {
+        val listener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
+            trySend(capabilityInfo.nodes.any { it.id == watch.internalId })
+        }
+
+        capabilityClient.addListener(listener, capability)
+
+        awaitClose {
+            capabilityClient.removeListener(listener)
+        }
+    }
+
     override fun getStatusFor(watchId: String): Flow<Status> = flow {
         // Start with CONNECTING
         emit(Status.CONNECTING)
