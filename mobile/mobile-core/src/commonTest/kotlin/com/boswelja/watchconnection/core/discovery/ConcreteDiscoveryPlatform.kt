@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class ConcreteDiscoveryPlatform(
     private val allWatches: List<Watch>,
-    private val capabilities: List<String>,
+    private val capabilities: Set<String>,
     private val connectionMode: ConnectionMode
 ) : DiscoveryPlatform() {
 
@@ -16,7 +16,7 @@ class ConcreteDiscoveryPlatform(
 
     override fun allWatches(): Flow<List<Watch>> = flowOf(allWatches)
 
-    override fun getCapabilitiesFor(watchId: String): Flow<List<String>> = flowOf(capabilities)
+    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> = flowOf(capabilities)
 
     override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
         flow { emit(capabilities.contains(capability)) }

@@ -1,6 +1,7 @@
 package com.boswelja.watchconnection.wearos.discovery
 
 import android.content.Context
+import android.net.Uri
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 public actual class WearOSDiscoveryPlatform(
-    private val capabilities: List<String>,
     private val nodeClient: NodeClient,
     private val capabilityClient: CapabilityClient,
     private val scanRepeatInterval: Long = 2000
@@ -25,10 +25,8 @@ public actual class WearOSDiscoveryPlatform(
 
     public constructor(
         context: Context,
-        capabilities: List<String>,
         scanRepeatInterval: Long = 2000
     ) : this(
-        capabilities,
         Wearable.getNodeClient(context),
         Wearable.getCapabilityClient(context),
         scanRepeatInterval
@@ -50,19 +48,29 @@ public actual class WearOSDiscoveryPlatform(
         }
     }
 
-    override fun getCapabilitiesFor(watchId: String): Flow<List<String>> = flow {
-        repeating(interval = scanRepeatInterval) {
-            val discoveredCapabilities = mutableListOf<String>()
-            capabilities.forEach { capability ->
-                // Get capability info
-                val capabilityInfo = capabilityClient
-                    .getCapability(capability, CapabilityClient.FILTER_ALL)
-                    .await()
-                // If node is found with same ID as watch, emit capability
-                if (capabilityInfo.nodes.any { it.id == watchId })
-                    discoveredCapabilities += capabilityInfo.name
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> = callbackFlow {
+        val capabilities = mutableSetOf<String>()
+        val listener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
+            if (capabilityInfo.nodes.any { it.id == watchId }) {
+                capabilities.add(capabilityInfo.name)
+            } else {
+                capabilities.remove(capabilityInfo.name)
             }
-            emit(discoveredCapabilities)
+            trySend(capabilities)
+        }
+
+        // Build a Uri for matching capability changes from just the connected phone
+        val uri = Uri.Builder()
+            .scheme("wear")
+            .authority(watchId)
+            .path("/*")
+            .build()
+
+        capabilityClient.addListener(listener, uri, CapabilityClient.FILTER_LITERAL)
+
+        awaitClose {
+            capabilityClient.removeListener(listener)
         }
     }
 

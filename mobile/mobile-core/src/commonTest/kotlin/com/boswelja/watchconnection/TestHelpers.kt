@@ -12,6 +12,6 @@ fun createWatchesFor(count: Int, platformIdentifier: String): List<Watch> {
     }
 }
 
-fun createCapabilities(count: Int): List<String> {
-    return (0 until count).map { "capability$it" }
+fun createCapabilities(count: Int): Set<String> {
+    return (0 until count).map { "capability$it" }.toSet()
 }

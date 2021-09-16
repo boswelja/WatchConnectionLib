@@ -34,7 +34,7 @@ public class DiscoveryClient(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    public fun getCapabilitiesFor(watch: Watch): Flow<List<String>>? {
+    public fun getCapabilitiesFor(watch: Watch): Flow<Set<String>>? {
         return platforms[watch.platform]?.getCapabilitiesFor(watch.internalId)
     }
 }

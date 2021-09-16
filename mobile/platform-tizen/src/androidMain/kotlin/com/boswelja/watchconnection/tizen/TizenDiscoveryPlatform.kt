@@ -39,8 +39,8 @@ public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
 
     override fun allWatches(): Flow<List<Watch>> = accessoryAgent.allWatches()
 
-    override fun getCapabilitiesFor(watchId: String): Flow<List<String>> =
-        accessoryAgent.getCapabilitiesFor(watchId)
+    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> =
+        accessoryAgent.getCapabilitiesFor(watchId).map { it.toSet() }
 
     override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
         accessoryAgent.getCapabilitiesFor(watch.internalId).map { it.contains(capability) }
