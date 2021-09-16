@@ -30,20 +30,6 @@ public class DiscoveryClient(
         }
 
     /**
-     * Get a [Flow] of all [Watch]es determined to have the companion app installed from all
-     * [Platform]s.
-     */
-    @ExperimentalCoroutinesApi
-    public fun watchesWithApp(): Flow<List<Watch>> =
-        combine(platforms.values.map { it.watchesWithApp() }) { flows ->
-            val list = mutableListOf<Watch>()
-            flows.forEach { watches ->
-                list += watches
-            }
-            list
-        }
-
-    /**
      * Get a flow of capabilities found for a given [Watch].
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.

@@ -13,7 +13,6 @@ private const val TIMEOUT = 250L
 
 public class WearOSDiscoveryPlatformTest {
 
-    private val appCapability = "app-capability"
     private val capabilities = (0..4).map { it.toString() }
 
     private lateinit var context: Context
@@ -27,7 +26,6 @@ public class WearOSDiscoveryPlatformTest {
         nodeClient = DummyNodeClient(context)
         capabilityClient = DummyCapabilityClient(context)
         discoveryPlatform = WearOSDiscoveryPlatform(
-            appCapability,
             capabilities,
             nodeClient,
             capabilityClient
@@ -42,22 +40,6 @@ public class WearOSDiscoveryPlatformTest {
         val watches = runBlocking {
             withTimeout(TIMEOUT) {
                 discoveryPlatform.allWatches().first()
-            }
-        }
-
-        assertEquals(nodes.map { it.id }, watches.map { it.internalId })
-    }
-
-    @Test
-    public fun `watchesWithApp flows initial value immediately`() {
-        // Set the capable nodes
-        val nodes = createNodes(5)
-        capabilityClient.nodesWithCapability[appCapability] = nodes.toMutableSet()
-
-        // Take the first emission, if any
-        val watches = runBlocking {
-            withTimeout(TIMEOUT) {
-                discoveryPlatform.watchesWithApp().first()
             }
         }
 

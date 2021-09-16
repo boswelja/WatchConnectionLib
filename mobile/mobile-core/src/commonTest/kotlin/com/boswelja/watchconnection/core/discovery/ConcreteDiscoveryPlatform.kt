@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.flowOf
 
 class ConcreteDiscoveryPlatform(
     private val allWatches: List<Watch>,
-    private val watchesWithApp: List<Watch>,
     private val capabilities: List<String>,
     private val connectionMode: ConnectionMode
 ) : DiscoveryPlatform() {
@@ -16,8 +15,6 @@ class ConcreteDiscoveryPlatform(
     override val platformIdentifier: String = PLATFORM
 
     override fun allWatches(): Flow<List<Watch>> = flowOf(allWatches)
-
-    override fun watchesWithApp(): Flow<List<Watch>> = flowOf(watchesWithApp)
 
     override fun getCapabilitiesFor(watchId: String): Flow<List<String>> = flowOf(capabilities)
 

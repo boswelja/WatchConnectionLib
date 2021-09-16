@@ -17,12 +17,10 @@ class DiscoveryClientTest {
 
     private val testScope = CoroutineScope(EmptyCoroutineContext)
     private val allWatches = createWatchesFor(5, ConcreteDiscoveryPlatform.PLATFORM)
-    private val watchesWithApp = createWatchesFor(3, ConcreteDiscoveryPlatform.PLATFORM)
     private val capabilities = createCapabilities(4)
     private val connectionMode = ConnectionMode.Bluetooth
     private val platform = ConcreteDiscoveryPlatform(
         allWatches,
-        watchesWithApp,
         capabilities,
         connectionMode
     )
@@ -33,16 +31,6 @@ class DiscoveryClientTest {
             val client = DiscoveryClient(listOf(platform))
             client.allWatches().take(1).collect {
                 assertEquals(allWatches, it)
-            }
-        }
-    }
-
-    @Test
-    fun discoveryClientFlowsWatchesWithAppFromAllPlatforms() {
-        testScope.launch {
-            val client = DiscoveryClient(listOf(platform))
-            client.watchesWithApp().take(1).collect {
-                assertEquals(watchesWithApp, it)
             }
         }
     }

@@ -16,11 +16,6 @@ public abstract class DiscoveryPlatform : Platform {
     public abstract fun allWatches(): Flow<List<Watch>>
 
     /**
-     * A flow of all available watches with the companion app installed for this platform.
-     */
-    public abstract fun watchesWithApp(): Flow<List<Watch>>
-
-    /**
      * Get a flow of capabilities found for a [Watch] with a given ID.
      * @param watchId See [Watch.internalId].
      * @return A [Flow] of capability strings declared by the watch.
