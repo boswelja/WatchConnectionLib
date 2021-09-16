@@ -31,6 +31,13 @@ public abstract class DiscoveryPlatform : Platform {
     public abstract fun hasCapability(watch: Watch, capability: String): Flow<Boolean>
 
     /**
+     * Get a [Flow] of [Watch]es with a given capability.
+     * @param capability The target capability.
+     * @return A [Flow] of [Watch]es that declare [capability].
+     */
+    public abstract fun watchesWithCapability(capability: String): Flow<List<Watch>>
+
+    /**
      * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
      * mode of a watch.
      * @param watch The [Watch] whose connection mode to observe.

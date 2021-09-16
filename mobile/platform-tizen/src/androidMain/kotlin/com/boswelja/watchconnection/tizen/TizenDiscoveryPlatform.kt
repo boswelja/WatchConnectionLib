@@ -45,6 +45,10 @@ public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
     override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
         accessoryAgent.getCapabilitiesFor(watch.internalId).map { it.contains(capability) }
 
+    override fun watchesWithCapability(capability: String): Flow<List<Watch>> {
+        TODO("Not yet implemented")
+    }
+
     override fun connectionModeFor(
         watch: Watch
     ): Flow<ConnectionMode> = allWatches().map { allWatches ->

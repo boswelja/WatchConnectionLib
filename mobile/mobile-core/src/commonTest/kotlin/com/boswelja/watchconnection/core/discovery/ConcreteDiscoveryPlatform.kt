@@ -21,6 +21,8 @@ class ConcreteDiscoveryPlatform(
     override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
         flow { emit(capabilities.contains(capability)) }
 
+    override fun watchesWithCapability(capability: String): Flow<List<Watch>> = allWatches()
+
     override fun connectionModeFor(watch: Watch): Flow<ConnectionMode> = flowOf(connectionMode)
 
     companion object {

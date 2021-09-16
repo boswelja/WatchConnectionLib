@@ -79,6 +79,22 @@ public actual class WearOSDiscoveryPlatform(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun watchesWithCapability(capability: String): Flow<List<Watch>> = callbackFlow {
+        val listener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
+            val watches = capabilityInfo.nodes.map { node ->
+                Watch(node.displayName, node.id, WEAROS_PLATFORM)
+            }
+            trySend(watches)
+        }
+
+        capabilityClient.addListener(listener, capability)
+
+        awaitClose {
+            capabilityClient.removeListener(listener)
+        }
+    }
+
     override fun connectionModeFor(watch: Watch): Flow<ConnectionMode> = flow {
         repeating(scanRepeatInterval) {
             val connectedNodes = nodeClient.connectedNodes.await()
