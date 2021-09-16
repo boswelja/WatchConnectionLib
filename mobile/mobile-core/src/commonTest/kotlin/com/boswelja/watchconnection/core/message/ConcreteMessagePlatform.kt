@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 
 class ConcreteMessagePlatform(
     platformId: String
-) : MessagePlatform {
+) : MessagePlatform() {
 
     val incomingMessages = MutableSharedFlow<ReceivedMessage<ByteArray?>>()
 

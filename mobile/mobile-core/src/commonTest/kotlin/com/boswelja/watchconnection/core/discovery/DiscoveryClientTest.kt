@@ -1,5 +1,6 @@
 package com.boswelja.watchconnection.core.discovery
 
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.createCapabilities
 import com.boswelja.watchconnection.createWatchesFor
@@ -20,11 +21,13 @@ class DiscoveryClientTest {
     private val watchesWithApp = createWatchesFor(3, ConcreteDiscoveryPlatform.PLATFORM)
     private val capabilities = createCapabilities(4)
     private val status = Status.CONNECTED
+    private val connectionMode = ConnectionMode.Bluetooth
     private val platform = ConcreteDiscoveryPlatform(
         allWatches,
         watchesWithApp,
         capabilities,
-        status
+        status,
+        connectionMode
     )
 
     @Test
