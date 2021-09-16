@@ -3,14 +3,12 @@ package com.boswelja.watchconnection.wearos.discovery
 import android.content.Context
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.boswelja.watchconnection.wearos.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -117,36 +115,6 @@ public actual class WearOSDiscoveryPlatform(
 
         awaitClose {
             capabilityClient.removeListener(listener)
-        }
-    }
-
-    override fun getStatusFor(watchId: String): Flow<Status> = flow {
-        // Start with CONNECTING
-        emit(Status.CONNECTING)
-
-        // Get status at a set interval
-        repeating(interval = scanRepeatInterval) {
-            val capabilityInfo = capabilityClient
-                .getCapability(appCapability, CapabilityClient.FILTER_ALL).await()
-            if (capabilityInfo.nodes.any { it.id == watchId }) {
-                try {
-                    // runBlocking should be safe here, since we're within a Flow
-                    val connectedNodes = nodeClient.connectedNodes.await()
-                    // Got connected nodes, check if it contains our desired node
-                    val node = connectedNodes.firstOrNull { it.id == watchId }
-                    val status = node?.let {
-                        if (node.isNearby) Status.CONNECTED_NEARBY
-                        else Status.CONNECTED
-                    } ?: Status.DISCONNECTED
-                    emit(status)
-                } catch (e: CancellationException) {
-                    // Failed, send error
-                    emit(Status.ERROR)
-                }
-            } else {
-                // No watch in capable nodes, app is missing
-                emit(Status.MISSING_APP)
-            }
         }
     }
 

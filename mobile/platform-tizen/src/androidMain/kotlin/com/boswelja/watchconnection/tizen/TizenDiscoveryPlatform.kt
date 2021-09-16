@@ -3,7 +3,6 @@ package com.boswelja.watchconnection.tizen
 import android.content.Context
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.flow.Flow
@@ -47,11 +46,6 @@ public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
 
     override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
         accessoryAgent.getCapabilitiesFor(watch.internalId).map { it.contains(capability) }
-
-    override fun getStatusFor(watchId: String): Flow<Status> = allWatches().map { allWatches ->
-        if (allWatches.any { it.internalId == watchId }) Status.CONNECTED
-        else Status.DISCONNECTED
-    }
 
     override fun connectionModeFor(
         watch: Watch

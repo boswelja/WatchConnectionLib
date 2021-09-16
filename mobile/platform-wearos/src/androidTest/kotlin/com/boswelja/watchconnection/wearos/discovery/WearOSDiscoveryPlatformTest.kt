@@ -3,11 +3,9 @@ package com.boswelja.watchconnection.wearos.discovery
 import android.content.Context
 import io.mockk.mockk
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -83,18 +81,5 @@ public class WearOSDiscoveryPlatformTest {
 
         // We've just mocked all capabilities, so check for them all
         assertEquals(this.capabilities, capabilities)
-    }
-
-    @Test
-    public fun `getStatusFor flows initial value immediately`() {
-        // Take the first emission, if any
-        val status = runBlocking {
-            withTimeoutOrNull(TIMEOUT) {
-                discoveryPlatform.getStatusFor("watchid").first()
-            }
-        }
-
-        // If status isn't null, we got something
-        assertNotNull(status)
     }
 }

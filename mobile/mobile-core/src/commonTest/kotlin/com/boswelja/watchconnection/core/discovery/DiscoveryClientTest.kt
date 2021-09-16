@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection.core.discovery
 
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.createCapabilities
 import com.boswelja.watchconnection.createWatchesFor
 import kotlin.coroutines.EmptyCoroutineContext
@@ -20,13 +19,11 @@ class DiscoveryClientTest {
     private val allWatches = createWatchesFor(5, ConcreteDiscoveryPlatform.PLATFORM)
     private val watchesWithApp = createWatchesFor(3, ConcreteDiscoveryPlatform.PLATFORM)
     private val capabilities = createCapabilities(4)
-    private val status = Status.CONNECTED
     private val connectionMode = ConnectionMode.Bluetooth
     private val platform = ConcreteDiscoveryPlatform(
         allWatches,
         watchesWithApp,
         capabilities,
-        status,
         connectionMode
     )
 
@@ -57,18 +54,6 @@ class DiscoveryClientTest {
             allWatches.forEach { watch ->
                 client.getCapabilitiesFor(watch)!!.take(1).collect {
                     assertEquals(capabilities, it)
-                }
-            }
-        }
-    }
-
-    @Test
-    fun discoveryClientFlowsStatusFromTheCorrectPlatform() {
-        testScope.launch {
-            val client = DiscoveryClient(listOf(platform))
-            allWatches.forEach { watch ->
-                client.getStatusFor(watch)!!.take(1).collect {
-                    assertEquals(status, it)
                 }
             }
         }
