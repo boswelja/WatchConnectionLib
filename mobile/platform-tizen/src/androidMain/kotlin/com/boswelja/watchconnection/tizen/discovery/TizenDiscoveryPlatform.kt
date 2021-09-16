@@ -1,14 +1,16 @@
-package com.boswelja.watchconnection.tizen
+package com.boswelja.watchconnection.tizen.discovery
 
 import android.content.Context
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
+import com.boswelja.watchconnection.tizen.Constants
+import com.boswelja.watchconnection.tizen.TizenAccessoryAgent
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-public class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
+public actual class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
 
     override val platformIdentifier: String = Constants.TIZEN_PLATFORM
 

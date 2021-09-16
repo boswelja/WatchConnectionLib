@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.tizen
+package com.boswelja.watchconnection.tizen.message
 
 internal object Messages {
     private const val messageDelimiter = '|'.code.toByte()

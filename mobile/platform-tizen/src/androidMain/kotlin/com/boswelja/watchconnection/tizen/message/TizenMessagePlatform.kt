@@ -1,17 +1,19 @@
-package com.boswelja.watchconnection.tizen
+package com.boswelja.watchconnection.tizen.message
 
 import android.content.Context
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
+import com.boswelja.watchconnection.tizen.MessageReceiver
+import com.boswelja.watchconnection.tizen.TizenAccessoryAgent
 import com.samsung.android.sdk.accessory.SAAgentV2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-public class TizenMessagePlatform(context: Context) : MessagePlatform() {
+public actual class TizenMessagePlatform(context: Context) : MessagePlatform() {
 
     override val platformIdentifier: String = TIZEN_PLATFORM
 

@@ -4,6 +4,7 @@ import android.content.Context
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.tizen.Constants.CAPABILITY_MESSAGE
 import com.boswelja.watchconnection.tizen.Constants.TIZEN_PLATFORM
+import com.boswelja.watchconnection.tizen.message.Messages
 import com.samsung.android.sdk.SsdkUnsupportedException
 import com.samsung.android.sdk.accessory.SA
 import com.samsung.android.sdk.accessory.SAAgentV2
