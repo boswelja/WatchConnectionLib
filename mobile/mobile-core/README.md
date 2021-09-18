@@ -29,6 +29,7 @@ You'll need to instantiate a MessageClient to be able to send and receive messag
 Default serializers for common types are provided with the [serializers module](https://github.com/boswelja/WatchConnectionLib/tree/main/serializers).
 
 Creating your own serializer is easy
+
 ```kotlin
 object MySerializer : MessageSerializer<MyData>(
     messagePaths = setOf(
@@ -53,14 +54,38 @@ See the [Message class](https://github.com/boswelja/WatchConnectionLib/blob/main
 To send a message, just pass your target Watch and message to `MessageClient.sendMessage`
 
 ```kotlin
-coroutineScope.launch {
-    messageClient.sendMessage(
-        to = targetWatch,
-        message = myMessage
-    )
-}
+messageClient.sendMessage(
+    to = targetWatch,
+    message = myMessage
+)
 ```
 
 #### Receiving messages
 
 You can collect incoming messages while your app is running via the `incomingMessages()` Flows in your `MessageClient`. There are [multiple incomingMessages variants](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/message/MessageClient.kt) to choose from. Check out the link and pick the one that works best for you.
+
+### Discovery & Capabilities
+
+[DiscoveryClient](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/discovery/DiscoveryClient.kt) allows you to find available watches and manage capabilities.
+
+A capability is a string a device can announce to it's connected peers.
+Capabilities are commonly used to announce a device supports some specific feature.
+Devices can have any number of capabilities, and devices can be queried based on the capabilities they announce.
+
+#### Getting Available Watches
+
+Getting a list of available watches is as easy as collecting from the `allWatches()` Flow exposed by your `DiscoveryClient`.
+
+```kotlin
+discoveryClient.allWatches().collect { allWatches ->
+    // Do something with allWatches
+}
+```
+
+#### Managing Capabilities
+
+`DiscoveryClient` provides functions to add and remove local capabilities. Take a look at [the source](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/discovery/DiscoveryClient.kt) to find the function you need.
+
+#### Discovering Capabilities
+
+`DiscoveryClient` provides functions to look up watches and their capabilities as needed. Take a look at [the source](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/discovery/DiscoveryClient.kt) to find a function that suits your needs.
