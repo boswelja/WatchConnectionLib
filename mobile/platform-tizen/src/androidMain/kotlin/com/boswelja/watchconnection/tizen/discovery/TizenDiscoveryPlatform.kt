@@ -6,55 +6,51 @@ import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.boswelja.watchconnection.tizen.Constants
 import com.boswelja.watchconnection.tizen.TizenAccessoryAgent
-import com.samsung.android.sdk.accessory.SAAgentV2
+import com.boswelja.watchconnection.tizen.getTizenAccessoryAgent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-public actual class TizenDiscoveryPlatform(context: Context) : DiscoveryPlatform() {
+public actual class TizenDiscoveryPlatform(private val context: Context) : DiscoveryPlatform() {
 
     override val platformIdentifier: String = Constants.TIZEN_PLATFORM
 
-    private lateinit var accessoryAgent: TizenAccessoryAgent
-    public var isReady: Boolean = false
-        private set
+    private var accessoryAgent: TizenAccessoryAgent? = null
 
-    init {
-        SAAgentV2.requestAgent(
-            context,
-            TizenAccessoryAgent::class.java.name,
-            object : SAAgentV2.RequestAgentCallback {
-                override fun onAgentAvailable(agent: SAAgentV2?) {
-                    if (agent is TizenAccessoryAgent) {
-                        accessoryAgent = agent
-                        isReady = true
-                    } else {
-                        throw Exception("Agent provided was not our agent")
-                    }
-                }
-
-                override fun onError(errorCode: Int, message: String?) {
-                    throw Exception(message)
+    override fun allWatches(): Flow<List<Watch>> = flow {
+        ensureAccessoryAgentLoaded()
+        val mappedFlow = accessoryAgent!!.foundPeerAgents
+            .map {
+                it.map { peer ->
+                    Watch(
+                        peer.accessory.name,
+                        peer.peerId,
+                        Constants.TIZEN_PLATFORM
+                    )
                 }
             }
-        )
+        emitAll(mappedFlow)
     }
 
-    override fun allWatches(): Flow<List<Watch>> = accessoryAgent.allWatches()
+    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> = flowOf(setOf())
 
-    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> =
-        accessoryAgent.getCapabilitiesFor(watchId).map { it.toSet() }
+    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> = flowOf(false)
 
-    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
-        accessoryAgent.getCapabilitiesFor(watch.internalId).map { it.contains(capability) }
-
-    override fun watchesWithCapability(capability: String): Flow<List<Watch>> {
-        TODO("Not yet implemented")
-    }
+    override fun watchesWithCapability(capability: String): Flow<List<Watch>> = flowOf(listOf())
 
     override fun connectionModeFor(
         watch: Watch
     ): Flow<ConnectionMode> = allWatches().map { allWatches ->
         if (allWatches.any { it.internalId == watch.internalId }) ConnectionMode.Bluetooth
         else ConnectionMode.Disconnected
+    }
+
+    private suspend fun ensureAccessoryAgentLoaded() {
+        if (accessoryAgent == null) {
+            accessoryAgent = context.getTizenAccessoryAgent()
+        }
+        checkNotNull(accessoryAgent) { "TizenAccessoryAgent failed to initialize" }
     }
 }

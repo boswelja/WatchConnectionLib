@@ -3,7 +3,8 @@ import Publishing.repoUrlFor
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("org.jetbrains.dokka") version "1.5.0"
+    id("org.jetbrains.dokka") version "1.5.30"
+    kotlin("plugin.serialization") version "1.5.30"
     `maven-publish`
     signing
 }
@@ -24,6 +25,7 @@ kotlin {
             dependencies {
                 api(projects.mobile.mobileCore)
                 api(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.serialization.proto)
             }
         }
         val androidMain by getting {
