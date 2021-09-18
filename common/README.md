@@ -6,7 +6,7 @@ This module contains common code shared between both mobile and wear devices.
 
 | Host | Supported |
 | --- | :---: |
-| Android | ✓ |
-| iOS | ✓ |
-| Wear OS | ✓ |
-| watchOS | ✓ |
+| Android | ✔️ |
+| iOS | ✔️ |
+| Wear OS | ✔️ |
+| watchOS | ✔️ |
