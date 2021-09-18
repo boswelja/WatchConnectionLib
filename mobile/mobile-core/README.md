@@ -9,8 +9,6 @@ Note this module is useless without a platform to go with it.
 | --- | :---: |
 | Android | ✔️ |
 | iOS | ✔️ |
-| Wear OS | ❌ |
-| watchOS | ❌ |
 
 ## Usage
 
