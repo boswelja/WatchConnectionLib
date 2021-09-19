@@ -1,12 +1,23 @@
 package com.boswelja.watchconnection.tizen.discovery.sahelpers
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.map
 
+internal fun Context.getCapabilitiesDatabase(): CapabilitiesDatabase {
+    return Room.databaseBuilder(
+        applicationContext,
+        CapabilitiesDatabase::class.java,
+        "watchconnectionlib-capabilities"
+    ).enableMultiInstanceInvalidation().build()
+}
+
 @Database(entities = [Capability::class], version = 1)
-internal abstract class CapabilitiesDatabase {
+internal abstract class CapabilitiesDatabase : RoomDatabase() {
     abstract fun capabilitiesDao(): CapabilitiesDao
 
     /**
@@ -28,20 +39,29 @@ internal abstract class CapabilitiesDatabase {
     }
 
     /**
+     * Flow whether a watch with a given internal ID has the given capability.
+     * @param peerId The internal ID of the watch.
+     * @param capability The capability to check.
+     */
+    fun hasCapability(peerId: String, capability: String): Flow<Boolean> = capabilitiesDao()
+        .getCapability(peerId, capability)
+        .map { it != null }
+
+    /**
      * Flow a list of capability strings for a watch with a given internal ID.
      * @param peerId The internal ID of the watch to collect capabilities for.
      */
-    fun getCapabilitiesFor(peerId: String): Flow<List<String>> = capabilitiesDao()
+    fun getCapabilitiesFor(peerId: String): Flow<Set<String>> = capabilitiesDao()
         .getCapabilitiesById(peerId)
         .conflate()
-        .map { capabilities -> capabilities.map { it.capability } }
+        .map { capabilities -> capabilities.map { it.capability }.toSet() }
 
     /**
      * Flow a list of watch internal IDs that declare a given capability.
      * @param capability The capability to collect declaring watches for.
      */
-    fun getPeersWithCapability(capability: String): Flow<List<String>> = capabilitiesDao()
+    fun getPeersWithCapability(capability: String): Flow<Set<String>> = capabilitiesDao()
         .getCapabilitiesByCapability(capability)
         .conflate()
-        .map { capabilities -> capabilities.map { it.peerId } }
+        .map { capabilities -> capabilities.map { it.peerId }.toSet() }
 }

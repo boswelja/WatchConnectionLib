@@ -6,14 +6,16 @@ import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
 import com.boswelja.watchconnection.tizen.Constants
 import com.boswelja.watchconnection.tizen.TizenAccessoryAgent
+import com.boswelja.watchconnection.tizen.discovery.sahelpers.getCapabilitiesDatabase
 import com.boswelja.watchconnection.tizen.getTizenAccessoryAgent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 public actual class TizenDiscoveryPlatform(private val context: Context) : DiscoveryPlatform() {
+
+    private val capabilitiesDb = context.getCapabilitiesDatabase()
 
     override val platformIdentifier: String = Constants.TIZEN_PLATFORM
 
@@ -34,11 +36,15 @@ public actual class TizenDiscoveryPlatform(private val context: Context) : Disco
         emitAll(mappedFlow)
     }
 
-    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> = flowOf(setOf())
+    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> =
+        capabilitiesDb.getCapabilitiesFor(watchId)
 
-    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> = flowOf(false)
+    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
+        capabilitiesDb.hasCapability(watch.internalId, capability)
 
-    override fun watchesWithCapability(capability: String): Flow<List<Watch>> = flowOf(listOf())
+    override fun watchesWithCapability(capability: String): Flow<List<Watch>> = capabilitiesDb
+        .getPeersWithCapability(capability)
+        .map { it.map { id -> Watch("", id, Constants.TIZEN_PLATFORM) } }
 
     override fun connectionModeFor(
         watch: Watch

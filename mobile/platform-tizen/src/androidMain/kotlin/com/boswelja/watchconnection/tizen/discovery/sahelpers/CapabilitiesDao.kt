@@ -15,6 +15,9 @@ internal interface CapabilitiesDao {
     @Query("SELECT * FROM capabilities where capability = :capability")
     fun getCapabilitiesByCapability(capability: String): Flow<List<Capability>>
 
+    @Query("SELECT * FROM capabilities where peerId = :peerId AND capability = :capability")
+    fun getCapability(peerId: String, capability: String): Flow<Capability?>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addCapability(capability: Capability)
 
