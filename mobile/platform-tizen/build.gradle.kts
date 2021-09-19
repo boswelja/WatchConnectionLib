@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.dokka") version "1.5.30"
     kotlin("plugin.serialization") version "1.5.30"
+    id("com.google.devtools.ksp") version "1.5.30-1.0.0"
     `maven-publish`
     signing
 }
@@ -31,6 +32,10 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(fileTree("libs"))
+                implementation(libs.androidx.room.runtime)
+                configurations["ksp"].dependencies.add(
+                    dependencies.create(libs.androidx.room.compiler.get())
+                )
             }
         }
     }
