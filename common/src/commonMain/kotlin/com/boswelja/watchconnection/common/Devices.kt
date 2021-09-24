@@ -39,7 +39,9 @@ public open class Phone(
  * @param platform The platform identifier string of this watch. You should not need to use this
  * outside the calling platform.
  */
-public open class Watch(uid: String, name: String,
+public open class Watch(
+    uid: String,
+    name: String,
     public val internalId: String,
     public open val platform: String
 ) : Device(uid, name) {
