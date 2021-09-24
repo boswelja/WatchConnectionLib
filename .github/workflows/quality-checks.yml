@@ -55,22 +55,23 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Run ktlint
-        uses: le0nidas/ktlint-pr-comments@v1.2
+        uses: musichin/ktlint-check@v1
         with:
-          repotoken: ${{ secrets.GITHUB_TOKEN }}
-          arguments: "--android"
+          version: '0.42.1'
+          annotate: true
+          relative: true
       - run: bash ./gradlew lint
-      - uses: yutailang0119/action-android-lint@v1.1.0
+      - uses: yutailang0119/action-android-lint@v1.1.1
         if: ${{ always() }}
         continue-on-error: true
         with:
           xml_path: core/build/reports/lint-results-debug.xml
-      - uses: yutailang0119/action-android-lint@v1.1.0
+      - uses: yutailang0119/action-android-lint@v1.1.1
         if: ${{ always() }}
         continue-on-error: true
         with:
           xml_path: wearos/build/reports/lint-results-debug.xml
-      - uses: yutailang0119/action-android-lint@v1.1.0
+      - uses: yutailang0119/action-android-lint@v1.1.1
         if: ${{ always() }}
         continue-on-error: true
         with:

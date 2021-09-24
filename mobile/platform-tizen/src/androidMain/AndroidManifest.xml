@@ -1,0 +1,28 @@
+<manifest
+    package="com.boswelja.watchconnection.tizen"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <queries> <package android:name="com.samsung.accessory"/> </queries>
+
+    <application>
+        <receiver
+            android:exported="true"
+            android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
+            <intent-filter>
+                <action android:name="com.samsung.accessory.action.REGISTER_AGENT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:exported="true"
+            android:name="com.samsung.android.sdk.accessory.MessageReceiver">
+            <intent-filter>
+                <action android:name="com.samsung.accessory.action.MESSAGE_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.samsung.android.sdk.accessory.SAService" />
+    </application>
+</manifest>

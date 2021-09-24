@@ -1,123 +1,89 @@
 # mobile-core
 
 Provides all the base classes, interfaces and enums for implementing platforms, as well as classes to easily manage multiple platforms.
+Note this module is useless without a platform to go with it.
+
+## Supported Platforms
+
+| Host | Supported |
+| --- | :---: |
+| Android | ✔️ |
+| iOS | ✔️ |
 
 ## Usage
 
 ### Messages
 
-Messages are sent and received from an instance of `MessageClient`.
+Messages are lightweight path/data pairs built to be your primary communication method between phone and watch.
+Messages must have a target and path, however data is optional.
 
-All messages are sent and received as path/data maps, where a message must have a path and optionally contains data.
+Messages are managed via a [MessageClient](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/message/MessageClient.kt).
+You'll need to instantiate a MessageClient to be able to send and receive messages.
 
-Type safety is available and recommended through the use of `MessageSerializer` implementations. See below for more info.
+#### Data Serialization
+
+`MessageClient` can automatically serialize and deserialize message data for you, as long as a [MessageSerializer](https://github.com/boswelja/WatchConnectionLib/blob/main/common/src/commonMain/kotlin/com/boswelja/watchconnection/common/message/MessageSerializer.kt) is provided.
+
+Default serializers for common types are provided with the [serializers module](https://github.com/boswelja/WatchConnectionLib/tree/main/serializers).
+
+Creating your own serializer is easy
 
 ```kotlin
-val messageClient = MessageClient(
-    serializers = listOf(
-        MyDataSerializer // Add any serializers you'd like to use here. This list can be empty
-    ),
-    platforms = listOf(
-        wearOSMessagePlatform // Add any platforms you'd like to support here. This list cannot be empty.
+object MySerializer : MessageSerializer<MyData>(
+    messagePaths = setOf(
+        "path-1",
+        "path-2"
     )
+) {
+    override suspend fun serialize(data: MyData): ByteArray {
+        // Serialize MyData to ByteArray
+    }
+
+    override suspend fun deserialize(bytes: ByteArray): MyData {
+        // Deserialize ByteArray to MyData
+    }
+}
+```
+
+#### Create & Send a Message
+
+See the [Message class](https://github.com/boswelja/WatchConnectionLib/blob/main/common/src/commonMain/kotlin/com/boswelja/watchconnection/common/message/Message.kt) for more info on creating a `Message`.
+
+To send a message, just pass your target Watch and message to `MessageClient.sendMessage`
+
+```kotlin
+messageClient.sendMessage(
+    to = targetWatch,
+    message = myMessage
 )
 ```
 
-#### Data serialization
-
-`MessageClient` can automatically serialize and deserialize message data for you, as long as a `MessageSerializer` is provided.
-
-```kotlin
-object MyDataSerializer : MessageSerializer<MyType>(
-    messagePaths = setOf( // A set of message paths that will have serialized data for 'MyType'
-        "message-path-1",
-        "message-path-2"
-    )
-) {
-    override suspend fun deserialize(bytes: ByteArray): MyType {
-        // Deserialize bytes to 'MyType'
-    }
-    override suspend fun serialize(data: MyType): ByteArray {
-        // Serialize data to 'ByteArray'
-    }
-}
-```
-
-We provide some serializers for `String`, `Int`, `Long` and `Boolean` by default. To use these, you only need to construct them with a set of message paths.
-
-#### Sending messages
-
-To send a typed message, call the appropriate function on your `MessageClient` instance.
-
-```kotlin
-coroutineScope.launch {
-    messageClient.sendMessage(
-        to = targetWatch,
-        message = TypedMessage(
-            path = "my-message",
-            data = true // Or any other type you need
-        ),
-        priority = MessageProirity.LOW // Can be LOW or HIGH
-    )
-}
-```
-
-You can also send a raw `ByteArray`, or no data at all by instead constructing a `ByteArrayMessage`.
-
 #### Receiving messages
 
-##### Flow collection
+You can collect incoming messages while your app is running via the `incomingMessages()` Flows in your `MessageClient`. There are [multiple incomingMessages variants](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/message/MessageClient.kt) to choose from. Check out the link and pick the one that works best for you.
 
-You can collect incoming messages while your app is running via Kotlin Flows. To do this, call the appropriate function on your `MessageClient` instance.
+### Discovery & Capabilities
+
+[DiscoveryClient](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/discovery/DiscoveryClient.kt) allows you to find available watches and manage capabilities.
+
+A capability is a string a device can announce to it's connected peers.
+Capabilities are commonly used to announce a device supports some specific feature.
+Devices can have any number of capabilities, and devices can be queried based on the capabilities they announce.
+
+#### Getting Available Watches
+
+Getting a list of available watches is as easy as collecting from the `allWatches()` Flow exposed by your `DiscoveryClient`.
 
 ```kotlin
-coroutineScope.launch {
-    messageClient.incomingMessages()
-        .collect { message ->
-            // Note the message type is ReceivedMessage<Any?>. This is due to automatic deserialization.
-            // If you have no serializers set up, you could use rawIncomingMessages() instead
-        }
+discoveryClient.allWatches().collect { allWatches ->
+    // Do something with allWatches
 }
 ```
 
-Alternatively, if you only need a set of messages that have a specific data type you can pass a `MessageSerializer` to `incomingMessages()`.
+#### Managing Capabilities
 
-```kotlin
-coroutineScope.launch {
-    messageClient.incomingMessages(MyDataSerializer)
-        .collect { message ->
-            // Note the message type is identical to your serializer data type. This is due to automatic deserialization.
-        }
-}
-```
+`DiscoveryClient` provides functions to add and remove local capabilities. Take a look at [the source](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/discovery/DiscoveryClient.kt) to find the function you need.
 
-##### Manifest-declared receivers
+#### Discovering Capabilities
 
-You can also register to receive messages via a manifest-declared broadcast receiver.
-
-To do this, create a class extending `TypedMessageReceiver` and register it in your app manifest with an intent filter for the action `com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED`.
-
-Your resulting class should look like this:
-```kotlin
-class WatchMessageReceiver : TypedMessageReceiver(MyDataSerializer) {
-    override suspend fun onMessageReceived(
-        context: Context,
-        message: ReceivedMessage<MyType>
-    ) {
-        // Handle message here
-    }
-}
-```
-
-Alternatively, you can collect the raw message data by extending `MessageReceiver` instead.
-
-```kotlin
-class WatchMessageReceiver : MesageReceiver() {
-    override suspend fun onMessageReceived(
-        context: Context,
-        message: ReceivedMessage<ByteArray?>
-    ) {
-        // Handle message here
-    }
-}
-```
+`DiscoveryClient` provides functions to look up watches and their capabilities as needed. Take a look at [the source](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/discovery/DiscoveryClient.kt) to find a function that suits your needs.
