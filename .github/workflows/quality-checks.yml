@@ -55,10 +55,12 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Run ktlint
-        uses: le0nidas/ktlint-pr-comments@v1.2
+        uses: musichin/ktlint-check@v1
         with:
-          repotoken: ${{ secrets.GITHUB_TOKEN }}
-          arguments: "--android"
+          version: '0.42.1'
+          annotate: true
+          android: true
+          relative: true
       - run: bash ./gradlew lint
       - uses: yutailang0119/action-android-lint@v1.1.0
         if: ${{ always() }}
