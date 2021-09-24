@@ -2,12 +2,12 @@ package com.boswelja.watchconnection.wearos.discovery
 
 import android.content.Context
 import io.mockk.mockk
-import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 private const val TIMEOUT = 250L
 

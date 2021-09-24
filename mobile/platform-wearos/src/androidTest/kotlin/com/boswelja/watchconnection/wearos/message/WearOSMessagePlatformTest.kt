@@ -6,7 +6,6 @@ import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.google.android.gms.wearable.MessageOptions
 import io.mockk.mockk
 import io.mockk.verify
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -17,6 +16,7 @@ import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 private const val TIMEOUT = 250L
 

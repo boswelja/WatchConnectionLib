@@ -1,9 +1,9 @@
 package com.boswelja.watchconnection.serializers
 
 import com.boswelja.watchconnection.common.message.MessageSerializer
-import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 public class PrimitiveArraySerializersTest {
 
