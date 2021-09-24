@@ -16,8 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.Card
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.Text
-import com.boswelja.watchconnection.common.discovery.Status
-import com.boswelja.watchconnection.core.Phone
+import com.boswelja.watchconnection.common.Phone
 import com.watchconnection.sample.R
 import kotlinx.coroutines.Dispatchers
 
@@ -27,7 +26,6 @@ fun DiscoveryScreen(
 ) {
     val viewModel = viewModel<DiscoveryViewModel>()
     val phone = viewModel.pairedPhone
-    val status by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
     val capabilities by viewModel.phoneCapabilities.collectAsState(emptyList(), Dispatchers.IO)
     LazyColumn(
         modifier = modifier,
@@ -37,14 +35,13 @@ fun DiscoveryScreen(
         item {
             PairedPhoneInfo(
                 modifier = Modifier.fillMaxWidth(),
-                phone = phone,
-                status = status
+                phone = phone
             )
         }
         item {
             PhoneCapabilities(
                 modifier = Modifier.fillMaxWidth(),
-                capabilities = capabilities
+                capabilities = capabilities.toList()
             )
         }
     }
@@ -53,8 +50,7 @@ fun DiscoveryScreen(
 @Composable
 fun PairedPhoneInfo(
     modifier: Modifier = Modifier,
-    phone: Phone?,
-    status: Status
+    phone: Phone?
 ) {
     Column(
         modifier = modifier,
@@ -63,7 +59,6 @@ fun PairedPhoneInfo(
         Text(stringResource(id = R.string.paired_phone))
         Chip(
             label = { Text(phone?.name ?: stringResource(id = R.string.loading)) },
-            secondaryLabel = { Text(status.name) },
             onClick = { }
         )
     }

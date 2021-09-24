@@ -4,14 +4,16 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.StringSerializer
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
+import com.boswelja.watchconnection.serializers.StringSerializer
+import com.watchconnection.sample.discoveryClient
 import com.watchconnection.sample.messageClient
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MessageViewModel(application: Application) : AndroidViewModel(application) {
+    private val discoveryClient = application.discoveryClient()
     private val messageClient = application.messageClient()
     val incomingMessages = mutableStateListOf<ReceivedMessage<String>>()
 
@@ -26,7 +28,8 @@ class MessageViewModel(application: Application) : AndroidViewModel(application)
     fun sendMessage(text: String) {
         viewModelScope.launch {
             messageClient.sendMessage(
-                TypedMessage(
+                discoveryClient.pairedPhone(),
+                Message(
                     "message-path",
                     text
                 )

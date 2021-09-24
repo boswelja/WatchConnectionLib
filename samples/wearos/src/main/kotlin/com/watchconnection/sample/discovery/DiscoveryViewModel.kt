@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.watchconnection.core.Phone
+import com.boswelja.watchconnection.common.Phone
 import com.watchconnection.sample.discoveryClient
 import kotlinx.coroutines.launch
 
@@ -14,7 +14,6 @@ class DiscoveryViewModel(application: Application) : AndroidViewModel(applicatio
     private val discoveryClient = application.discoveryClient()
 
     var pairedPhone by mutableStateOf<Phone?>(null)
-    val status = discoveryClient.phoneStatus()
     val phoneCapabilities = discoveryClient.phoneCapabilities()
 
     init {

@@ -49,7 +49,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.wear.wearWearos)
+    implementation(projects.wear)
+    implementation(projects.serializers)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
