@@ -7,6 +7,11 @@ import com.boswelja.watchconnection.core.message.serialized.ConcreteDataType
 import com.boswelja.watchconnection.core.message.serialized.ConcreteMessageSerializer
 import com.boswelja.watchconnection.core.message.serialized.MessagePath
 import com.boswelja.watchconnection.createWatchesFor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -14,11 +19,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class MessageClientTest {
 
