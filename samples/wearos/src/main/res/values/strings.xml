@@ -5,13 +5,11 @@
     <string name="loading">Loading</string>
 
     <string name="discovery_screen_title">DiscoveryClient</string>
-    <string name="discovery_screen_summary">Capability &amp; connections</string>
     <string name="paired_phone">Paired Phone</string>
     <string name="phone_capabilities">Phone Capabilities</string>
     <string name="no_capabilities">No capabilities</string>
 
     <string name="message_screen_title">MessageClient</string>
-    <string name="message_screen_summary">Communications</string>
     <string name="received_messages">Received Messages</string>
     <string name="no_received_messages">No messages</string>
     <string name="send_message">Send Message</string>

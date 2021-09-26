@@ -12,8 +12,10 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -32,25 +34,29 @@ class MainActivity : ComponentActivity() {
                 val screenModifier = Modifier.fillMaxSize()
                 val navController = rememberSwipeDismissableNavController()
 
-                SwipeDismissableNavHost(
-                    navController = navController,
-                    startDestination = Destination.Main.route
+                Scaffold(
+                    timeText = { TimeText() }
                 ) {
-                    composable(Destination.Main.route) {
-                        MainScreen(
-                            modifier = screenModifier,
-                            onNavigate = { destination ->
-                                navController.navigate(destination.route) {
-                                    launchSingleTop = true
+                    SwipeDismissableNavHost(
+                        navController = navController,
+                        startDestination = Destination.Main.route
+                    ) {
+                        composable(Destination.Main.route) {
+                            MainScreen(
+                                modifier = screenModifier,
+                                onNavigate = { destination ->
+                                    navController.navigate(destination.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                            }
-                        )
-                    }
-                    composable(Destination.Discovery.route) {
-                        DiscoveryScreen(screenModifier)
-                    }
-                    composable(Destination.Messages.route) {
-                        MessageScreen(screenModifier)
+                            )
+                        }
+                        composable(Destination.Discovery.route) {
+                            DiscoveryScreen(screenModifier)
+                        }
+                        composable(Destination.Messages.route) {
+                            MessageScreen(screenModifier)
+                        }
                     }
                 }
             }
@@ -70,15 +76,13 @@ fun MainScreen(
         item {
             Chip(
                 onClick = { onNavigate(Destination.Discovery) },
-                label = { Text(stringResource(R.string.discovery_screen_title)) },
-                secondaryLabel = { Text(stringResource(R.string.discovery_screen_summary)) }
+                label = { Text(stringResource(R.string.discovery_screen_title)) }
             )
         }
         item {
             Chip(
                 onClick = { onNavigate(Destination.Messages) },
-                label = { Text(stringResource(R.string.message_screen_title)) },
-                secondaryLabel = { Text(stringResource(R.string.message_screen_summary)) }
+                label = { Text(stringResource(R.string.message_screen_title)) }
             )
         }
     }
