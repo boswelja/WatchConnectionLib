@@ -1,6 +1,7 @@
 package com.watchconnection.sample.discovery
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -18,10 +19,27 @@ class DiscoveryViewModel @Inject constructor(
 
     var pairedPhone by mutableStateOf<Phone?>(null)
     val phoneCapabilities = discoveryClient.phoneCapabilities()
+    val localCapabilities = mutableStateMapOf(
+        *Capability.values().map { Pair(it, false) }.toTypedArray()
+    )
 
     init {
         viewModelScope.launch {
             pairedPhone = discoveryClient.pairedPhone()
+        }
+    }
+
+    fun addLocalCapability(capability: Capability) {
+        viewModelScope.launch {
+            discoveryClient.addCapability(capability.name)
+            localCapabilities[capability] = true
+        }
+    }
+
+    fun removeLocalCapability(capability: Capability) {
+        viewModelScope.launch {
+            discoveryClient.removeCapability(capability.name)
+            localCapabilities[capability] = false
         }
     }
 }
