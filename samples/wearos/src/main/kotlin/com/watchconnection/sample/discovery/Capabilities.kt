@@ -1,4 +1,4 @@
-package com.watchconnection.sample
+package com.watchconnection.sample.discovery
 
 enum class Capabilities {
     Capability1,

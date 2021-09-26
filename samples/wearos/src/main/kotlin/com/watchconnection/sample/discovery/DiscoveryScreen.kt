@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Card
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.Text
@@ -24,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 fun DiscoveryScreen(
     modifier: Modifier = Modifier
 ) {
-    val viewModel = viewModel<DiscoveryViewModel>()
+    val viewModel = hiltViewModel<DiscoveryViewModel>()
     val phone = viewModel.pairedPhone
     val capabilities by viewModel.phoneCapabilities.collectAsState(emptyList(), Dispatchers.IO)
     LazyColumn(

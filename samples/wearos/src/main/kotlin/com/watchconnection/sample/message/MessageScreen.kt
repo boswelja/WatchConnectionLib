@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Card
 import androidx.wear.compose.material.CompactButton
 import androidx.wear.compose.material.Icon
@@ -32,7 +32,7 @@ import com.watchconnection.sample.R
 fun MessageScreen(
     modifier: Modifier = Modifier
 ) {
-    val viewModel = viewModel<MessageViewModel>()
+    val viewModel = hiltViewModel<MessageViewModel>()
     val receivedMessages = viewModel.incomingMessages
     LazyColumn(
         modifier = modifier,

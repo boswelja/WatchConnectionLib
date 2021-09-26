@@ -1,20 +1,23 @@
 package com.watchconnection.sample.message
 
-import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serializers.StringSerializer
-import com.watchconnection.sample.discoveryClient
-import com.watchconnection.sample.messageClient
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MessageViewModel(application: Application) : AndroidViewModel(application) {
-    private val discoveryClient = application.discoveryClient()
-    private val messageClient = application.messageClient()
+@HiltViewModel
+class MessageViewModel @Inject constructor(
+    private val discoveryClient: DiscoveryClient,
+    private val messageClient: MessageClient
+) : ViewModel() {
     val incomingMessages = mutableStateListOf<ReceivedMessage<String>>()
 
     init {
