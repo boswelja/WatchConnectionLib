@@ -19,6 +19,7 @@ class MessageViewModel @Inject constructor(
     private val messageClient: MessageClient
 ) : ViewModel() {
     val incomingMessages = mutableStateListOf<ReceivedMessage<String>>()
+    val sentMessages = mutableStateListOf<Message<String>>()
 
     init {
         viewModelScope.launch {
@@ -30,13 +31,15 @@ class MessageViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         viewModelScope.launch {
+            val message = Message(
+                "message-path",
+                text
+            )
             messageClient.sendMessage(
                 discoveryClient.pairedPhone(),
-                Message(
-                    "message-path",
-                    text
-                )
+                message
             )
+            sentMessages.add(message)
         }
     }
 }
