@@ -1,5 +1,7 @@
 package com.watchconnection.sample.message
 
+import android.speech.RecognizerIntent
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,6 +25,7 @@ import androidx.wear.compose.material.ScalingLazyListScope
 import androidx.wear.compose.material.Text
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.watchconnection.sample.R
+import com.watchconnection.sample.contracts.RecognizeSpeech
 
 @Composable
 fun MessageScreen(
@@ -50,12 +53,17 @@ fun ScalingLazyListScope.sendMessage(
         }
     }
     item {
+        val voiceInputLauncher = rememberLauncherForActivityResult(RecognizeSpeech()) { text ->
+            text?.let(onSendText)
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
         ) {
             Button(
-                onClick = { }
+                onClick = {
+                    voiceInputLauncher.launch(RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                }
             ) {
                 Icon(Icons.Default.KeyboardVoice, "Voice Input")
             }
