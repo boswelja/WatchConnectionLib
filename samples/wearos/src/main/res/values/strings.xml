@@ -7,8 +7,6 @@
     <string name="discovery_screen_title">DiscoveryClient</string>
     <string name="paired_phone">Paired Phone</string>
     <string name="phone_capabilities">Phone Capabilities</string>
-    <string name="capability_add">Tap to Add</string>
-    <string name="capability_remove">Tap to Remove</string>
     <string name="no_capabilities">No capabilities</string>
     <string name="local_capabilities">Local Capabilities</string>
 

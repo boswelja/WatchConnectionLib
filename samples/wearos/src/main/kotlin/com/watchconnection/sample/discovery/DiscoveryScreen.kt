@@ -12,12 +12,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
-import androidx.wear.compose.material.ChipDefaults.primaryChipColors
 import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
+import androidx.wear.compose.material.ListHeader
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListScope
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.ToggleChip
 import com.boswelja.watchconnection.common.Phone
 import com.watchconnection.sample.R
 import kotlinx.coroutines.Dispatchers
@@ -47,12 +48,9 @@ fun DiscoveryScreen(
 
 fun ScalingLazyListScope.pairedPhoneInfo(phone: Phone?) {
     item {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.paired_phone),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.caption1
-        )
+        ListHeader {
+            Text(stringResource(R.string.paired_phone))
+        }
     }
     item {
         Chip(
@@ -64,12 +62,9 @@ fun ScalingLazyListScope.pairedPhoneInfo(phone: Phone?) {
 
 fun ScalingLazyListScope.phoneCapabilities(capabilities: List<String>) {
     item {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.phone_capabilities),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.caption1
-        )
+        ListHeader {
+            Text(stringResource(R.string.phone_capabilities))
+        }
     }
     if (capabilities.isNotEmpty()) {
         items(capabilities.count()) { index ->
@@ -108,23 +103,15 @@ fun ScalingLazyListScope.localCapabilities(
         val capability = Capability.values()[index]
         val enabled = capabilityValues[capability] ?: false
 
-        Chip(
-            label = { Text(capability.name) },
-            secondaryLabel = {
-                if (enabled) {
-                    Text(stringResource(R.string.capability_remove))
-                } else {
-                    Text(stringResource(R.string.capability_add))
-                }
+        ToggleChip(
+            checked = enabled,
+            onCheckedChange = {
+                if (it) onAddCapability(capability)
+                else onRemoveCapability(capability)
             },
-            onClick = {
-                if (enabled) {
-                    onRemoveCapability(capability)
-                } else {
-                    onAddCapability(capability)
-                }
-            },
-            colors = if (enabled) primaryChipColors() else secondaryChipColors()
+            label = {
+                Text(capability.name)
+            }
         )
     }
 }
