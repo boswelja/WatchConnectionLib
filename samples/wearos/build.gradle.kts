@@ -55,6 +55,7 @@ dependencies {
     implementation(projects.serializers)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.wear.input)
     implementation(libs.bundles.lifecycle)
 
     implementation(libs.hilt.android)

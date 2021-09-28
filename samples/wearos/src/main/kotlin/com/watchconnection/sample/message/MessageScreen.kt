@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +27,7 @@ import androidx.wear.compose.material.Text
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.watchconnection.sample.R
 import com.watchconnection.sample.contracts.RecognizeSpeech
+import com.watchconnection.sample.contracts.RemoteInput
 
 @Composable
 fun MessageScreen(
@@ -53,7 +55,11 @@ fun ScalingLazyListScope.sendMessage(
         }
     }
     item {
+        val context = LocalContext.current
         val voiceInputLauncher = rememberLauncherForActivityResult(RecognizeSpeech()) { text ->
+            text?.let(onSendText)
+        }
+        val remoteInputLauncher = rememberLauncherForActivityResult(RemoteInput()) { text ->
             text?.let(onSendText)
         }
         Row(
@@ -68,7 +74,9 @@ fun ScalingLazyListScope.sendMessage(
                 Icon(Icons.Default.KeyboardVoice, "Voice Input")
             }
             Button(
-                onClick = { }
+                onClick = {
+                    remoteInputLauncher.launch(context.getString(R.string.send_message))
+                }
             ) {
                 Icon(Icons.Default.Keyboard, "Text Input")
             }

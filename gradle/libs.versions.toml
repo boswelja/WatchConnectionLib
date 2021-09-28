@@ -6,6 +6,7 @@ androidxTestCore = "1.4.0"
 androidxTestExt = "1.1.3"
 androidxArchTest = "2.1.0"
 androidxWear = "1.2.0"
+androidxWearInput = "1.2.0-alpha01"
 coroutines = "1.5.2"
 junit = "4.13.2"
 mockk = "1.12.0"
@@ -40,6 +41,7 @@ mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-wear-input = { module = "androidx.wear:wear-input", version.ref = "androidxWearInput" }
 # Compose Libraries
 androidx-compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
