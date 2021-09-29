@@ -5,6 +5,7 @@ include(
     ":mobile:platform-tizen",
     ":wear",
     ":serializers",
+    ":samples:mobile",
     ":samples:wearos"
 )
 

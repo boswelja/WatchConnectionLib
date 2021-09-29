@@ -1,4 +1,5 @@
 [versions]
+androidxAppcompat = "1.4.0-alpha03"
 androidxCore = "1.7.0-beta01"
 androidxLifecycle = "2.4.0-beta01"
 androidxRoom = "2.3.0"
@@ -23,6 +24,7 @@ navigationCompose = "2.4.0-alpha09"
 wearCompose = "1.0.0-alpha06"
 
 [libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
 androidx-arch-test = { module = "androidx.arch.core:core-testing", version.ref = "androidxArchTest" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
