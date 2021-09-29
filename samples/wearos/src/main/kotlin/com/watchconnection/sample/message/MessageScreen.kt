@@ -24,6 +24,7 @@ import androidx.wear.compose.material.ListHeader
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListScope
 import androidx.wear.compose.material.Text
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.watchconnection.sample.R
 import com.watchconnection.sample.contracts.RecognizeSpeech
@@ -34,14 +35,16 @@ fun MessageScreen(
     modifier: Modifier = Modifier
 ) {
     val viewModel = hiltViewModel<MessageViewModel>()
+    val sentMessages = viewModel.sentMessages
     val receivedMessages = viewModel.incomingMessages
 
     ScalingLazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(vertical = 64.dp, horizontal = 16.dp),
+        contentPadding = PaddingValues(vertical = 32.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         sendMessage(viewModel::sendMessage)
+        sentMessages(sentMessages)
         receivedMessages(receivedMessages)
     }
 }
@@ -80,6 +83,35 @@ fun ScalingLazyListScope.sendMessage(
             ) {
                 Icon(Icons.Default.Keyboard, "Text Input")
             }
+        }
+    }
+}
+
+fun ScalingLazyListScope.sentMessages(
+        sentMessages: List<Message<String>>
+) {
+    item {
+        ListHeader {
+            Text(stringResource(R.string.sent_messages))
+        }
+    }
+    if (sentMessages.isNotEmpty()) {
+        items(sentMessages.count()) { index ->
+            val message = sentMessages[index]
+            Chip(
+                label = { Text(message.path) },
+                secondaryLabel = { Text(message.data) },
+                onClick = { },
+                colors = secondaryChipColors()
+            )
+        }
+    } else {
+        item {
+            Chip(
+                label = { Text(stringResource(R.string.no_received_messages)) },
+                onClick = { },
+                colors = secondaryChipColors()
+            )
         }
     }
 }

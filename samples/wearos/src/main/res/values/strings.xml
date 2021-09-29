@@ -12,6 +12,7 @@
 
     <string name="message_screen_title">MessageClient</string>
     <string name="received_messages">Received Messages</string>
+    <string name="sent_messages">Sent Messages</string>
     <string name="no_received_messages">No messages</string>
     <string name="send_message">Send Message</string>
 </resources>
