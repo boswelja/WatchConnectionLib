@@ -49,6 +49,9 @@ fun MessageScreen(
     }
 }
 
+/**
+ * Add message sending components to a [ScalingLazyColumn].
+ */
 fun ScalingLazyListScope.sendMessage(
     onSendText: (String) -> Unit
 ) {
@@ -87,6 +90,9 @@ fun ScalingLazyListScope.sendMessage(
     }
 }
 
+/**
+ * Add sent messages components to a [ScalingLazyColumn].
+ */
 fun ScalingLazyListScope.sentMessages(
         sentMessages: List<Message<String>>
 ) {
@@ -116,6 +122,9 @@ fun ScalingLazyListScope.sentMessages(
     }
 }
 
+/**
+ * Add received messages components to a [ScalingLazyColumn].
+ */
 fun ScalingLazyListScope.receivedMessages(
     receivedMessages: List<ReceivedMessage<String>>
 ) {

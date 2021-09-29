@@ -46,6 +46,9 @@ fun DiscoveryScreen(
     }
 }
 
+/**
+ * Add paired phone components to a [ScalingLazyColumn].
+ */
 fun ScalingLazyListScope.pairedPhoneInfo(phone: Phone?) {
     item {
         ListHeader {
@@ -60,6 +63,9 @@ fun ScalingLazyListScope.pairedPhoneInfo(phone: Phone?) {
     }
 }
 
+/**
+ * Add phone capabilities components to a [ScalingLazyColumn].
+ */
 fun ScalingLazyListScope.phoneCapabilities(capabilities: List<String>) {
     item {
         ListHeader {
@@ -86,6 +92,9 @@ fun ScalingLazyListScope.phoneCapabilities(capabilities: List<String>) {
     }
 }
 
+/**
+ * Add local capabilities components to a [ScalingLazyColumn].
+ */
 fun ScalingLazyListScope.localCapabilities(
     capabilityValues: Map<Capability, Boolean>,
     onAddCapability: (Capability) -> Unit,
