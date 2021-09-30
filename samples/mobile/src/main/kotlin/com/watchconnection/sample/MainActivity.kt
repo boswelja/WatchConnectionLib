@@ -13,19 +13,27 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.watchconnection.sample.message.MessageScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,20 +48,53 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme(
                 colors = if (isSystemInDarkTheme()) darkColors() else lightColors()
             ) {
-                val screenModifier = Modifier.fillMaxSize()
                 val navController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    startDestination = Destinations.Main.route
-                ) {
-                    composable(Destinations.Main.route) {
-                        MainScreen(
-                            modifier = screenModifier,
-                            onNavigateTo = { navController.navigate(it.route) }
-                        )
+                val backStackEntry by navController.currentBackStackEntryAsState()
+                val showUpButton by remember(backStackEntry) {
+                    mutableStateOf(backStackEntry?.destination?.route != Destinations.Main.route)
+                }
+
+                Scaffold(
+                    topBar = {
+                        if (showUpButton) {
+                            TopAppBar(
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = { navController.popBackStack() }
+                                    ) {
+                                        Icon(Icons.Default.ArrowBack, null)
+                                    }
+                                },
+                                actions = { },
+                                title = {
+                                    Text(stringResource(R.string.app_name))
+                                }
+                            )
+                        } else {
+                            TopAppBar(
+                                actions = { },
+                                title = {
+                                    Text(stringResource(R.string.app_name))
+                                }
+                            )
+                        }
                     }
-                    composable(Destinations.Messages.route) {
-                        MessageScreen(screenModifier)
+                ) {
+                    val screenModifier = Modifier.fillMaxSize()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = Destinations.Main.route
+                    ) {
+                        composable(Destinations.Main.route) {
+                            MainScreen(
+                                modifier = screenModifier,
+                                onNavigateTo = { navController.navigate(it.route) }
+                            )
+                        }
+                        composable(Destinations.Messages.route) {
+                            MessageScreen(screenModifier)
+                        }
                     }
                 }
             }
