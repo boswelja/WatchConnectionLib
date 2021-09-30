@@ -28,4 +28,20 @@ class DiscoveryViewModel @Inject constructor(
             }
         }
     }
+
+    fun addLocalCapability(capability: Capability) {
+        viewModelScope.launch {
+            discoveryClient.addLocalCapability(capability.name)
+            localCapabilities[capability] = true
+        }
+    }
+
+    fun removeLocalCapability(capability: Capability) {
+        viewModelScope.launch {
+            discoveryClient.removeLocalCapability(capability.name)
+            localCapabilities[capability] = false
+        }
+    }
+
+    fun capabilitiesFor(watch: Watch) = discoveryClient.getCapabilitiesFor(watch)
 }

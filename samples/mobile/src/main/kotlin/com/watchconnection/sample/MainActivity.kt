@@ -35,6 +35,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.watchconnection.sample.discovery.DiscoveryScreen
 import com.watchconnection.sample.message.MessageScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -95,6 +96,9 @@ class MainActivity : AppCompatActivity() {
                         composable(Destinations.Messages.route) {
                             MessageScreen(screenModifier)
                         }
+                        composable(Destinations.Discovery.route) {
+                            DiscoveryScreen(screenModifier)
+                        }
                     }
                 }
             }
@@ -104,7 +108,8 @@ class MainActivity : AppCompatActivity() {
 
 enum class Destinations(val route: String) {
     Main("main"),
-    Messages("messages")
+    Messages("messages"),
+    Discovery("discovery")
 }
 
 @Composable
@@ -121,6 +126,12 @@ fun MainScreen(
             MainItem(
                 label = stringResource(R.string.message_screen_title),
                 onClick = { onNavigateTo(Destinations.Messages) }
+            )
+        }
+        item {
+            MainItem(
+                label = stringResource(R.string.discovery_screen_title),
+                onClick = { onNavigateTo(Destinations.Discovery) }
             )
         }
     }

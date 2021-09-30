@@ -9,6 +9,7 @@
     <string name="discovery_screen_title">DiscoveryClient</string>
     <string name="no_capabilities">No capabilities</string>
     <string name="local_capabilities">Local Capabilities</string>
+    <string name="watch_capabilities">%s capabilities</string>
 
     <string name="message_screen_title">MessageClient</string>
     <string name="received_messages">Received Messages</string>
