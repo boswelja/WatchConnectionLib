@@ -3,8 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.watchconnection.sample">
 
-    <uses-feature android:name="android.hardware.type.watch" />
-
     <application
         android:name=".Application"
         android:fullBackupContent="false"
