@@ -3,10 +3,9 @@
     <string name="app_name">WatchConnectionLib Sample</string>
 
     <string name="loading">Loading</string>
+    <string name="no_watches">No Watches</string>
 
     <string name="discovery_screen_title">DiscoveryClient</string>
-    <string name="paired_phone">Paired Phone</string>
-    <string name="phone_capabilities">Phone Capabilities</string>
     <string name="no_capabilities">No capabilities</string>
     <string name="local_capabilities">Local Capabilities</string>
 
