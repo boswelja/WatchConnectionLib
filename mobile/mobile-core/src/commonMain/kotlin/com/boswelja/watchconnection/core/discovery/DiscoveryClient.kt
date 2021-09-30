@@ -73,4 +73,24 @@ public class DiscoveryClient(
         checkNotNull(platform) { "No platform found for watch $watch" }
         return platform.connectionModeFor(watch)
     }
+
+    /**
+     * Declare this device has a given capability.
+     * @param capability The capability to declare.
+     * @return true if the local capabilities were changed, false otherwise.
+     */
+    public suspend fun addLocalCapability(capability: String): Boolean {
+        val results = platforms.values.map { it.addLocalCapability(capability) }
+        return results.any { it }
+    }
+
+    /**
+     * Declare this device no longer has a given capability.
+     * @param capability The capability to remove.
+     * @return true if the local capabilities were changed, false otherwise.
+     */
+    public suspend fun removeLocalCapability(capability: String): Boolean {
+        val results = platforms.values.map { it.removeLocalCapability(capability) }
+        return results.any { it }
+    }
 }

@@ -43,4 +43,18 @@ public abstract class DiscoveryPlatform : Platform {
      * @param watch The [Watch] whose connection mode to observe.
      */
     public abstract fun connectionModeFor(watch: Watch): Flow<ConnectionMode>
+
+    /**
+     * Declare this device has a given capability.
+     * @param capability The capability to declare.
+     * @return true if the local capabilities were changed, false otherwise.
+     */
+    public abstract suspend fun addLocalCapability(capability: String): Boolean
+
+    /**
+     * Declare this device no longer has a given capability.
+     * @param capability The capability to remove.
+     * @return true if the local capabilities were changed, false otherwise.
+     */
+    public abstract suspend fun removeLocalCapability(capability: String): Boolean
 }
