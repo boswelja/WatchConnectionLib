@@ -20,8 +20,24 @@ public actual class DiscoveryClient(context: Context) {
     private val nodeClient = Wearable.getNodeClient(context.applicationContext)
     private val capabilityClient = Wearable.getCapabilityClient(context.applicationContext)
 
-    public actual suspend fun addCapability(capability: String) {
-        capabilityClient.addLocalCapability(capability).await()
+    public actual suspend fun addLocalCapability(capability: String): Boolean {
+        return try {
+            capabilityClient.addLocalCapability(capability).await()
+            true
+        } catch (e: Exception) {
+            // If we throw an exception, no changes were made
+            false
+        }
+    }
+
+    public actual suspend fun removeLocalCapability(capability: String): Boolean {
+        return try {
+            capabilityClient.removeLocalCapability(capability).await()
+            true
+        } catch (e: Exception) {
+            // If we throw an exception, no changes were made
+            false
+        }
     }
 
     public actual suspend fun pairedPhone(): Phone {
@@ -39,10 +55,6 @@ public actual class DiscoveryClient(context: Context) {
             node.id,
             ""
         )
-    }
-
-    public actual suspend fun removeCapability(capability: String) {
-        capabilityClient.removeLocalCapability(capability).await()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
