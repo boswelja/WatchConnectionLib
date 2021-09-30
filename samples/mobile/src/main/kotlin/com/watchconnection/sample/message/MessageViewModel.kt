@@ -2,6 +2,7 @@ package com.watchconnection.sample.message
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -25,7 +26,7 @@ class MessageViewModel @Inject constructor(
     var selectedWatch by mutableStateOf<Watch?>(null)
     val availableWatches = mutableStateListOf<Watch>()
     val incomingMessages = mutableStateListOf<ReceivedMessage<String>>()
-    val sentMessages = mutableStateListOf<Message<String>>()
+    val sentMessages = mutableStateMapOf<Watch, List<Message<String>>>()
 
     init {
         viewModelScope.launch {
@@ -52,7 +53,8 @@ class MessageViewModel @Inject constructor(
                 watch,
                 message
             )
-            sentMessages.add(message)
+            val list = sentMessages[watch] ?: emptyList()
+            sentMessages[watch] = list + message
         }
     }
 }

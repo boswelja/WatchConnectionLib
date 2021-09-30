@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -15,8 +16,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -35,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.watchconnection.sample.R
 
 @Composable
@@ -55,9 +59,13 @@ fun MessageScreen(modifier: Modifier = Modifier) {
                 }
             }
         )
+        receivedMessages(viewModel.incomingMessages)
     }
 }
 
+/**
+ * Add message sending components to a [LazyListScope].
+ */
 fun LazyListScope.sendMessage(
     availableWatches: List<Watch>,
     selectedWatch: Watch?,
@@ -132,6 +140,33 @@ fun LazyListScope.sendMessage(
                     ) {
                         Icon(Icons.Default.Send, null)
                     }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Add received message components to [LazyListScope]
+ */
+@OptIn(ExperimentalMaterialApi::class)
+fun LazyListScope.receivedMessages(
+    receivedMessages: List<ReceivedMessage<String>>
+) {
+    item {
+        Card {
+            Column(Modifier.padding(16.dp).fillMaxWidth()) {
+                Text(
+                    text = stringResource(R.string.received_messages),
+                    style = MaterialTheme.typography.h6
+                )
+                Spacer(Modifier.height(16.dp))
+                receivedMessages.forEach { receivedMessage ->
+                    ListItem(
+                        text = { Text(receivedMessage.path) },
+                        secondaryText = { Text(receivedMessage.data) },
+                        overlineText = { Text(receivedMessage.sourceUid) }
+                    )
                 }
             }
         }
