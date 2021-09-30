@@ -114,4 +114,24 @@ public actual class WearOSDiscoveryPlatform(
             emit(connectionMode)
         }
     }
+
+    override suspend fun addLocalCapability(capability: String): Boolean {
+        return try {
+            capabilityClient.addLocalCapability(capability).await()
+            true
+        } catch (e: Exception) {
+            // If we throw an exception, no changes were made
+            false
+        }
+    }
+
+    override suspend fun removeLocalCapability(capability: String): Boolean {
+        return try {
+            capabilityClient.removeLocalCapability(capability).await()
+            true
+        } catch (e: Exception) {
+            // If we throw an exception, no changes were made
+            false
+        }
+    }
 }

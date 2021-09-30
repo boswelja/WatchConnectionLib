@@ -53,6 +53,18 @@ public actual class TizenDiscoveryPlatform(private val context: Context) : Disco
         else ConnectionMode.Disconnected
     }
 
+    override suspend fun addLocalCapability(capability: String): Boolean {
+        ensureAccessoryAgentLoaded()
+        capabilitiesDb.addCapability(accessoryAgent!!.serviceProfileId, capability)
+        return true
+    }
+
+    override suspend fun removeLocalCapability(capability: String): Boolean {
+        ensureAccessoryAgentLoaded()
+        capabilitiesDb.removeCapability(accessoryAgent!!.serviceProfileId, capability)
+        return true
+    }
+
     private suspend fun ensureAccessoryAgentLoaded() {
         if (accessoryAgent == null) {
             accessoryAgent = context.getTizenAccessoryAgent()

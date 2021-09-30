@@ -22,13 +22,17 @@ public expect class DiscoveryClient {
 
     /**
      * Add a capability to this smartwatch.
+     * @param capability The capability to add.
+     * @return true if the local capability list was changed, false otherwise
      */
-    public suspend fun addCapability(capability: String)
+    public suspend fun addLocalCapability(capability: String): Boolean
 
     /**
      * Remove a capability from this smartwatch.
+     * @param capability The capability to remove.
+     * @return true if the local capability list was changed, false otherwise
      */
-    public suspend fun removeCapability(capability: String)
+    public suspend fun removeLocalCapability(capability: String): Boolean
 
     /**
      * Get a set of capabilities declared by the paired [Phone]. The returned [Flow] will continue
