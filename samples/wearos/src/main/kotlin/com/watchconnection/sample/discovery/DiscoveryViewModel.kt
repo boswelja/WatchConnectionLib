@@ -31,14 +31,14 @@ class DiscoveryViewModel @Inject constructor(
 
     fun addLocalCapability(capability: Capability) {
         viewModelScope.launch {
-            discoveryClient.addCapability(capability.name)
+            discoveryClient.addLocalCapability(capability.name)
             localCapabilities[capability] = true
         }
     }
 
     fun removeLocalCapability(capability: Capability) {
         viewModelScope.launch {
-            discoveryClient.removeCapability(capability.name)
+            discoveryClient.removeLocalCapability(capability.name)
             localCapabilities[capability] = false
         }
     }
