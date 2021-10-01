@@ -9,7 +9,7 @@ android {
     compileSdk = 31
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 26
         targetSdk = 31
         applicationId = "com.watchcommection.sample"
         versionCode = 1
