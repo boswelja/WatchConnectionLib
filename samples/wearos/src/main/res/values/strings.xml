@@ -9,6 +9,7 @@
     <string name="phone_capabilities">Phone Capabilities</string>
     <string name="no_capabilities">No capabilities</string>
     <string name="local_capabilities">Local Capabilities</string>
+    <string name="phone_capabilities_refresh">Refresh</string>
 
     <string name="message_screen_title">MessageClient</string>
     <string name="received_messages">Received Messages</string>

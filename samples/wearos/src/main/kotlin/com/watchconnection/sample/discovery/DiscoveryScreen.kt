@@ -3,9 +3,9 @@ package com.watchconnection.sample.discovery
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
+import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.ListHeader
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.ScalingLazyColumn
@@ -21,7 +22,6 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import com.boswelja.watchconnection.common.Phone
 import com.watchconnection.sample.R
-import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun DiscoveryScreen(
@@ -29,7 +29,7 @@ fun DiscoveryScreen(
 ) {
     val viewModel = hiltViewModel<DiscoveryViewModel>()
     val phone = viewModel.pairedPhone
-    val capabilities by viewModel.phoneCapabilities.collectAsState(emptyList(), Dispatchers.IO)
+    val capabilities = viewModel.phoneCapabilities
 
     ScalingLazyColumn(
         modifier = modifier,
@@ -37,7 +37,7 @@ fun DiscoveryScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         pairedPhoneInfo(phone)
-        phoneCapabilities(capabilities.toList())
+        phoneCapabilities(capabilities.toList(), viewModel::refreshPhoneCapabilities)
         localCapabilities(
             capabilityValues = viewModel.localCapabilities,
             onAddCapability = viewModel::addLocalCapability,
@@ -66,7 +66,10 @@ fun ScalingLazyListScope.pairedPhoneInfo(phone: Phone?) {
 /**
  * Add phone capabilities components to a [ScalingLazyColumn].
  */
-fun ScalingLazyListScope.phoneCapabilities(capabilities: List<String>) {
+fun ScalingLazyListScope.phoneCapabilities(
+    capabilities: List<String>,
+    onRefreshCapabilities: () -> Unit
+) {
     item {
         ListHeader {
             Text(stringResource(R.string.phone_capabilities))
@@ -89,6 +92,14 @@ fun ScalingLazyListScope.phoneCapabilities(capabilities: List<String>) {
                 colors = secondaryChipColors()
             )
         }
+    }
+    item {
+        Chip(
+            label = { Text(stringResource(R.string.phone_capabilities_refresh)) },
+            icon = { Icon(Icons.Default.Refresh, null) },
+            onClick = onRefreshCapabilities,
+            colors = secondaryChipColors()
+        )
     }
 }
 
