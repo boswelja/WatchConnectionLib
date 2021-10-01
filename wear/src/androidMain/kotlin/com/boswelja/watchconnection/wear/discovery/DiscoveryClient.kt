@@ -90,6 +90,46 @@ public actual class DiscoveryClient(context: Context) {
         }
     }
 
+    public actual suspend fun allPhoneCapabilities(): Set<String> {
+        val pairedPhone = pairedPhone()
+        val allCapabilities = capabilityClient
+            .getAllCapabilities(CapabilityClient.FILTER_ALL)
+            .await()
+
+        return allCapabilities.values
+            .filter { capabilityInfo -> capabilityInfo.nodes.any { it.id == pairedPhone.uid } }
+            .map { it.name }
+            .toSet()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    public actual suspend fun phoneHasCapability(
+        capability: String
+    ): Flow<Boolean> = callbackFlow {
+        val pairedPhone = pairedPhone()
+        // Create the listener
+        val listener = CapabilityClient.OnCapabilityChangedListener { info ->
+            val hasCapability = info.nodes.any { it.id == pairedPhone.uid }
+            trySend(hasCapability)
+        }
+
+        // Register the listener
+        capabilityClient.addListener(listener, capability)
+
+        // Check capability now
+        val hasCapability = capabilityClient
+            .getCapability(capability, CapabilityClient.FILTER_ALL)
+            .await()
+            .nodes
+            .any { it.id == pairedPhone.uid }
+        send(hasCapability)
+
+        // Unregister the listener on close
+        awaitClose {
+            capabilityClient.removeListener(listener)
+        }
+    }
+
     public actual fun connectionMode(): Flow<ConnectionMode> = flow {
         val phone = pairedPhone()
         repeating(2000L) {
