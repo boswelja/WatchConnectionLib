@@ -58,6 +58,7 @@ fun ScalingLazyListScope.pairedPhoneInfo(phone: Phone?) {
     item {
         Chip(
             label = { Text(phone?.name ?: stringResource(id = R.string.loading)) },
+            secondaryLabel = phone?.let { { phone.uid } },
             onClick = { }
         )
     }
