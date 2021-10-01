@@ -43,8 +43,8 @@ public actual class DiscoveryClient(context: Context) {
     public actual suspend fun pairedPhone(): Phone {
         val node = nodeClient.connectedNodes.await().first { it.isNearby }
         return Phone(
-            node.displayName,
-            node.id
+            node.id,
+            node.displayName
         )
     }
 
