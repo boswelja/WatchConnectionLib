@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WatchConnectionLib Sample</string>
+
+    <string name="loading">Loading</string>
+
+    <string name="discovery_screen_title">DiscoveryClient</string>
+    <string name="paired_phone">Paired Phone</string>
+    <string name="phone_capabilities">Phone Capabilities</string>
+    <string name="no_capabilities">No capabilities</string>
+    <string name="local_capabilities">Local Capabilities</string>
+    <string name="phone_capabilities_refresh">Refresh</string>
+
+    <string name="message_screen_title">MessageClient</string>
+    <string name="received_messages">Received Messages</string>
+    <string name="sent_messages">Sent Messages</string>
+    <string name="no_received_messages">No messages</string>
+    <string name="send_message">Send Message</string>
+</resources>

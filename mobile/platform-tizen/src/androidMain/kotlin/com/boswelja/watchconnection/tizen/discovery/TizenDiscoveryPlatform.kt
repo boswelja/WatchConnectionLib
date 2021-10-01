@@ -36,10 +36,10 @@ public actual class TizenDiscoveryPlatform(private val context: Context) : Disco
         emitAll(mappedFlow)
     }
 
-    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> =
+    override suspend fun getCapabilitiesFor(watchId: String): Set<String> =
         capabilitiesDb.getCapabilitiesFor(watchId)
 
-    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
+    override fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean> =
         capabilitiesDb.hasCapability(watch.internalId, capability)
 
     override fun watchesWithCapability(capability: String): Flow<List<Watch>> = capabilitiesDb

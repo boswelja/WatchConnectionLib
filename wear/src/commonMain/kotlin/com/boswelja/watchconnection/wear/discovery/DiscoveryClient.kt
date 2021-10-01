@@ -35,10 +35,17 @@ public expect class DiscoveryClient {
     public suspend fun removeLocalCapability(capability: String): Boolean
 
     /**
-     * Get a set of capabilities declared by the paired [Phone]. The returned [Flow] will continue
-     * emitting changes as long as there's an active collector.
+     * Get a set of capabilities declared by the paired phone.
+     * @return The [Set] of capability strings declared by the paired phone.
      */
-    public fun phoneCapabilities(): Flow<Set<String>>
+    public suspend fun allPhoneCapabilities(): Set<String>
+
+    /**
+     * Flow whether the paired phone has a given capability.
+     * @param capability The capability to check for
+     * @return A [Flow] of [Boolean] indicating whether the paired phone has the given capability.
+     */
+    public suspend fun phoneHasCapability(capability: String): Flow<Boolean>
 
     /**
      * Get a [Flow] that emits the current [ConnectionMode] between this watch and the paired

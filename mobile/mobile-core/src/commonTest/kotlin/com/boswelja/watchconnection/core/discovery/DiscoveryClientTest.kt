@@ -40,9 +40,7 @@ class DiscoveryClientTest {
         testScope.launch {
             val client = DiscoveryClient(listOf(platform))
             allWatches.forEach { watch ->
-                client.getCapabilitiesFor(watch)!!.take(1).collect {
-                    assertEquals(capabilities, it)
-                }
+                assertEquals(capabilities, client.getCapabilitiesFor(watch))
             }
         }
     }

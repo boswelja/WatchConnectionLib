@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection.wear.discovery
 
 import android.content.Context
-import android.net.Uri
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -43,8 +42,8 @@ public actual class DiscoveryClient(context: Context) {
     public actual suspend fun pairedPhone(): Phone {
         val node = nodeClient.connectedNodes.await().first { it.isNearby }
         return Phone(
-            node.displayName,
-            node.id
+            node.id,
+            node.displayName
         )
     }
 
@@ -57,34 +56,41 @@ public actual class DiscoveryClient(context: Context) {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    public actual fun phoneCapabilities(): Flow<Set<String>> = callbackFlow {
-        // Get the paired phone and create a set to track capabilities
-        val phone = pairedPhone()
-        val capabilities = mutableSetOf<String>()
+    public actual suspend fun allPhoneCapabilities(): Set<String> {
+        val pairedPhone = pairedPhone()
+        val allCapabilities = capabilityClient
+            .getAllCapabilities(CapabilityClient.FILTER_ALL)
+            .await()
 
-        // Create a listener to handle capability changes
+        return allCapabilities.values
+            .filter { capabilityInfo -> capabilityInfo.nodes.any { it.id == pairedPhone.uid } }
+            .map { it.name }
+            .toSet()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    public actual suspend fun phoneHasCapability(
+        capability: String
+    ): Flow<Boolean> = callbackFlow {
+        val pairedPhone = pairedPhone()
+        // Create the listener
         val listener = CapabilityClient.OnCapabilityChangedListener { info ->
-            val hasCapability = info.nodes.any { it.id == phone.uid }
-            val wasChanged = if (hasCapability) {
-                capabilities.add(info.name)
-            } else {
-                capabilities.remove(info.name)
-            }
-            if (wasChanged) trySend(capabilities)
+            val hasCapability = info.nodes.any { it.id == pairedPhone.uid }
+            trySend(hasCapability)
         }
 
-        // Build a Uri for matching capability changes from just the connected phone
-        val uri = Uri.Builder()
-            .scheme("wear")
-            .authority(phone.uid)
-            .path("/*")
-            .build()
+        // Register the listener
+        capabilityClient.addListener(listener, capability)
 
-        // Add the listener
-        capabilityClient.addListener(listener, uri, CapabilityClient.FILTER_LITERAL)
+        // Check capability now
+        val hasCapability = capabilityClient
+            .getCapability(capability, CapabilityClient.FILTER_ALL)
+            .await()
+            .nodes
+            .any { it.id == pairedPhone.uid }
+        send(hasCapability)
 
-        // Remove the listener on close
+        // Unregister the listener on close
         awaitClose {
             capabilityClient.removeListener(listener)
         }
