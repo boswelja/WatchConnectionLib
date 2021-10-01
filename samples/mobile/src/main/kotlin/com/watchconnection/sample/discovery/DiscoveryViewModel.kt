@@ -19,12 +19,16 @@ class DiscoveryViewModel @Inject constructor(
     val localCapabilities = mutableStateMapOf(
         *Capability.values().map { Pair(it, false) }.toTypedArray()
     )
+    val watchCapabilities = mutableStateMapOf<Watch, Set<String>>()
 
     init {
         viewModelScope.launch {
             discoveryClient.allWatches().collect {
                 availableWatches.clear()
                 availableWatches.addAll(it)
+                it.forEach { watch ->
+                    refreshCapabilitiesFor(watch)
+                }
             }
         }
     }
@@ -43,5 +47,10 @@ class DiscoveryViewModel @Inject constructor(
         }
     }
 
-    fun capabilitiesFor(watch: Watch) = discoveryClient.getCapabilitiesFor(watch)
+    fun refreshCapabilitiesFor(watch: Watch) {
+        viewModelScope.launch {
+            val newCapabilities = discoveryClient.getCapabilitiesFor(watch)!!
+            watchCapabilities[watch] = newCapabilities
+        }
+    }
 }

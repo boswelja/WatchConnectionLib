@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection.wearos.discovery
 
 import android.content.Context
-import android.net.Uri
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryPlatform
@@ -49,33 +48,18 @@ public actual class WearOSDiscoveryPlatform(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> = callbackFlow {
-        val capabilities = mutableSetOf<String>()
-        val listener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
-            if (capabilityInfo.nodes.any { it.id == watchId }) {
-                capabilities.add(capabilityInfo.name)
-            } else {
-                capabilities.remove(capabilityInfo.name)
-            }
-            trySend(capabilities)
-        }
-
-        // Build a Uri for matching capability changes from just the connected phone
-        val uri = Uri.Builder()
-            .scheme("wear")
-            .authority(watchId)
-            .path("/*")
-            .build()
-
-        capabilityClient.addListener(listener, uri, CapabilityClient.FILTER_LITERAL)
-
-        awaitClose {
-            capabilityClient.removeListener(listener)
-        }
+    override suspend fun getCapabilitiesFor(watchId: String): Set<String> {
+        return capabilityClient
+            .getAllCapabilities(CapabilityClient.FILTER_ALL)
+            .await()
+            .values
+            .filter { it.nodes.any { node -> node.id == watchId } }
+            .map { it.name }
+            .toSet()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> = callbackFlow {
+    override fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean> = callbackFlow {
         val listener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
             trySend(capabilityInfo.nodes.any { it.id == watch.internalId })
         }

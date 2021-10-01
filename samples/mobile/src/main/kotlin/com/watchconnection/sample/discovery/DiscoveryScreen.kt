@@ -10,8 +10,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,8 +40,8 @@ fun DiscoveryScreen(
             SectionCard(
                 title = stringResource(R.string.watch_capabilities, watch.name)
             ) {
-                val capabilities by viewModel.capabilitiesFor(watch)!!.collectAsState(setOf())
-                if (capabilities.isEmpty()) {
+                val capabilities = viewModel.watchCapabilities[watch]
+                if (capabilities.isNullOrEmpty()) {
                     ListItem(text = { Text(stringResource(R.string.no_capabilities))})
                 } else {
                     capabilities.forEach { capability ->

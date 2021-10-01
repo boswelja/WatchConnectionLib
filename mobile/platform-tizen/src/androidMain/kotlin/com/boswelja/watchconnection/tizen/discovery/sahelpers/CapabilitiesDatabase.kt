@@ -51,10 +51,10 @@ internal abstract class CapabilitiesDatabase : RoomDatabase() {
      * Flow a list of capability strings for a watch with a given internal ID.
      * @param peerId The internal ID of the watch to collect capabilities for.
      */
-    fun getCapabilitiesFor(peerId: String): Flow<Set<String>> = capabilitiesDao()
+    suspend fun getCapabilitiesFor(peerId: String): Set<String> = capabilitiesDao()
         .getCapabilitiesById(peerId)
-        .conflate()
-        .map { capabilities -> capabilities.map { it.capability }.toSet() }
+        .map { it.capability }
+        .toSet()
 
     /**
      * Flow a list of watch internal IDs that declare a given capability.

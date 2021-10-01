@@ -12,18 +12,28 @@ class ConcreteDiscoveryPlatform(
     private val connectionMode: ConnectionMode
 ) : DiscoveryPlatform() {
 
+    val localCapabilities = mutableListOf<String>()
+
     override val platformIdentifier: String = PLATFORM
 
     override fun allWatches(): Flow<List<Watch>> = flowOf(allWatches)
 
-    override fun getCapabilitiesFor(watchId: String): Flow<Set<String>> = flowOf(capabilities)
+    override suspend fun getCapabilitiesFor(watchId: String): Set<String> = capabilities
 
-    override fun hasCapability(watch: Watch, capability: String): Flow<Boolean> =
+    override fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean> =
         flow { emit(capabilities.contains(capability)) }
 
     override fun watchesWithCapability(capability: String): Flow<List<Watch>> = allWatches()
 
     override fun connectionModeFor(watch: Watch): Flow<ConnectionMode> = flowOf(connectionMode)
+
+    override suspend fun addLocalCapability(capability: String): Boolean {
+        return localCapabilities.add(capability)
+    }
+
+    override suspend fun removeLocalCapability(capability: String): Boolean {
+        return localCapabilities.remove(capability)
+    }
 
     companion object {
         const val PLATFORM = "platform"

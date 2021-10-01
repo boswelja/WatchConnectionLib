@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 internal interface CapabilitiesDao {
     @Query("SELECT * FROM capabilities WHERE peerId = :peerId")
-    fun getCapabilitiesById(peerId: String): Flow<List<Capability>>
+    suspend fun getCapabilitiesById(peerId: String): List<Capability>
 
     @Query("SELECT * FROM capabilities where capability = :capability")
     fun getCapabilitiesByCapability(capability: String): Flow<List<Capability>>

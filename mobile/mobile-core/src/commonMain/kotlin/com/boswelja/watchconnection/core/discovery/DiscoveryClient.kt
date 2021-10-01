@@ -33,7 +33,7 @@ public class DiscoveryClient(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    public fun getCapabilitiesFor(watch: Watch): Flow<Set<String>>? {
+    public suspend fun getCapabilitiesFor(watch: Watch): Set<String>? {
         return platforms[watch.platform]?.getCapabilitiesFor(watch.internalId)
     }
 
@@ -46,7 +46,7 @@ public class DiscoveryClient(
     public fun hasCapability(watch: Watch, capability: String): Flow<Boolean> {
         val platform = platforms[watch.platform]
         checkNotNull(platform) { "No platform found for watch $watch" }
-        return platform.hasCapability(watch, capability)
+        return platform.watchHasCapability(watch, capability)
     }
 
     /**
