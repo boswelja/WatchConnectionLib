@@ -1,7 +1,6 @@
 package com.boswelja.watchconnection.wear.discovery
 
 import android.content.Context
-import android.net.Uri
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -55,39 +54,6 @@ public actual class DiscoveryClient(context: Context) {
             node.id,
             ""
         )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    public actual fun phoneCapabilities(): Flow<Set<String>> = callbackFlow {
-        // Get the paired phone and create a set to track capabilities
-        val phone = pairedPhone()
-        val capabilities = mutableSetOf<String>()
-
-        // Create a listener to handle capability changes
-        val listener = CapabilityClient.OnCapabilityChangedListener { info ->
-            val hasCapability = info.nodes.any { it.id == phone.uid }
-            val wasChanged = if (hasCapability) {
-                capabilities.add(info.name)
-            } else {
-                capabilities.remove(info.name)
-            }
-            if (wasChanged) trySend(capabilities)
-        }
-
-        // Build a Uri for matching capability changes from just the connected phone
-        val uri = Uri.Builder()
-            .scheme("wear")
-            .authority(phone.uid)
-            .path("/*")
-            .build()
-
-        // Add the listener
-        capabilityClient.addListener(listener, uri, CapabilityClient.FILTER_LITERAL)
-
-        // Remove the listener on close
-        awaitClose {
-            capabilityClient.removeListener(listener)
-        }
     }
 
     public actual suspend fun allPhoneCapabilities(): Set<String> {

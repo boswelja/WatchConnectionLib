@@ -35,13 +35,6 @@ public expect class DiscoveryClient {
     public suspend fun removeLocalCapability(capability: String): Boolean
 
     /**
-     * Get a set of capabilities declared by the paired [Phone]. The returned [Flow] will continue
-     * emitting changes as long as there's an active collector.
-     */
-    @Deprecated("Use allPhoneCapabilities instead")
-    public fun phoneCapabilities(): Flow<Set<String>>
-
-    /**
      * Get a set of capabilities declared by the paired phone.
      * @return The [Set] of capability strings declared by the paired phone.
      */
