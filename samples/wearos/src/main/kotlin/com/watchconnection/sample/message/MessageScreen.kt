@@ -94,7 +94,7 @@ fun ScalingLazyListScope.sendMessage(
  * Add sent messages components to a [ScalingLazyColumn].
  */
 fun ScalingLazyListScope.sentMessages(
-        sentMessages: List<Message<String>>
+    sentMessages: List<Message<String>>
 ) {
     item {
         ListHeader {

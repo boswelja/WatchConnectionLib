@@ -42,7 +42,7 @@ fun DiscoveryScreen(
             ) {
                 val capabilities = viewModel.watchCapabilities[watch]
                 if (capabilities.isNullOrEmpty()) {
-                    ListItem(text = { Text(stringResource(R.string.no_capabilities))})
+                    ListItem(text = { Text(stringResource(R.string.no_capabilities)) })
                 } else {
                     capabilities.forEach { capability ->
                         ListItem(text = { Text(capability) })
