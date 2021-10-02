@@ -9,6 +9,7 @@ androidxArchTest = "2.1.0"
 androidxWear = "1.3.0-alpha01"
 androidxWearInput = "1.2.0-alpha02"
 coroutines = "1.5.2"
+dokka = "1.5.30"
 junit = "4.13.2"
 mockk = "1.12.0"
 playServicesWearable = "17.1.0"
@@ -89,3 +90,6 @@ lifecycle = [
     "androidx-lifecycle-viewmodel-ktx",
     "androidx-lifecycle-common-java8"
 ]
+
+[plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

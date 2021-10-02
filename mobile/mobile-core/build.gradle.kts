@@ -3,7 +3,7 @@ import Publishing.repoUrlFor
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("org.jetbrains.dokka") version "1.5.0"
+    alias(libs.plugins.dokka)
     `maven-publish`
     signing
 }
