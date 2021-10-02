@@ -25,6 +25,7 @@ kotlin {
             dependencies {
                 api(projects.common.common)
                 api(libs.kotlinx.coroutines.core)
+                implementation(projects.common.internal)
             }
         }
         val commonTest by getting {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.common.internal.discovery.Capabilities
 import com.boswelja.watchconnection.wear.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
@@ -39,11 +40,16 @@ public actual class DiscoveryClient(context: Context) {
         }
     }
 
-    public actual suspend fun pairedPhone(): Phone {
-        val node = nodeClient.connectedNodes.await().first { it.isNearby }
+    public actual suspend fun pairedPhone(): Phone? {
+        // Try look up phone via capability
+        val capableNode = capabilityClient
+            .getCapability(Capabilities.ConnectionLibHost, CapabilityClient.FILTER_ALL)
+            .await()
+            .nodes.firstOrNull() ?: return null
+
         return Phone(
-            node.id,
-            node.displayName
+            capableNode.id,
+            capableNode.displayName
         )
     }
 
@@ -57,7 +63,7 @@ public actual class DiscoveryClient(context: Context) {
     }
 
     public actual suspend fun allPhoneCapabilities(): Set<String> {
-        val pairedPhone = pairedPhone()
+        val pairedPhone = pairedPhone() ?: return emptySet()
         val allCapabilities = capabilityClient
             .getAllCapabilities(CapabilityClient.FILTER_ALL)
             .await()
@@ -73,6 +79,11 @@ public actual class DiscoveryClient(context: Context) {
         capability: String
     ): Flow<Boolean> = callbackFlow {
         val pairedPhone = pairedPhone()
+        if (pairedPhone == null) {
+            close(IllegalStateException("No paired phone found"))
+            return@callbackFlow
+        }
+
         // Create the listener
         val listener = CapabilityClient.OnCapabilityChangedListener { info ->
             val hasCapability = info.nodes.any { it.id == pairedPhone.uid }
@@ -97,7 +108,7 @@ public actual class DiscoveryClient(context: Context) {
     }
 
     public actual fun connectionMode(): Flow<ConnectionMode> = flow {
-        val phone = pairedPhone()
+        val phone = pairedPhone() ?: return@flow
         repeating(2000L) {
             val connectedNodes = nodeClient.connectedNodes.await()
             val node = connectedNodes.firstOrNull { it.id == phone.uid }

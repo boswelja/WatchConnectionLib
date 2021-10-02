@@ -13,7 +13,7 @@ public expect class DiscoveryClient {
     /**
      * Get the currently paired [Phone].
      */
-    public suspend fun pairedPhone(): Phone
+    public suspend fun pairedPhone(): Phone?
 
     /**
      * Get the [Watch] representing this watch.

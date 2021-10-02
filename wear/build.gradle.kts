@@ -24,6 +24,7 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.coroutines.core)
                 api(projects.common.common)
+                implementation(projects.common.internal)
             }
         }
         val androidMain by getting {
