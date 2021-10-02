@@ -16,4 +16,9 @@
     <string name="sent_messages">Sent Messages</string>
     <string name="no_received_messages">No messages</string>
     <string name="send_message">Send Message</string>
+
+    <string name="available_platforms">Available Platforms</string>
+    <string name="platform_available">%s Available</string>
+    <string name="platform_unavailable">%s Unavailable</string>
+    <string name="platform_wearos">Wear OS</string>
 </resources>
