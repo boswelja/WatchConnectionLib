@@ -31,15 +31,18 @@ class MessageViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         viewModelScope.launch {
-            val message = Message(
-                "message-path",
-                text
-            )
-            messageClient.sendMessage(
-                discoveryClient.pairedPhone(),
-                message
-            )
-            sentMessages.add(message)
+            val pairedPhone = discoveryClient.pairedPhone()
+            if (pairedPhone != null) {
+                val message = Message(
+                    "message-path",
+                    text
+                )
+                messageClient.sendMessage(
+                    pairedPhone,
+                    message
+                )
+                sentMessages.add(message)
+            }
         }
     }
 }

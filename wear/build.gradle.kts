@@ -23,7 +23,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.kotlinx.coroutines.core)
-                api(projects.common)
+                api(projects.common.common)
+                implementation(projects.common.internal)
             }
         }
         val androidMain by getting {

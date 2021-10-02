@@ -2,13 +2,23 @@ package com.boswelja.watchconnection.core.discovery
 
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.common.internal.discovery.Capabilities
 import com.boswelja.watchconnection.core.Platform
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 /**
  * [Platform] support for discovering watches, watch capabilities, and watch status.
  */
 public abstract class DiscoveryPlatform : Platform {
+
+    init {
+        CoroutineScope(Dispatchers.Default).launch {
+            addLocalCapability(Capabilities.ConnectionLibHost)
+        }
+    }
 
     /**
      * A flow of all available watches for this platform.
