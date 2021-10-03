@@ -3,7 +3,6 @@ import Publishing.repoUrlFor
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    alias(libs.plugins.dokka)
     `maven-publish`
     signing
 }
@@ -57,14 +56,6 @@ group = Publishing.groupId
 version = Publishing.version ?: "0.1.0"
 description = "Watch Connection Library common components"
 
-tasks {
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
-}
-
 // Create signing config
 ext["signing.keyId"] = Publishing.signingKeyId
 ext["signing.password"] = Publishing.signingPassword
@@ -76,8 +67,6 @@ signing {
 afterEvaluate {
     publishing {
         publications.withType<MavenPublication> {
-            artifact(tasks["javadocJar"])
-
             pom {
                 name.set(this@afterEvaluate.name)
                 description.set(this@afterEvaluate.description)

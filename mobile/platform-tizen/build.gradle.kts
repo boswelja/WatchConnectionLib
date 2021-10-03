@@ -3,7 +3,6 @@ import Publishing.repoUrlFor
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    alias(libs.plugins.dokka)
     kotlin("plugin.serialization") version "1.5.31"
     id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     `maven-publish`
@@ -56,14 +55,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     }
 }
 
-tasks {
-    create<Jar>("javadocJar") {
-        dependsOn(dokkaJavadoc)
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
-}
-
 // Create signing config
 ext["signing.keyId"] = Publishing.signingKeyId
 ext["signing.password"] = Publishing.signingPassword
@@ -75,8 +66,6 @@ signing {
 afterEvaluate {
     publishing {
         publications.withType<MavenPublication> {
-            artifact(tasks["javadocJar"])
-
             pom {
                 name.set(this@afterEvaluate.name)
                 description.set(this@afterEvaluate.description)
