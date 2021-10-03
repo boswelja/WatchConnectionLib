@@ -14,7 +14,9 @@ description = "Watch Connection Library internal common components"
 kotlin {
     explicitApi()
 
-    android()
+    android {
+        publishLibraryVariants("release")
+    }
     iosArm64()
     watchosArm64()
 
