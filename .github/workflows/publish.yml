@@ -11,7 +11,7 @@ on:
 jobs:
   publish:
     name: Build modules and publish
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
