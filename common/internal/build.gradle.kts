@@ -1,6 +1,10 @@
+import Publishing.repoUrlFor
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    `maven-publish`
+    signing
 }
 
 group = Publishing.groupId
@@ -44,5 +48,29 @@ android {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    }
+}
+
+// Create signing config
+ext["signing.keyId"] = Publishing.signingKeyId
+ext["signing.password"] = Publishing.signingPassword
+ext["signing.secretKeyRingFile"] = Publishing.signingSecretKeyring
+signing {
+    sign(publishing.publications)
+}
+
+afterEvaluate {
+    publishing {
+        publications.withType<MavenPublication> {
+            pom {
+                name.set(this@afterEvaluate.name)
+                description.set(this@afterEvaluate.description)
+                url.set(repoUrlFor("common"))
+                licenses(Publishing.licenses)
+                developers(Publishing.developers)
+                scm(Publishing.scm)
+            }
+            repositories(Publishing.repositories)
+        }
     }
 }
