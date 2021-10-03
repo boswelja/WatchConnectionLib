@@ -1,8 +1,6 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    `maven-publish`
-    signing
 }
 
 group = Publishing.groupId
@@ -12,9 +10,7 @@ description = "Watch Connection Library internal common components"
 kotlin {
     explicitApi()
 
-    android {
-        publishLibraryVariants("release")
-    }
+    android()
     iosArm64()
     watchosArm64()
 
