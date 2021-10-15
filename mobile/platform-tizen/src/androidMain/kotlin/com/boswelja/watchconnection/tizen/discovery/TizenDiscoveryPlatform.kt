@@ -39,17 +39,17 @@ public actual class TizenDiscoveryPlatform(private val context: Context) : Disco
     override suspend fun getCapabilitiesFor(watchId: String): Set<String> =
         capabilitiesDb.getCapabilitiesFor(watchId)
 
-    override fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean> =
-        capabilitiesDb.hasCapability(watch.internalId, capability)
+    override fun watchHasCapability(watchId: String, capability: String): Flow<Boolean> =
+        capabilitiesDb.hasCapability(watchId, capability)
 
     override fun watchesWithCapability(capability: String): Flow<List<Watch>> = capabilitiesDb
         .getPeersWithCapability(capability)
         .map { it.map { id -> Watch("", id, Constants.TIZEN_PLATFORM) } }
 
     override fun connectionModeFor(
-        watch: Watch
+        watchId: String
     ): Flow<ConnectionMode> = allWatches().map { allWatches ->
-        if (allWatches.any { it.internalId == watch.internalId }) ConnectionMode.Bluetooth
+        if (allWatches.any { it.internalId == watchId }) ConnectionMode.Bluetooth
         else ConnectionMode.Disconnected
     }
 

@@ -59,9 +59,9 @@ public actual class WearOSDiscoveryPlatform(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean> = callbackFlow {
+    override fun watchHasCapability(watchId: String, capability: String): Flow<Boolean> = callbackFlow {
         val listener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
-            trySend(capabilityInfo.nodes.any { it.id == watch.internalId })
+            trySend(capabilityInfo.nodes.any { it.id == watchId })
         }
 
         capabilityClient.addListener(listener, capability)
@@ -87,10 +87,10 @@ public actual class WearOSDiscoveryPlatform(
         }
     }
 
-    override fun connectionModeFor(watch: Watch): Flow<ConnectionMode> = flow {
+    override fun connectionModeFor(watchId: String): Flow<ConnectionMode> = flow {
         repeating(scanRepeatInterval) {
             val connectedNodes = nodeClient.connectedNodes.await()
-            val node = connectedNodes.firstOrNull { it.id == watch.internalId }
+            val node = connectedNodes.firstOrNull { it.id == watchId }
             val connectionMode = node?.let {
                 // If NodeClient considers the node to be nearby, assume a bluetooth connection
                 if (it.isNearby) ConnectionMode.Bluetooth else ConnectionMode.Internet
