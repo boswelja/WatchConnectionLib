@@ -46,7 +46,7 @@ public class DiscoveryClient(
     public fun hasCapability(watch: Watch, capability: String): Flow<Boolean> {
         val platform = platforms[watch.platform]
         checkNotNull(platform) { "No platform found for watch $watch" }
-        return platform.watchHasCapability(watch, capability)
+        return platform.watchHasCapability(watch.internalId, capability)
     }
 
     /**
@@ -71,7 +71,7 @@ public class DiscoveryClient(
     public fun connectionModeFor(watch: Watch): Flow<ConnectionMode> {
         val platform = platforms[watch.platform]
         checkNotNull(platform) { "No platform found for watch $watch" }
-        return platform.connectionModeFor(watch)
+        return platform.connectionModeFor(watch.internalId)
     }
 
     /**

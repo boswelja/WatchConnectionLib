@@ -27,18 +27,18 @@ public abstract class DiscoveryPlatform : Platform {
 
     /**
      * Get a flow of capabilities found for a [Watch] with a given ID.
-     * @param watchId See [Watch.internalId].
+     * @param watchId See [Watch.uid].
      * @return A [Flow] of capability strings declared by the watch.
      */
     public abstract suspend fun getCapabilitiesFor(watchId: String): Set<String>
 
     /**
      * Check whether the given watch has a specified capability.
-     * @param watch The [Watch] to check against.
+     * @param watchId See [Watch.uid].
      * @param capability The capability to look for.
      * @return a [Flow] of [Boolean], where true indicates the watch has the capability.
      */
-    public abstract fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean>
+    public abstract fun watchHasCapability(watchId: String, capability: String): Flow<Boolean>
 
     /**
      * Get a [Flow] of [Watch]es with a given capability.
@@ -50,9 +50,9 @@ public abstract class DiscoveryPlatform : Platform {
     /**
      * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
      * mode of a watch.
-     * @param watch The [Watch] whose connection mode to observe.
+     * @param watchId See [Watch.uid].
      */
-    public abstract fun connectionModeFor(watch: Watch): Flow<ConnectionMode>
+    public abstract fun connectionModeFor(watchId: String): Flow<ConnectionMode>
 
     /**
      * Declare this device has a given capability.

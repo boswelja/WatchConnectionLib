@@ -20,12 +20,12 @@ class ConcreteDiscoveryPlatform(
 
     override suspend fun getCapabilitiesFor(watchId: String): Set<String> = capabilities
 
-    override fun watchHasCapability(watch: Watch, capability: String): Flow<Boolean> =
+    override fun watchHasCapability(watchId: String, capability: String): Flow<Boolean> =
         flow { emit(capabilities.contains(capability)) }
 
     override fun watchesWithCapability(capability: String): Flow<List<Watch>> = allWatches()
 
-    override fun connectionModeFor(watch: Watch): Flow<ConnectionMode> = flowOf(connectionMode)
+    override fun connectionModeFor(watchId: String): Flow<ConnectionMode> = flowOf(connectionMode)
 
     override suspend fun addLocalCapability(capability: String): Boolean {
         return localCapabilities.add(capability)
