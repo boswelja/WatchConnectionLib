@@ -30,11 +30,47 @@ public class DiscoveryClient(
 
     /**
      * Get a flow of capabilities found for a given [Watch].
+     * @param uid See [Watch.uid].
+     * @return A [Flow] of capability strings declared by the watch.
+     */
+    public suspend fun getCapabilitiesFor(uid: String): Set<String> {
+        val (platformId, internalId) = Watch.getInfoFromUid(uid)
+        return getCapabilitiesFor(platformId, internalId)
+    }
+
+    /**
+     * Get a flow of capabilities found for a given [Watch].
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    public suspend fun getCapabilitiesFor(watch: Watch): Set<String>? {
-        return platforms[watch.platform]?.getCapabilitiesFor(watch.internalId)
+    public suspend fun getCapabilitiesFor(watch: Watch): Set<String> {
+        return getCapabilitiesFor(watch.platform, watch.internalId)
+    }
+
+    /**
+     * Get a flow of capabilities found for a given [Watch].
+     * @param platformId The platform identifier of the corresponding platform.
+     * @param internalId The [Watch.internalId] of the device to send the message to.
+     * @return A [Flow] of capability strings declared by the watch.
+     */
+    internal suspend fun getCapabilitiesFor(
+        platformId: String,
+        internalId: String
+    ): Set<String> {
+        val platform = platforms[platformId]
+        checkNotNull(platform) { "No platform found for $platformId" }
+        return platform.getCapabilitiesFor(internalId)
+    }
+
+    /**
+     * Check whether the given watch has a specified capability.
+     * @param uid The [Watch.uid] to check against.
+     * @param capability The capability to look for.
+     * @return a [Flow] of [Boolean], where true indicates the watch has the capability.
+     */
+    public fun hasCapability(uid: String, capability: String): Flow<Boolean> {
+        val (platformId, internalId) = Watch.getInfoFromUid(uid)
+        return hasCapability(platformId, internalId, capability)
     }
 
     /**
@@ -44,9 +80,24 @@ public class DiscoveryClient(
      * @return a [Flow] of [Boolean], where true indicates the watch has the capability.
      */
     public fun hasCapability(watch: Watch, capability: String): Flow<Boolean> {
-        val platform = platforms[watch.platform]
-        checkNotNull(platform) { "No platform found for watch $watch" }
-        return platform.watchHasCapability(watch.internalId, capability)
+        return hasCapability(watch.platform, watch.internalId, capability)
+    }
+
+    /**
+     * Check whether a device on the given platform has a specified capability.
+     * @param platformId The platform identifier of the corresponding platform.
+     * @param internalId The [Watch.internalId] of the device to send the message to.
+     * @param capability The capability to look for.
+     * @return A [Flow] of [Boolean], where true indicates the device has the capability.
+     */
+    internal fun hasCapability(
+        platformId: String,
+        internalId: String,
+        capability: String
+    ): Flow<Boolean> {
+        val platform = platforms[platformId]
+        checkNotNull(platform) { "No platform found for $platformId" }
+        return platform.watchHasCapability(internalId, capability)
     }
 
     /**
@@ -69,9 +120,32 @@ public class DiscoveryClient(
      * @param watch The [Watch] whose connection mode to observe.
      */
     public fun connectionModeFor(watch: Watch): Flow<ConnectionMode> {
-        val platform = platforms[watch.platform]
-        checkNotNull(platform) { "No platform found for watch $watch" }
-        return platform.connectionModeFor(watch.internalId)
+        return connectionModeFor(watch.platform, watch.internalId)
+    }
+
+    /**
+     * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
+     * mode of a watch.
+     * @param uid The [Watch.uid] whose connection mode to observe.
+     */
+    public fun connectionModeFor(uid: String): Flow<ConnectionMode> {
+        val (platformId, internalId) = Watch.getInfoFromUid(uid)
+        return connectionModeFor(platformId, internalId)
+    }
+
+    /**
+     * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
+     * mode of a watch.
+     * @param platformId The platform identifier of the corresponding platform.
+     * @param internalId The [Watch.internalId] of the device to send the message to.
+     */
+    internal fun connectionModeFor(
+        platformId: String,
+        internalId: String
+    ): Flow<ConnectionMode> {
+        val platform = platforms[platformId]
+        checkNotNull(platform) { "No platform found for $platformId" }
+        return platform.connectionModeFor(internalId)
     }
 
     /**

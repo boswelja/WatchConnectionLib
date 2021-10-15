@@ -27,7 +27,7 @@ public abstract class DiscoveryPlatform : Platform {
 
     /**
      * Get a flow of capabilities found for a [Watch] with a given ID.
-     * @param watchId See [Watch.uid].
+     * @param watchId See [Watch.internalId].
      * @return A [Flow] of capability strings declared by the watch.
      */
     public abstract suspend fun getCapabilitiesFor(watchId: String): Set<String>
@@ -50,7 +50,7 @@ public abstract class DiscoveryPlatform : Platform {
     /**
      * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
      * mode of a watch.
-     * @param watchId See [Watch.uid].
+     * @param watchId See [Watch.internalId].
      */
     public abstract fun connectionModeFor(watchId: String): Flow<ConnectionMode>
 

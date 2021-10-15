@@ -33,18 +33,26 @@ public data class Watch(
     )
 
     init {
-        val (platform, internalId) = uid.split("|")
+        val (platform, internalId) = getInfoFromUid(uid)
         this.internalId = internalId
         this.platform = platform
     }
 
-    internal companion object {
+    public companion object {
+
+        /**
+         * Get a pair containing the device platform and internal ID from the given UID.
+         */
+        public fun getInfoFromUid(uid: String): Pair<String, String> {
+            val (platform, internalId) = uid.split("|")
+            return Pair(platform, internalId)
+        }
 
         /**
          * Gets a reproducible, unique ID from the provided info.
          * @param platform The platform identifier for this watches platform.
          * @param platformId See [Watch.internalId].
          */
-        fun createUid(platform: String, platformId: String): String = "$platform|$platformId"
+        public fun createUid(platform: String, platformId: String): String = "$platform|$platformId"
     }
 }

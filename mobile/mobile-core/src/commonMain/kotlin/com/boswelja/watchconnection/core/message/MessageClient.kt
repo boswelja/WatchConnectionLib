@@ -79,16 +79,46 @@ public class MessageClient(
 
     /**
      * Send a message to a [Watch]. See [MessagePlatform.sendMessage].
-     * @param to The [Watch] to send the message to.
+     * @param targetUid The [Watch.uid] to send the message to.
      * @param message The [Message] to send.
      * @return true if sending the message was successful, false otherwise.
      */
     public suspend fun sendMessage(
-        to: Watch,
+        targetUid: String,
         message: Message<Any?>
     ): Boolean {
-        val platform = platforms[to.platform]
-        requireNotNull(platform) { "No platform registered for watch $to" }
+        val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
+        return sendMessage(platformId, internalId, message)
+    }
+
+    /**
+     * Send a message to a [Watch]. See [MessagePlatform.sendMessage].
+     * @param target The [Watch] to send the message to.
+     * @param message The [Message] to send.
+     * @return true if sending the message was successful, false otherwise.
+     */
+    public suspend fun sendMessage(
+        target: Watch,
+        message: Message<Any?>
+    ): Boolean {
+        return sendMessage(target.platform, target.internalId, message)
+    }
+
+    /**
+     * Sends a given message to a device on the specified platform.
+     * @param platformId The platform identifier of the corresponding platform.
+     * @param internalId The [Watch.internalId] of the device to send the message to.
+     * @param message The message to send.
+     * @return true if the message was sent successfully. Note this does not guarantee successful
+     * delivery.
+     */
+    internal suspend fun sendMessage(
+        platformId: String,
+        internalId: String,
+        message: Message<Any?>
+    ): Boolean {
+        val platform = platforms[platformId]
+        requireNotNull(platform) { "No platform registered for $platformId" }
 
         val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
         val data = message.data
@@ -102,6 +132,6 @@ public class MessageClient(
             data
         }
 
-        return platform.sendMessage(to.internalId, message.path, bytes, message.priority)
+        return platform.sendMessage(internalId, message.path, bytes, message.priority)
     }
 }
