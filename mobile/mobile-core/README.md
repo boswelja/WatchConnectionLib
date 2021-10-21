@@ -17,7 +17,7 @@ Note this module is useless without a platform to go with it.
 Messages are lightweight path/data pairs built to be your primary communication method between phone and watch.
 Messages must have a target and path, however data is optional.
 
-Messages are managed via a [MessageClient](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/message/MessageClient.kt).
+Messages are managed via a [MessageHandler](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/mobile-core/src/commonMain/kotlin/com/boswelja/watchconnection/core/message/MessageHandler.kt).
 You'll need to instantiate a MessageClient to be able to send and receive messages.
 
 #### Data Serialization
