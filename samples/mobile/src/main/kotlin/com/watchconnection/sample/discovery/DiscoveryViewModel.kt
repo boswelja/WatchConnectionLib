@@ -49,7 +49,7 @@ class DiscoveryViewModel @Inject constructor(
 
     fun refreshCapabilitiesFor(watch: Watch) {
         viewModelScope.launch {
-            val newCapabilities = discoveryClient.getCapabilitiesFor(watch)!!
+            val newCapabilities = discoveryClient.getCapabilitiesFor(watch)
             watchCapabilities[watch] = newCapabilities
         }
     }
