@@ -2,6 +2,7 @@ package com.boswelja.watchconnection.wear.message
 
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageClient
 import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * A client for sending and receiving messages.
  */
-public expect class MessageClient {
+public expect class MessageClient : MessageClient {
 
     /**
      * Flows messages sent to this device, deserialized by a given [MessageSerializer]. Note only
