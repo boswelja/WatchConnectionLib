@@ -13,14 +13,17 @@ import kotlinx.coroutines.flow.merge
 
 /**
  * MessageClient takes a number of [MessagePlatform]s, and provides a common interface between them.
- * @param serializers A list of [MessageSerializer] to use when serializing/deserializing messages.
  * @param platforms The [MessagePlatform]s this MessageClient should support.
  */
-public class MessageClient(
-    private val serializers: List<MessageSerializer<*>> = listOf(),
+public class MessageClient @Deprecated("Use MessageHandler for serialization") constructor(
+    private val serializers: List<MessageSerializer<*>>,
     platforms: List<MessagePlatform>
 ) : BaseClient<MessagePlatform>(platforms),
     MessageClient {
+
+    public constructor(
+        platforms: List<MessagePlatform>
+    ) : this(emptyList(), platforms = platforms)
 
     /**
      * A [Flow] of [ReceivedMessage]s received by all platforms. Messages collected here have no
@@ -36,6 +39,7 @@ public class MessageClient(
      * messages that [serializer] can deserialize, thus guaranteeing the data type [T].
      * @param serializer The [MessageSerializer] to use for deserializing.
      */
+    @Deprecated("Use MessageHandler instead")
     public fun <T> incomingMessages(
         serializer: MessageSerializer<T>
     ): Flow<ReceivedMessage<T>> = incomingMessages()
@@ -73,6 +77,10 @@ public class MessageClient(
      * @param message The [Message] to send.
      * @return true if sending the message was successful, false otherwise.
      */
+    @Deprecated(
+        "Specify the device UID instead",
+        replaceWith = ReplaceWith(expression = "sendMessage(target.uid, message)")
+    )
     public suspend fun sendMessage(
         target: Watch,
         message: Message<Any?>
