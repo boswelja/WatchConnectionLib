@@ -24,7 +24,7 @@ public actual class MessageClient(
     @OptIn(ExperimentalCoroutinesApi::class)
     public actual fun <T> incomingMessages(
         serializer: MessageSerializer<T>
-    ): Flow<ReceivedMessage<T>> = rawIncomingMessages()
+    ): Flow<ReceivedMessage<T>> = incomingMessages()
         .mapNotNull { message ->
             if (serializer.messagePaths.contains(message.path)) {
                 val deserializedData = serializer.deserialize(message.data!!)
@@ -52,11 +52,12 @@ public actual class MessageClient(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
+    override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         // Create a message listener
         val listener = MessageClient.OnMessageReceivedListener {
+            val bytes: ByteArray? = it.data
             val receivedMessage = ReceivedMessage(
-                it.sourceNodeId, it.path, it.data as ByteArray?
+                it.sourceNodeId, it.path, bytes
             )
             trySend(receivedMessage)
         }

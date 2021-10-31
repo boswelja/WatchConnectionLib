@@ -1,6 +1,5 @@
 package com.boswelja.watchconnection.common.message
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 public interface MessageClient {
@@ -9,8 +8,7 @@ public interface MessageClient {
      * A [Flow] of [ReceivedMessage]s received by all platforms. Messages collected here have no
      * additional processing performed, and thus only contain the raw data in bytes.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    public fun rawIncomingMessages(): Flow<ReceivedMessage<ByteArray?>>
+    public fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>>
 
     /**
      * Send a message to the device with the given UID.
