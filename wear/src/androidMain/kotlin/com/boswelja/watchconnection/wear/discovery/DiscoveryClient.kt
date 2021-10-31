@@ -4,6 +4,7 @@ import android.content.Context
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import com.boswelja.watchconnection.common.internal.discovery.Capabilities
 import com.boswelja.watchconnection.wear.repeating
 import com.google.android.gms.wearable.CapabilityClient
@@ -12,15 +13,66 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-public actual class DiscoveryClient(context: Context) {
+public actual class DiscoveryClient(context: Context) : DiscoveryClient {
 
     private val nodeClient = Wearable.getNodeClient(context.applicationContext)
     private val capabilityClient = Wearable.getCapabilityClient(context.applicationContext)
 
-    public actual suspend fun addLocalCapability(capability: String): Boolean {
+    override suspend fun getCapabilitiesFor(targetUid: String): Set<String> {
+        val allCapabilities = capabilityClient
+            .getAllCapabilities(CapabilityClient.FILTER_ALL)
+            .await()
+        return allCapabilities.values
+            .filter { capabilityInfo -> capabilityInfo.nodes.any { it.id == targetUid } }
+            .map { it.name }
+            .toSet()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun hasCapability(
+        targetUid: String,
+        capability: String
+    ): Flow<Boolean> = callbackFlow {
+        // Create the listener
+        val listener = CapabilityClient.OnCapabilityChangedListener { info ->
+            val hasCapability = info.nodes.any { it.id == targetUid }
+            trySend(hasCapability)
+        }
+
+        // Register the listener
+        capabilityClient.addListener(listener, capability)
+
+        // Check capability now
+        val hasCapability = capabilityClient
+            .getCapability(capability, CapabilityClient.FILTER_ALL)
+            .await()
+            .nodes
+            .any { it.id == targetUid }
+        send(hasCapability)
+
+        // Unregister the listener on close
+        awaitClose {
+            capabilityClient.removeListener(listener)
+        }
+    }
+
+    override fun connectionModeFor(targetUid: String): Flow<ConnectionMode> = flow {
+        repeating(2000L) {
+            val connectedNodes = nodeClient.connectedNodes.await()
+            val node = connectedNodes.firstOrNull { it.id == targetUid }
+            val connectionMode = node?.let {
+                // If NodeClient considers the node to be nearby, assume a bluetooth connection
+                if (it.isNearby) ConnectionMode.Bluetooth else ConnectionMode.Internet
+            } ?: ConnectionMode.Disconnected
+            emit(connectionMode)
+        }
+    }
+
+    override suspend fun addLocalCapability(capability: String): Boolean {
         return try {
             capabilityClient.addLocalCapability(capability).await()
             true
@@ -30,7 +82,7 @@ public actual class DiscoveryClient(context: Context) {
         }
     }
 
-    public actual suspend fun removeLocalCapability(capability: String): Boolean {
+    override suspend fun removeLocalCapability(capability: String): Boolean {
         return try {
             capabilityClient.removeLocalCapability(capability).await()
             true
@@ -77,46 +129,13 @@ public actual class DiscoveryClient(context: Context) {
     @OptIn(ExperimentalCoroutinesApi::class)
     public actual suspend fun phoneHasCapability(
         capability: String
-    ): Flow<Boolean> = callbackFlow {
-        val pairedPhone = pairedPhone()
-        if (pairedPhone == null) {
-            close(IllegalStateException("No paired phone found"))
-            return@callbackFlow
-        }
-
-        // Create the listener
-        val listener = CapabilityClient.OnCapabilityChangedListener { info ->
-            val hasCapability = info.nodes.any { it.id == pairedPhone.uid }
-            trySend(hasCapability)
-        }
-
-        // Register the listener
-        capabilityClient.addListener(listener, capability)
-
-        // Check capability now
-        val hasCapability = capabilityClient
-            .getCapability(capability, CapabilityClient.FILTER_ALL)
-            .await()
-            .nodes
-            .any { it.id == pairedPhone.uid }
-        send(hasCapability)
-
-        // Unregister the listener on close
-        awaitClose {
-            capabilityClient.removeListener(listener)
-        }
-    }
+    ): Flow<Boolean> = hasCapability(
+        pairedPhone()!!.uid,
+        capability
+    )
 
     public actual fun connectionMode(): Flow<ConnectionMode> = flow {
         val phone = pairedPhone() ?: return@flow
-        repeating(2000L) {
-            val connectedNodes = nodeClient.connectedNodes.await()
-            val node = connectedNodes.firstOrNull { it.id == phone.uid }
-            val connectionMode = node?.let {
-                // If NodeClient considers the node to be nearby, assume a bluetooth connection
-                if (it.isNearby) ConnectionMode.Bluetooth else ConnectionMode.Internet
-            } ?: ConnectionMode.Disconnected
-            emit(connectionMode)
-        }
+        emitAll(connectionModeFor(phone.uid))
     }
 }

@@ -27,10 +27,11 @@ public actual class WearOSMessagePlatform(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
+            val data: ByteArray? = messageEvent.data
             val message = ReceivedMessage(
                 platformIdentifier + messageEvent.sourceNodeId, // TODO This is a no-go
                 messageEvent.path,
-                messageEvent.data
+                data
             )
             trySendBlocking(message)
         }

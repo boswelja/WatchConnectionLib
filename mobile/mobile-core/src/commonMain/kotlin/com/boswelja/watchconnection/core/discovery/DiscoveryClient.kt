@@ -2,6 +2,7 @@ package com.boswelja.watchconnection.core.discovery
 
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.combine
  */
 public class DiscoveryClient(
     platforms: List<DiscoveryPlatform>
-) : BaseClient<DiscoveryPlatform>(platforms) {
+) : BaseClient<DiscoveryPlatform>(platforms), DiscoveryClient {
 
     /**
      * Get a [Flow] of all [Watch]es found by all [Platform]s.
@@ -30,11 +31,11 @@ public class DiscoveryClient(
 
     /**
      * Get a flow of capabilities found for a given [Watch].
-     * @param uid See [Watch.uid].
+     * @param targetUid See [Watch.uid].
      * @return A [Flow] of capability strings declared by the watch.
      */
-    public suspend fun getCapabilitiesFor(uid: String): Set<String> {
-        val (platformId, internalId) = Watch.getInfoFromUid(uid)
+    override suspend fun getCapabilitiesFor(targetUid: String): Set<String> {
+        val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
         return getCapabilitiesFor(platformId, internalId)
     }
 
@@ -64,12 +65,12 @@ public class DiscoveryClient(
 
     /**
      * Check whether the given watch has a specified capability.
-     * @param uid The [Watch.uid] to check against.
+     * @param targetUid The [Watch.uid] to check against.
      * @param capability The capability to look for.
      * @return a [Flow] of [Boolean], where true indicates the watch has the capability.
      */
-    public fun hasCapability(uid: String, capability: String): Flow<Boolean> {
-        val (platformId, internalId) = Watch.getInfoFromUid(uid)
+    override fun hasCapability(targetUid: String, capability: String): Flow<Boolean> {
+        val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
         return hasCapability(platformId, internalId, capability)
     }
 
@@ -126,10 +127,10 @@ public class DiscoveryClient(
     /**
      * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
      * mode of a watch.
-     * @param uid The [Watch.uid] whose connection mode to observe.
+     * @param targetUid The [Watch.uid] whose connection mode to observe.
      */
-    public fun connectionModeFor(uid: String): Flow<ConnectionMode> {
-        val (platformId, internalId) = Watch.getInfoFromUid(uid)
+    override fun connectionModeFor(targetUid: String): Flow<ConnectionMode> {
+        val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
         return connectionModeFor(platformId, internalId)
     }
 
@@ -153,7 +154,7 @@ public class DiscoveryClient(
      * @param capability The capability to declare.
      * @return true if the local capabilities were changed, false otherwise.
      */
-    public suspend fun addLocalCapability(capability: String): Boolean {
+    override suspend fun addLocalCapability(capability: String): Boolean {
         val results = platforms.values.map { it.addLocalCapability(capability) }
         return results.any { it }
     }
@@ -163,7 +164,7 @@ public class DiscoveryClient(
      * @param capability The capability to remove.
      * @return true if the local capabilities were changed, false otherwise.
      */
-    public suspend fun removeLocalCapability(capability: String): Boolean {
+    override suspend fun removeLocalCapability(capability: String): Boolean {
         val results = platforms.values.map { it.removeLocalCapability(capability) }
         return results.any { it }
     }
