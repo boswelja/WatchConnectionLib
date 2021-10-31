@@ -66,7 +66,7 @@ afterEvaluate {
             pom {
                 name.set(this@afterEvaluate.name)
                 description.set(this@afterEvaluate.description)
-                url.set(repoUrlFor("serializers"))
+                url.set(repoUrlFor("serialization"))
                 licenses(Publishing.licenses)
                 developers(Publishing.developers)
                 scm(Publishing.scm)

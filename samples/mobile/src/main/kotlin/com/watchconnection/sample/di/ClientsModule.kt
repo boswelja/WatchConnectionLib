@@ -3,7 +3,7 @@ package com.watchconnection.sample.di
 import android.content.Context
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serializers.StringSerializer
+import com.boswelja.watchconnection.serialization.StringSerializer
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import dagger.Module

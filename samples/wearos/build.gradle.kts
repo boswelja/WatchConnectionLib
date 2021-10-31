@@ -52,7 +52,7 @@ android {
 
 dependencies {
     implementation(projects.wear)
-    implementation(projects.serializers)
+    implementation(projects.serialization)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.wear.input)

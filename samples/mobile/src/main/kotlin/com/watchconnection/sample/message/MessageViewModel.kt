@@ -12,7 +12,7 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serializers.StringSerializer
+import com.boswelja.watchconnection.serialization.StringSerializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

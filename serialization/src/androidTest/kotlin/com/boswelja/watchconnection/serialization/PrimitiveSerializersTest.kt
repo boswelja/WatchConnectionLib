@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.serializers
+package com.boswelja.watchconnection.serialization
 
 import com.boswelja.watchconnection.common.message.MessageSerializer
 import kotlinx.coroutines.runBlocking

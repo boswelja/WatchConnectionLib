@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serializers.StringSerializer
+import com.boswelja.watchconnection.serialization.StringSerializer
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import dagger.hilt.android.lifecycle.HiltViewModel
