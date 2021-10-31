@@ -1,11 +1,10 @@
-package com.boswelja.watchconnection.common.message
+package com.boswelja.watchconnection.serialization
 
 /**
  * A generic serializer implementation, designed to serialize/deserialize classes with some
  * serialization standard.
- * @param messagePaths A [Set] of [Message.path]s this serializer supports.
+ * @param messagePaths A [Set] of message paths this serializer can process.
  */
-@Deprecated("Use serialization implementation")
 public abstract class MessageSerializer<T>(
     public val messagePaths: Set<String>
 ) {
@@ -23,12 +22,4 @@ public abstract class MessageSerializer<T>(
      * @return The deserialized class [T].
      */
     public abstract suspend fun deserialize(bytes: ByteArray?): T
-
-    /**
-     * This exists to effectively allow serializing [T] after type erasure.
-     */
-    @Suppress("UNCHECKED_CAST")
-    public suspend fun serializeAny(data: Any): ByteArray {
-        return serialize(data as T)
-    }
 }

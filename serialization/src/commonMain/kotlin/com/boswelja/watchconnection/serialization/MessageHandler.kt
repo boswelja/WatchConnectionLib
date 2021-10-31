@@ -2,7 +2,6 @@ package com.boswelja.watchconnection.serialization
 
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageClient
-import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull

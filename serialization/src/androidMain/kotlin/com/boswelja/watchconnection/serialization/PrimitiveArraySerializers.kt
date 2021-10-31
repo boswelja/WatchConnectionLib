@@ -1,6 +1,5 @@
 package com.boswelja.watchconnection.serialization
 
-import com.boswelja.watchconnection.common.message.MessageSerializer
 import java.nio.ByteBuffer
 
 public actual class ShortArraySerializer actual constructor(
@@ -15,7 +14,7 @@ public actual class ShortArraySerializer actual constructor(
     }
 
     override suspend fun deserialize(bytes: ByteArray?): ShortArray =
-        ByteBuffer.wrap(bytes).asShortBuffer().array()
+        ByteBuffer.wrap(bytes!!).asShortBuffer().array()
 }
 
 public actual class IntArraySerializer actual constructor(
@@ -30,7 +29,7 @@ public actual class IntArraySerializer actual constructor(
     }
 
     override suspend fun deserialize(bytes: ByteArray?): IntArray =
-        ByteBuffer.wrap(bytes).asIntBuffer().array()
+        ByteBuffer.wrap(bytes!!).asIntBuffer().array()
 }
 
 public actual class LongArraySerializer actual constructor(
@@ -45,7 +44,7 @@ public actual class LongArraySerializer actual constructor(
     }
 
     override suspend fun deserialize(bytes: ByteArray?): LongArray =
-        ByteBuffer.wrap(bytes).asLongBuffer().array()
+        ByteBuffer.wrap(bytes!!).asLongBuffer().array()
 }
 
 public actual class FloatArraySerializer actual constructor(
@@ -60,7 +59,7 @@ public actual class FloatArraySerializer actual constructor(
     }
 
     override suspend fun deserialize(bytes: ByteArray?): FloatArray =
-        ByteBuffer.wrap(bytes).asFloatBuffer().array()
+        ByteBuffer.wrap(bytes!!).asFloatBuffer().array()
 }
 
 public actual class DoubleArraySerializer actual constructor(
@@ -75,5 +74,5 @@ public actual class DoubleArraySerializer actual constructor(
     }
 
     override suspend fun deserialize(bytes: ByteArray?): DoubleArray =
-        ByteBuffer.wrap(bytes).asDoubleBuffer().array()
+        ByteBuffer.wrap(bytes!!).asDoubleBuffer().array()
 }

@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.serialization
 
-import com.boswelja.watchconnection.common.message.MessageSerializer
-
 public expect class ShortArraySerializer(messagePaths: Set<String>) : MessageSerializer<ShortArray>
 
 public expect class IntArraySerializer(messagePaths: Set<String>) : MessageSerializer<IntArray>

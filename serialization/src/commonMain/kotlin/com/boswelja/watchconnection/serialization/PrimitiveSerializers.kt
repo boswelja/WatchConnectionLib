@@ -1,7 +1,5 @@
 package com.boswelja.watchconnection.serialization
 
-import com.boswelja.watchconnection.common.message.MessageSerializer
-
 public class ByteSerializer(
     messagePaths: Set<String>
 ) : MessageSerializer<Byte>(messagePaths) {
