@@ -11,7 +11,7 @@ object ConcreteMessageSerializer : MessageSerializer<ConcreteDataType>(
         return data.data.encodeToByteArray()
     }
 
-    override suspend fun deserialize(bytes: ByteArray): ConcreteDataType {
-        return ConcreteDataType(bytes.decodeToString())
+    override suspend fun deserialize(bytes: ByteArray?): ConcreteDataType {
+        return ConcreteDataType(bytes!!.decodeToString())
     }
 }

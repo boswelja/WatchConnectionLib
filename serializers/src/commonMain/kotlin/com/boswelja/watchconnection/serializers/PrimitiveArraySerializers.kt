@@ -19,6 +19,6 @@ public class BooleanArraySerializer(
 ) : MessageSerializer<BooleanArray>(messagePaths) {
     override suspend fun serialize(data: BooleanArray): ByteArray =
         data.map<Byte> { if (it) 1 else 0 }.toByteArray()
-    override suspend fun deserialize(bytes: ByteArray): BooleanArray =
-        bytes.map { it == (1).toByte() }.toBooleanArray()
+    override suspend fun deserialize(bytes: ByteArray?): BooleanArray =
+        bytes!!.map { it == (1).toByte() }.toBooleanArray()
 }

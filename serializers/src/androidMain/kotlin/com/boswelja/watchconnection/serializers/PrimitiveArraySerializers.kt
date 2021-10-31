@@ -14,7 +14,7 @@ public actual class ShortArraySerializer actual constructor(
         return buffer.array()
     }
 
-    override suspend fun deserialize(bytes: ByteArray): ShortArray =
+    override suspend fun deserialize(bytes: ByteArray?): ShortArray =
         ByteBuffer.wrap(bytes).asShortBuffer().array()
 }
 
@@ -29,7 +29,7 @@ public actual class IntArraySerializer actual constructor(
         return buffer.array()
     }
 
-    override suspend fun deserialize(bytes: ByteArray): IntArray =
+    override suspend fun deserialize(bytes: ByteArray?): IntArray =
         ByteBuffer.wrap(bytes).asIntBuffer().array()
 }
 
@@ -44,7 +44,7 @@ public actual class LongArraySerializer actual constructor(
         return buffer.array()
     }
 
-    override suspend fun deserialize(bytes: ByteArray): LongArray =
+    override suspend fun deserialize(bytes: ByteArray?): LongArray =
         ByteBuffer.wrap(bytes).asLongBuffer().array()
 }
 
@@ -59,7 +59,7 @@ public actual class FloatArraySerializer actual constructor(
         return buffer.array()
     }
 
-    override suspend fun deserialize(bytes: ByteArray): FloatArray =
+    override suspend fun deserialize(bytes: ByteArray?): FloatArray =
         ByteBuffer.wrap(bytes).asFloatBuffer().array()
 }
 
@@ -74,6 +74,6 @@ public actual class DoubleArraySerializer actual constructor(
         return buffer.array()
     }
 
-    override suspend fun deserialize(bytes: ByteArray): DoubleArray =
+    override suspend fun deserialize(bytes: ByteArray?): DoubleArray =
         ByteBuffer.wrap(bytes).asDoubleBuffer().array()
 }
