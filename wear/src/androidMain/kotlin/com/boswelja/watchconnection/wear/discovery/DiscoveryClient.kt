@@ -3,9 +3,9 @@ package com.boswelja.watchconnection.wear.discovery
 import android.content.Context
 import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.Capabilities
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.discovery.DiscoveryClient
-import com.boswelja.watchconnection.common.internal.discovery.Capabilities
 import com.boswelja.watchconnection.wear.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable

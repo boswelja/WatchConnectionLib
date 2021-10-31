@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.common.internal
+package com.boswelja.watchconection.common.message
 
 import android.content.Context
 import android.content.Intent

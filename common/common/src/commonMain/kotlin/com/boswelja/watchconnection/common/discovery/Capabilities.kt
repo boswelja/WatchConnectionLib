@@ -1,4 +1,4 @@
-package com.boswelja.watchconnection.common.internal.discovery
+package com.boswelja.watchconnection.common.discovery
 
 public object Capabilities {
     /**

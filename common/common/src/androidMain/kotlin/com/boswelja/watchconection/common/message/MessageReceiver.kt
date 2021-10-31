@@ -3,10 +3,10 @@ package com.boswelja.watchconection.common.message
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.boswelja.watchconnection.common.internal.MessageReceiverUtils.MessageData
-import com.boswelja.watchconnection.common.internal.MessageReceiverUtils.MessagePath
-import com.boswelja.watchconnection.common.internal.MessageReceiverUtils.MessageReceived
-import com.boswelja.watchconnection.common.internal.MessageReceiverUtils.SenderUid
+import com.boswelja.watchconection.common.message.MessageReceiverUtils.MessageData
+import com.boswelja.watchconection.common.message.MessageReceiverUtils.MessagePath
+import com.boswelja.watchconection.common.message.MessageReceiverUtils.MessageReceived
+import com.boswelja.watchconection.common.message.MessageReceiverUtils.SenderUid
 import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.CoroutineScope
