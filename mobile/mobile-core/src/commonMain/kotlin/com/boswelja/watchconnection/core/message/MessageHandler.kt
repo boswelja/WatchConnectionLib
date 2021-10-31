@@ -4,6 +4,7 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
 
 /**
  * A helper class designed to facilitate message transfer between devices for a single message type.
@@ -12,19 +13,24 @@ import kotlinx.coroutines.flow.Flow
  */
 public class MessageHandler<T>(
     private val serializer: MessageSerializer<T>,
-    private val messageClient: MessageClient
+    private val messageClient: com.boswelja.watchconnection.common.message.MessageClient
 ) {
-    public constructor(
-        serializer: MessageSerializer<T>,
-        platforms: List<MessagePlatform>
-    ) : this(serializer, MessageClient(listOf(serializer), platforms))
 
     /**
      * Get incoming messages deserialized by [serializer]. Note there will be no messages with paths
      * not specified by the serializer.
      */
     public fun incomingMessages(): Flow<ReceivedMessage<T>> =
-        messageClient.incomingMessages(serializer)
+        messageClient.incomingMessages().mapNotNull { message ->
+            if (serializer.messagePaths.contains(message.path)) {
+                val deserializedData = serializer.deserialize(message.data)
+                ReceivedMessage(
+                    message.sourceUid,
+                    message.path,
+                    deserializedData
+                )
+            } else null
+        }
 
     /**
      * Send a message to the device with the given UID. Note the message needs to have a path
