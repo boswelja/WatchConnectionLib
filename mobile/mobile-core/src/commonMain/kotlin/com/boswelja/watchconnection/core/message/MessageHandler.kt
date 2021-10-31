@@ -32,6 +32,11 @@ public class MessageHandler<T>(
      * @param targetUid The target device UID.
      * @param message The message to send.
      */
-    public suspend fun sendMessage(targetUid: String, message: Message<T>): Boolean =
-        messageClient.sendMessage(targetUid, message)
+    public suspend fun sendMessage(targetUid: String, message: Message<T>): Boolean {
+        val serializedData = serializer.serialize(message.data)
+        return messageClient.sendMessage(
+            targetUid,
+            Message(message.path, serializedData, message.priority)
+        )
+    }
 }

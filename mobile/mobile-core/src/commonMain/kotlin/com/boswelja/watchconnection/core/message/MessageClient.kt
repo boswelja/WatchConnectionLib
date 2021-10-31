@@ -59,20 +59,6 @@ public class MessageClient(
      * @param message The [Message] to send.
      * @return true if sending the message was successful, false otherwise.
      */
-    public suspend fun sendMessage(
-        targetUid: String,
-        message: Message<Any?>
-    ): Boolean {
-        val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
-        return sendMessage(platformId, internalId, message)
-    }
-
-    /**
-     * Send a message to a [Watch]. See [MessagePlatform.sendMessage].
-     * @param targetUid The [Watch.uid] to send the message to.
-     * @param message The [Message] to send.
-     * @return true if sending the message was successful, false otherwise.
-     */
     override suspend fun sendMessage(
         targetUid: String,
         message: Message<ByteArray?>
