@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.core.discovery
 
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.Capabilities
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.internal.discovery.Capabilities
 import com.boswelja.watchconnection.core.Platform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

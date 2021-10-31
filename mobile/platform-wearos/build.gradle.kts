@@ -23,7 +23,6 @@ kotlin {
             dependencies {
                 api(projects.mobile.mobileCore)
                 api(libs.kotlinx.coroutines.core)
-                implementation(projects.common.internal)
             }
         }
         val androidMain by getting {

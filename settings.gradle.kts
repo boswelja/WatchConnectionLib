@@ -1,6 +1,5 @@
 include(
-    ":common:common",
-    ":common:internal",
+    ":common",
     ":mobile:mobile-core",
     ":mobile:platform-wearos",
     ":mobile:platform-tizen",
