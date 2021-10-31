@@ -1,6 +1,7 @@
-package com.boswelja.watchconnection.core.message
+package com.boswelja.watchconnection.serializers
 
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageClient
 import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.mapNotNull
  */
 public class MessageHandler<T>(
     private val serializer: MessageSerializer<T>,
-    private val messageClient: com.boswelja.watchconnection.common.message.MessageClient
+    private val messageClient: MessageClient
 ) {
 
     /**
