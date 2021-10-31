@@ -2,6 +2,9 @@ package com.boswelja.watchconnection.common.discovery
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Provides a standard interface for discovery clients.
+ */
 public interface DiscoveryClient {
 
     /**

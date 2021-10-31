@@ -66,6 +66,7 @@ public class MessageClient(
         val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
         return sendMessage(platformId, internalId, message)
     }
+
     /**
      * Send a message to a [Watch]. See [MessagePlatform.sendMessage].
      * @param targetUid The [Watch.uid] to send the message to.
@@ -79,6 +80,7 @@ public class MessageClient(
         val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
         return sendMessage(platformId, internalId, message)
     }
+
     /**
      * Send a message to a [Watch]. See [MessagePlatform.sendMessage].
      * @param target The [Watch] to send the message to.

@@ -2,6 +2,9 @@ package com.boswelja.watchconnection.common.message
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Provides a standard interface for message clients.
+ */
 public interface MessageClient {
 
     /**
