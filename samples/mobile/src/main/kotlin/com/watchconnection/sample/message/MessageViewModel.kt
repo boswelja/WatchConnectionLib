@@ -12,6 +12,7 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.serialization.StringSerializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -23,6 +24,10 @@ class MessageViewModel @Inject constructor(
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient
 ) : ViewModel() {
+
+    private val messageHandler =
+        MessageHandler(StringSerializer(setOf("message-path")), messageClient)
+
     var selectedWatch by mutableStateOf<Watch?>(null)
     val availableWatches = mutableStateListOf<Watch>()
     val incomingMessages = mutableStateListOf<ReceivedMessage<String>>()
@@ -30,7 +35,7 @@ class MessageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            messageClient.incomingMessages(StringSerializer(setOf("message-path"))).collect {
+            messageHandler.incomingMessages().collect {
                 incomingMessages.add(0, it)
             }
         }
@@ -49,8 +54,8 @@ class MessageViewModel @Inject constructor(
                 "message-path",
                 text
             )
-            messageClient.sendMessage(
-                watch,
+            messageHandler.sendMessage(
+                watch.uid,
                 message
             )
             val list = sentMessages[watch] ?: emptyList()

@@ -3,7 +3,6 @@ package com.watchconnection.sample.di
 import android.content.Context
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.serialization.StringSerializer
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import dagger.Module
@@ -30,9 +29,6 @@ object ClientsModule {
     @Provides
     fun messageClient(@ApplicationContext applicationContext: Context): MessageClient =
         MessageClient(
-            serializers = listOf(
-                StringSerializer(setOf("message-path"))
-            ),
             platforms = listOf(
                 WearOSMessagePlatform(applicationContext)
             )
