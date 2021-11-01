@@ -1,8 +1,8 @@
 package com.boswelja.watchconnection.serialization
 
 public class ByteSerializer(
-    messagePaths: Set<String>
-) : MessageSerializer<Byte>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<Byte> {
     override suspend fun serialize(data: Byte): ByteArray = byteArrayOf(data)
     override suspend fun deserialize(bytes: ByteArray?): Byte = bytes!!.first()
 }
@@ -18,8 +18,8 @@ public expect class FloatSerializer(messagePaths: Set<String>) : MessageSerializ
 public expect class DoubleSerializer(messagePaths: Set<String>) : MessageSerializer<Double>
 
 public class BooleanSerializer(
-    messagePaths: Set<String>
-) : MessageSerializer<Boolean>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<Boolean> {
     override suspend fun serialize(data: Boolean): ByteArray = byteArrayOf(if (data) 1 else 0)
     override suspend fun deserialize(bytes: ByteArray?): Boolean = bytes!!.first() == (1).toByte()
 }

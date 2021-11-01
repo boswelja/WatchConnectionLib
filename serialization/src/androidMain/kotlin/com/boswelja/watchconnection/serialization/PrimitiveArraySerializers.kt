@@ -3,8 +3,8 @@ package com.boswelja.watchconnection.serialization
 import java.nio.ByteBuffer
 
 public actual class ShortArraySerializer actual constructor(
-    messagePaths: Set<String>
-) : MessageSerializer<ShortArray>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<ShortArray> {
     override suspend fun serialize(data: ShortArray): ByteArray {
         val buffer = ByteBuffer.allocate(Short.SIZE_BYTES * data.size)
         data.forEach { short ->
@@ -18,8 +18,8 @@ public actual class ShortArraySerializer actual constructor(
 }
 
 public actual class IntArraySerializer actual constructor(
-    messagePaths: Set<String>
-) : MessageSerializer<IntArray>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<IntArray> {
     override suspend fun serialize(data: IntArray): ByteArray {
         val buffer = ByteBuffer.allocate(Int.SIZE_BYTES * data.size)
         data.forEach { int ->
@@ -33,8 +33,8 @@ public actual class IntArraySerializer actual constructor(
 }
 
 public actual class LongArraySerializer actual constructor(
-    messagePaths: Set<String>
-) : MessageSerializer<LongArray>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<LongArray> {
     override suspend fun serialize(data: LongArray): ByteArray {
         val buffer = ByteBuffer.allocate(Long.SIZE_BYTES * data.size)
         data.forEach { long ->
@@ -48,8 +48,8 @@ public actual class LongArraySerializer actual constructor(
 }
 
 public actual class FloatArraySerializer actual constructor(
-    messagePaths: Set<String>
-) : MessageSerializer<FloatArray>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<FloatArray> {
     override suspend fun serialize(data: FloatArray): ByteArray {
         val buffer = ByteBuffer.allocate(Short.SIZE_BYTES * data.size)
         data.forEach { float ->
@@ -63,8 +63,8 @@ public actual class FloatArraySerializer actual constructor(
 }
 
 public actual class DoubleArraySerializer actual constructor(
-    messagePaths: Set<String>
-) : MessageSerializer<DoubleArray>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<DoubleArray> {
     override suspend fun serialize(data: DoubleArray): ByteArray {
         val buffer = ByteBuffer.allocate(Double.SIZE_BYTES * data.size)
         data.forEach { double ->

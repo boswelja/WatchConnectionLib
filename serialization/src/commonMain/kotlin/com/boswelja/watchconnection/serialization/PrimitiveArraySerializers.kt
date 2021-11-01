@@ -13,8 +13,8 @@ public expect class DoubleArraySerializer(
 ) : MessageSerializer<DoubleArray>
 
 public class BooleanArraySerializer(
-    messagePaths: Set<String>
-) : MessageSerializer<BooleanArray>(messagePaths) {
+    override val messagePaths: Set<String>
+) : MessageSerializer<BooleanArray> {
     override suspend fun serialize(data: BooleanArray): ByteArray =
         data.map<Byte> { if (it) 1 else 0 }.toByteArray()
     override suspend fun deserialize(bytes: ByteArray?): BooleanArray =
