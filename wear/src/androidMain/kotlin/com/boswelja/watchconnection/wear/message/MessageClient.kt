@@ -14,14 +14,17 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 
-public actual class MessageClient(
+public actual class MessageClient @Deprecated("Use MessageHandler for serialization") constructor(
     context: Context,
     private val serializers: List<MessageSerializer<*>>
 ) : com.boswelja.watchconnection.common.message.MessageClient {
 
+    public constructor(context: Context) : this(context, emptyList())
+
     private val messageClient = Wearable.getMessageClient(context.applicationContext)
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Deprecated("Use MessageHandler instead")
     public actual fun <T> incomingMessages(
         serializer: MessageSerializer<T>
     ): Flow<ReceivedMessage<T>> = incomingMessages()
@@ -36,6 +39,7 @@ public actual class MessageClient(
             } else null
         }
 
+    @Deprecated("Specify the device UID instead")
     public actual suspend fun <T> sendMessage(
         targetPhone: Phone,
         message: Message<T>

@@ -22,6 +22,8 @@ compose = "1.1.0-beta01"
 navigationCompose = "2.4.0-beta01"
 wearCompose = "1.0.0-alpha09"
 
+turbine = "0.7.0"
+
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
 androidx-arch-test = { module = "androidx.arch.core:core-testing", version.ref = "androidxArchTest" }
@@ -62,6 +64,8 @@ androidx-compose-navigation = { module = "androidx.navigation:navigation-compose
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavCompose"}
+
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [bundles]
 compose-mobile = [

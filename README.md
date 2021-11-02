@@ -22,4 +22,4 @@ A kotlin-first Android library to provide a shared API for interacting with mult
 
 ---
 
-### [Serializers](https://github.com/boswelja/WatchConnectionLib/tree/main/serializers)
+### [Serialization](https://github.com/boswelja/WatchConnectionLib/tree/main/serialization)

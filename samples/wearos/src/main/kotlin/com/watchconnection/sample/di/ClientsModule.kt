@@ -1,7 +1,6 @@
 package com.watchconnection.sample.di
 
 import android.content.Context
-import com.boswelja.watchconnection.serializers.StringSerializer
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import dagger.Module
@@ -23,8 +22,5 @@ object ClientsModule {
     @Singleton
     @Provides
     fun messageClient(@ApplicationContext applicationContext: Context): MessageClient =
-        MessageClient(
-            applicationContext,
-            listOf(StringSerializer(setOf("message-path")))
-        )
+        MessageClient(applicationContext)
 }

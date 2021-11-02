@@ -52,7 +52,7 @@ android {
 
 dependencies {
     implementation(projects.mobile.platformWearos)
-    implementation(projects.serializers)
+    implementation(projects.serialization)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

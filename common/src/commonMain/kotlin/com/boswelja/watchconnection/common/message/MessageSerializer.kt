@@ -5,6 +5,7 @@ package com.boswelja.watchconnection.common.message
  * serialization standard.
  * @param messagePaths A [Set] of [Message.path]s this serializer supports.
  */
+@Deprecated("Use serialization implementation")
 public abstract class MessageSerializer<T>(
     public val messagePaths: Set<String>
 ) {
@@ -21,7 +22,7 @@ public abstract class MessageSerializer<T>(
      * @param bytes The [ByteArray] to deserialize.
      * @return The deserialized class [T].
      */
-    public abstract suspend fun deserialize(bytes: ByteArray): T
+    public abstract suspend fun deserialize(bytes: ByteArray?): T
 
     /**
      * This exists to effectively allow serializing [T] after type erasure.

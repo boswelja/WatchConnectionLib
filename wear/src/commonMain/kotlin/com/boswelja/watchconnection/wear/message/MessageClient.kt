@@ -17,6 +17,7 @@ public expect class MessageClient : MessageClient {
      * messages supported by the given [MessageSerializer] will be emitted.
      * @param serializer The [MessageSerializer] to use.
      */
+    @Deprecated("Use MessageHandler instead")
     public fun <T> incomingMessages(serializer: MessageSerializer<T>): Flow<ReceivedMessage<T>>
 
     /**
@@ -24,5 +25,6 @@ public expect class MessageClient : MessageClient {
      * @return true if the message was sent, false otherwise. Note a successful result doesn't
      * guarantee delivery.
      */
+    @Deprecated("Use MessageHandler instead")
     public suspend fun <T> sendMessage(targetPhone: Phone, message: Message<T>): Boolean
 }

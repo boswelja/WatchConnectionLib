@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.serializers.StringSerializer
+import com.boswelja.watchconnection.serialization.MessageHandler
+import com.boswelja.watchconnection.serialization.StringSerializer
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,12 +19,15 @@ class MessageViewModel @Inject constructor(
     private val discoveryClient: DiscoveryClient,
     private val messageClient: MessageClient
 ) : ViewModel() {
+    private val messageHandler =
+        MessageHandler(StringSerializer(setOf("message-path")), messageClient)
+
     val incomingMessages = mutableStateListOf<ReceivedMessage<String>>()
     val sentMessages = mutableStateListOf<Message<String>>()
 
     init {
         viewModelScope.launch {
-            messageClient.incomingMessages(StringSerializer(setOf("message-path"))).collect {
+            messageHandler.incomingMessages().collect {
                 incomingMessages.add(0, it)
             }
         }
@@ -37,8 +41,8 @@ class MessageViewModel @Inject constructor(
                     "message-path",
                     text
                 )
-                messageClient.sendMessage(
-                    pairedPhone,
+                messageHandler.sendMessage(
+                    pairedPhone.uid,
                     message
                 )
                 sentMessages.add(message)
