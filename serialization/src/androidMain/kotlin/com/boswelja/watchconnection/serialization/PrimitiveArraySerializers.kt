@@ -2,6 +2,7 @@ package com.boswelja.watchconnection.serialization
 
 import java.nio.ByteBuffer
 
+@Deprecated("Create your own serializer for more complex data")
 public actual class ShortArraySerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<ShortArray> {
@@ -17,6 +18,7 @@ public actual class ShortArraySerializer actual constructor(
         ByteBuffer.wrap(bytes!!).asShortBuffer().array()
 }
 
+@Deprecated("Create your own serializer for more complex data")
 public actual class IntArraySerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<IntArray> {
@@ -32,6 +34,7 @@ public actual class IntArraySerializer actual constructor(
         ByteBuffer.wrap(bytes!!).asIntBuffer().array()
 }
 
+@Deprecated("Create your own serializer for more complex data")
 public actual class LongArraySerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<LongArray> {
@@ -47,6 +50,7 @@ public actual class LongArraySerializer actual constructor(
         ByteBuffer.wrap(bytes!!).asLongBuffer().array()
 }
 
+@Deprecated("Create your own serializer for more complex data")
 public actual class FloatArraySerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<FloatArray> {
@@ -62,6 +66,7 @@ public actual class FloatArraySerializer actual constructor(
         ByteBuffer.wrap(bytes!!).asFloatBuffer().array()
 }
 
+@Deprecated("Create your own serializer for more complex data")
 public actual class DoubleArraySerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<DoubleArray> {
