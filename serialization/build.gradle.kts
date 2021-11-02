@@ -24,12 +24,18 @@ kotlin {
                 api(projects.common)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.turbine)
+            }
+        }
         val androidMain by getting {
             dependencies { }
         }
         val androidTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
+                implementation(kotlin("test-junit"))
             }
         }
     }
