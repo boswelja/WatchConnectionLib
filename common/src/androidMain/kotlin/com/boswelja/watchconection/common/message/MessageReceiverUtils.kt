@@ -9,9 +9,9 @@ public object MessageReceiverUtils {
     public const val MessageReceived: String =
         "com.boswelja.watchconnection.common.message.MessageReceived"
 
-    public const val SenderUid: String = "senderuid"
-    public const val MessagePath: String = "messagepath"
-    public const val MessageData: String = "messagedata"
+    private const val SenderUid: String = "senderuid"
+    private const val MessagePath: String = "messagepath"
+    private const val MessageData: String = "messagedata"
 
     public fun sendMessageReceivedBroadcast(
         context: Context,
