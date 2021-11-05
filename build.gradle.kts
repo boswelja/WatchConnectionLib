@@ -12,17 +12,24 @@ buildscript {
     }
 }
 
+plugins {
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.gitlab.arturbosch.detekt") version "1.18.1"
+}
+
 allprojects {
+    apply(plugin = "io.gitlab.arturbosch.detekt")
     repositories {
         google()
         mavenCentral()
     }
+    detekt {
+        config = files("$rootDir/config/detekt/detekt.yml")
+        source = files("src")
+        buildUponDefaultConfig = true
+        parallel = true
+    }
 }
-
-plugins {
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-}
-
 group = Publishing.groupId
 version = Publishing.version ?: "0.1.0"
 
