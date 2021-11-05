@@ -1,10 +1,9 @@
-package com.boswelja.watchconection.common.message
+package com.boswelja.watchconnection.common.message
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.boswelja.watchconection.common.message.MessageReceiverUtils.MessageReceived
-import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.common.message.MessageReceiverUtils.MessageReceived
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel

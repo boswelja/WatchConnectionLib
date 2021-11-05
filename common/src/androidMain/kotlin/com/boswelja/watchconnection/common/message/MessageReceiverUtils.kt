@@ -1,8 +1,7 @@
-package com.boswelja.watchconection.common.message
+package com.boswelja.watchconnection.common.message
 
 import android.content.Context
 import android.content.Intent
-import com.boswelja.watchconnection.common.message.ReceivedMessage
 
 public object MessageReceiverUtils {
 

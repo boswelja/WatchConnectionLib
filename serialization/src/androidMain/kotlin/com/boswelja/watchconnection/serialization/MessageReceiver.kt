@@ -3,7 +3,7 @@ package com.boswelja.watchconnection.serialization
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.boswelja.watchconection.common.message.MessageReceiverUtils
+import com.boswelja.watchconnection.common.message.MessageReceiverUtils
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
