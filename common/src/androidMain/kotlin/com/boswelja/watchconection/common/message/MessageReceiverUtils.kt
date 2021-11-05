@@ -2,6 +2,7 @@ package com.boswelja.watchconection.common.message
 
 import android.content.Context
 import android.content.Intent
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 
 public object MessageReceiverUtils {
 
@@ -28,5 +29,18 @@ public object MessageReceiverUtils {
             setPackage(context.packageName)
         }
         context.sendBroadcast(intent)
+    }
+
+    public fun getReceivedMessageFromIntent(source: Intent): ReceivedMessage<ByteArray?> {
+        val senderUid = source.getStringExtra(SenderUid)
+        requireNotNull(senderUid) { "Didn't get a sender UID with message intent!" }
+        val messagePath = source.getStringExtra(MessagePath)
+        requireNotNull(messagePath) { "Didn't get a message path with message intent!" }
+        val messageData = source.getByteArrayExtra(MessageData)
+        return ReceivedMessage(
+            senderUid,
+            messagePath,
+            messageData
+        )
     }
 }
