@@ -1,9 +1,7 @@
 package com.boswelja.watchconnection.wear.message
 
 import android.content.Context
-import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -11,49 +9,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 
-public actual class MessageClient @Deprecated("Use MessageHandler for serialization") constructor(
-    context: Context,
-    private val serializers: List<MessageSerializer<*>>
+public class MessageClient(
+    context: Context
 ) : com.boswelja.watchconnection.common.message.MessageClient {
 
-    public constructor(context: Context) : this(context, emptyList())
-
     private val messageClient = Wearable.getMessageClient(context.applicationContext)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Deprecated("Use MessageHandler instead")
-    public actual fun <T> incomingMessages(
-        serializer: MessageSerializer<T>
-    ): Flow<ReceivedMessage<T>> = incomingMessages()
-        .mapNotNull { message ->
-            if (serializer.messagePaths.contains(message.path)) {
-                val deserializedData = serializer.deserialize(message.data!!)
-                ReceivedMessage(
-                    message.sourceUid,
-                    message.path,
-                    deserializedData
-                )
-            } else null
-        }
-
-    @Deprecated("Specify the device UID instead")
-    public actual suspend fun <T> sendMessage(
-        targetPhone: Phone,
-        message: Message<T>
-    ): Boolean {
-        val serializer = serializers.firstOrNull { it.messagePaths.contains(message.path) }
-        val bytes = if (serializer != null) {
-            requireNotNull(message.data) { "Expected data with message ${message.path}" }
-            serializer.serializeAny(message.data!!)
-        } else {
-            require(message.data is ByteArray?) { "No serializer found for ${message.path}" }
-            message.data as ByteArray?
-        }
-        return sendMessage(targetPhone.uid, Message(message.path, bytes))
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
