@@ -10,12 +10,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+/**
+ * A [BroadcastReceiver] that receives and deserializes messages.
+ * @param serializer The [MessageSerializer] to use for deserialization.
+ */
 public abstract class MessageReceiver<T>(
     private val serializer: MessageSerializer<T>
 ) : BroadcastReceiver() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
+    /**
+     * Called when a message is received.
+     * @param context [Context].
+     * @param message The received message.
+     */
     public abstract suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<T>
