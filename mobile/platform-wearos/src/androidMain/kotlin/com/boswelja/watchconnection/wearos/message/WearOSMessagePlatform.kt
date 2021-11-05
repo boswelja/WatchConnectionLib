@@ -1,6 +1,7 @@
 package com.boswelja.watchconnection.wearos.message
 
 import android.content.Context
+import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessagePlatform
@@ -16,6 +17,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
+/**
+ * A [MessagePlatform] implementation for Wear OS.
+ */
 public actual class WearOSMessagePlatform(
     private val messageClient: MessageClient,
 ) : MessagePlatform() {
@@ -29,7 +33,7 @@ public actual class WearOSMessagePlatform(
         val listener = MessageClient.OnMessageReceivedListener { messageEvent ->
             val data: ByteArray? = messageEvent.data
             val message = ReceivedMessage(
-                platformIdentifier + messageEvent.sourceNodeId, // TODO This is a no-go
+                Watch.createUid(platformIdentifier, messageEvent.sourceNodeId),
                 messageEvent.path,
                 data
             )
@@ -59,7 +63,7 @@ public actual class WearOSMessagePlatform(
             messageClient.sendMessage(watchId, message, data, options).await()
             // If we get here, message send was successful
             true
-        } catch (e: ApiException) {
+        } catch (_: ApiException) {
             false
         }
     }

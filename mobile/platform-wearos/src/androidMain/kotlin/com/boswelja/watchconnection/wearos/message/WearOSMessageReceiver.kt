@@ -6,6 +6,9 @@ import com.boswelja.watchconnection.wearos.Constants.WEAROS_PLATFORM
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 
+/**
+ * A [WearableListenerService] that receives messages and broadcasts them to MessageReceiver.
+ */
 public class WearOSMessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val watch = Watch(

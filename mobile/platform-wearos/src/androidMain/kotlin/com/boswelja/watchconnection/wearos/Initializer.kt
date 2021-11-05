@@ -19,7 +19,7 @@ public suspend fun Context.isWearOSAvailable(): Boolean {
             Wearable.getNodeClient(this)
         ).await()
         true
-    } catch (e: AvailabilityException) {
+    } catch (_: AvailabilityException) {
         false
     }
 }
