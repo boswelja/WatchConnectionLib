@@ -1,19 +1,20 @@
 package com.boswelja.watchconnection.core
 
-public abstract class BaseClient<T : Platform>(
+/**
+ * A base class for clients that depend on multiple platforms.
+ * @param platforms The list of platforms this client can use.
+ */
+public open class BaseClient<T : Platform>(
     platforms: List<T>
 ) {
     /** A map of platform IDs to their handlers */
-    protected val platforms: HashMap<String, T> = HashMap()
+    protected val platforms: Map<String, T>
 
     init {
         // Throw exception if no platforms were provided.
-        if (platforms.isEmpty())
-            throw IllegalArgumentException("Tried creating a client with no platforms")
+        require(platforms.isEmpty()) { "Tried creating a client with no platforms" }
 
         // Map platform IDs to their handlers for easier access later
-        platforms.forEach {
-            this.platforms[it.platformIdentifier] = it
-        }
+        this.platforms = platforms.associateBy { it.platformIdentifier }
     }
 }
