@@ -20,7 +20,15 @@ public data class Watch(
     public val name: String
 ) {
 
+    /**
+     * The watch internal ID for use with it's designated platform. There should be no references
+     * to this in user code.
+     */
     val internalId: String
+
+    /**
+     * The identifier for the platform this watch belongs to.
+     */
     val platform: String
 
     public constructor(
