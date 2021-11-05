@@ -14,8 +14,6 @@ A kotlin-first Android library to provide a shared API for interacting with mult
 
 #### [platform-wearos](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-wearos)
 
-#### [platform-tizen](https://github.com/boswelja/WatchConnectionLib/blob/main/mobile/platform-tizen)
-
 ---
 
 ### [Wear](https://github.com/boswelja/WatchConnectionLib/tree/main/wear)

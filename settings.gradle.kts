@@ -2,7 +2,6 @@ include(
     ":common",
     ":mobile:mobile-core",
     ":mobile:platform-wearos",
-    ":mobile:platform-tizen",
     ":wear",
     ":serialization",
     ":samples:mobile",
