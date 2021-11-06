@@ -22,12 +22,18 @@ kotlin {
                 api(libs.kotlinx.coroutines.core)
             }
         }
-        val androidMain by getting {
-            dependencies { }
-        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+            }
+        }
+        val androidMain by getting {
+            dependencies { }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+                implementation(libs.robolectric)
             }
         }
     }
