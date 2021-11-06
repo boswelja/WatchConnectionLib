@@ -63,7 +63,10 @@ public data class Watch(
          * @param platform The platform identifier for this watches platform.
          * @param platformId See [Watch.internalId].
          */
-        public fun createUid(platform: String, platformId: String): String =
-            "$platform$UidDelimiter$platformId"
+        public fun createUid(platform: String, platformId: String): String {
+            require(platform.isNotBlank()) { "platform cannot be blank or empty" }
+            require(platformId.isNotBlank()) { "platformId cannot be blank or empty" }
+            return "$platform$UidDelimiter$platformId"
+        }
     }
 }
