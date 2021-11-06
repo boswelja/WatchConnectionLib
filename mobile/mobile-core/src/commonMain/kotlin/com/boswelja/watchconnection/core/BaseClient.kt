@@ -12,7 +12,7 @@ public open class BaseClient<T : Platform>(
 
     init {
         // Throw exception if no platforms were provided.
-        require(platforms.isEmpty()) { "Tried creating a client with no platforms" }
+        require(platforms.isNotEmpty()) { "Tried creating a client with no platforms" }
 
         // Map platform IDs to their handlers for easier access later
         this.platforms = platforms.associateBy { it.platformIdentifier }
