@@ -9,10 +9,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+/**
+ * A [BroadcastReceiver] that receives incoming messages from supported platforms.
+ */
 public abstract class MessageReceiver : BroadcastReceiver() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
+    /**
+     * Called when a message is received.
+     * @param context [Context].
+     * @param message The received message.
+     */
     public abstract suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<ByteArray?>

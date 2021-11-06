@@ -5,6 +5,7 @@ package com.boswelja.watchconnection.common.message
  * @param path The path to send the message to.
  * @param data The data to send with the message. If this is not a [ByteArray] or null, a serializer
  * must be used.
+ * @param priority The message priority. See [Priority].
  */
 public data class Message<out T>(
     val path: String,

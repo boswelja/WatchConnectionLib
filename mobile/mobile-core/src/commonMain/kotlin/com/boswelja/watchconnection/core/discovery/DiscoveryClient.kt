@@ -5,6 +5,7 @@ import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.BaseClient
 import com.boswelja.watchconnection.core.Platform
+import com.boswelja.watchconnection.core.platformNotFoundMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -36,7 +37,9 @@ public class DiscoveryClient(
      */
     override suspend fun getCapabilitiesFor(targetUid: String): Set<String> {
         val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
-        return getCapabilitiesFor(platformId, internalId)
+        val platform = platforms[platformId]
+        checkNotNull(platform) { platformNotFoundMessage(platformId) }
+        return platform.getCapabilitiesFor(internalId)
     }
 
     /**
@@ -44,23 +47,9 @@ public class DiscoveryClient(
      * @param watch See [Watch].
      * @return A [Flow] of capability strings declared by the watch.
      */
+    @Deprecated("Pass UID instead", replaceWith = ReplaceWith("getCapabilitiesFor(watch.uid)"))
     public suspend fun getCapabilitiesFor(watch: Watch): Set<String> {
-        return getCapabilitiesFor(watch.platform, watch.internalId)
-    }
-
-    /**
-     * Get a flow of capabilities found for a given [Watch].
-     * @param platformId The platform identifier of the corresponding platform.
-     * @param internalId The [Watch.internalId] of the device to send the message to.
-     * @return A [Flow] of capability strings declared by the watch.
-     */
-    internal suspend fun getCapabilitiesFor(
-        platformId: String,
-        internalId: String
-    ): Set<String> {
-        val platform = platforms[platformId]
-        checkNotNull(platform) { "No platform found for $platformId" }
-        return platform.getCapabilitiesFor(internalId)
+        return getCapabilitiesFor(watch.uid)
     }
 
     /**
@@ -71,7 +60,9 @@ public class DiscoveryClient(
      */
     override fun hasCapability(targetUid: String, capability: String): Flow<Boolean> {
         val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
-        return hasCapability(platformId, internalId, capability)
+        val platform = platforms[platformId]
+        checkNotNull(platform) { platformNotFoundMessage(platformId) }
+        return platform.watchHasCapability(internalId, capability)
     }
 
     /**
@@ -80,25 +71,12 @@ public class DiscoveryClient(
      * @param capability The capability to look for.
      * @return a [Flow] of [Boolean], where true indicates the watch has the capability.
      */
+    @Deprecated(
+        "Pass UID instead",
+        replaceWith = ReplaceWith("hasCapability(watch.uid, capability)")
+    )
     public fun hasCapability(watch: Watch, capability: String): Flow<Boolean> {
-        return hasCapability(watch.platform, watch.internalId, capability)
-    }
-
-    /**
-     * Check whether a device on the given platform has a specified capability.
-     * @param platformId The platform identifier of the corresponding platform.
-     * @param internalId The [Watch.internalId] of the device to send the message to.
-     * @param capability The capability to look for.
-     * @return A [Flow] of [Boolean], where true indicates the device has the capability.
-     */
-    internal fun hasCapability(
-        platformId: String,
-        internalId: String,
-        capability: String
-    ): Flow<Boolean> {
-        val platform = platforms[platformId]
-        checkNotNull(platform) { "No platform found for $platformId" }
-        return platform.watchHasCapability(internalId, capability)
+        return hasCapability(watch.uid, capability)
     }
 
     /**
@@ -120,8 +98,9 @@ public class DiscoveryClient(
      * mode of a watch.
      * @param watch The [Watch] whose connection mode to observe.
      */
+    @Deprecated("Pass UID instead", ReplaceWith("connectionModeFor(watch.uid)"))
     public fun connectionModeFor(watch: Watch): Flow<ConnectionMode> {
-        return connectionModeFor(watch.platform, watch.internalId)
+        return connectionModeFor(watch.uid)
     }
 
     /**
@@ -131,21 +110,8 @@ public class DiscoveryClient(
      */
     override fun connectionModeFor(targetUid: String): Flow<ConnectionMode> {
         val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
-        return connectionModeFor(platformId, internalId)
-    }
-
-    /**
-     * Gets a [Flow] of [ConnectionMode] for the given watch. Use this to observe the connection
-     * mode of a watch.
-     * @param platformId The platform identifier of the corresponding platform.
-     * @param internalId The [Watch.internalId] of the device to send the message to.
-     */
-    internal fun connectionModeFor(
-        platformId: String,
-        internalId: String
-    ): Flow<ConnectionMode> {
         val platform = platforms[platformId]
-        checkNotNull(platform) { "No platform found for $platformId" }
+        checkNotNull(platform) { platformNotFoundMessage(platformId) }
         return platform.connectionModeFor(internalId)
     }
 

@@ -5,6 +5,7 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageClient
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.BaseClient
+import com.boswelja.watchconnection.core.platformNotFoundMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.merge
@@ -39,7 +40,7 @@ public class MessageClient(
     ): Boolean {
         val (platformId, internalId) = Watch.getInfoFromUid(targetUid)
         val platform = platforms[platformId]
-        requireNotNull(platform) { "No platform registered for $platformId" }
+        requireNotNull(platform) { platformNotFoundMessage(platformId) }
 
         return platform.sendMessage(internalId, message.path, message.data, message.priority)
     }

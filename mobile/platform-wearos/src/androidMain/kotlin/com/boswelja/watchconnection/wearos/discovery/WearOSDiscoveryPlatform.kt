@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
+/**
+ * A [DiscoveryPlatform] implementation for Wear OS.
+ */
 public actual class WearOSDiscoveryPlatform(
     private val nodeClient: NodeClient,
     private val capabilityClient: CapabilityClient,
@@ -103,7 +106,7 @@ public actual class WearOSDiscoveryPlatform(
         return try {
             capabilityClient.addLocalCapability(capability).await()
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // If we throw an exception, no changes were made
             false
         }
@@ -113,7 +116,7 @@ public actual class WearOSDiscoveryPlatform(
         return try {
             capabilityClient.removeLocalCapability(capability).await()
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // If we throw an exception, no changes were made
             false
         }

@@ -11,3 +11,6 @@ public interface Platform {
      */
     public val platformIdentifier: String
 }
+
+internal fun platformNotFoundMessage(platform: String): String =
+    "Platform $platform not found! Did you forget to add it to the client?"

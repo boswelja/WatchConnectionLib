@@ -2,6 +2,9 @@ package com.boswelja.watchconnection.serialization
 
 import java.nio.ByteBuffer
 
+/**
+ * A [MessageSerializer] for handling [Short].
+ */
 public actual class ShortSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<Short> {
@@ -10,6 +13,9 @@ public actual class ShortSerializer actual constructor(
     override suspend fun deserialize(bytes: ByteArray?): Short = ByteBuffer.wrap(bytes!!).short
 }
 
+/**
+ * A [MessageSerializer] for handling [Int].
+ */
 public actual class IntSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<Int> {
@@ -18,6 +24,9 @@ public actual class IntSerializer actual constructor(
     override suspend fun deserialize(bytes: ByteArray?): Int = ByteBuffer.wrap(bytes!!).int
 }
 
+/**
+ * A [MessageSerializer] for handling [Long].
+ */
 public actual class LongSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<Long> {
@@ -26,6 +35,9 @@ public actual class LongSerializer actual constructor(
     override suspend fun deserialize(bytes: ByteArray?): Long = ByteBuffer.wrap(bytes!!).long
 }
 
+/**
+ * A [MessageSerializer] for handling [Float].
+ */
 public actual class FloatSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<Float> {
@@ -34,6 +46,9 @@ public actual class FloatSerializer actual constructor(
     override suspend fun deserialize(bytes: ByteArray?): Float = ByteBuffer.wrap(bytes!!).float
 }
 
+/**
+ * A [MessageSerializer] for handling [Double].
+ */
 public actual class DoubleSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<Double> {
@@ -43,6 +58,9 @@ public actual class DoubleSerializer actual constructor(
     override suspend fun deserialize(bytes: ByteArray?): Double = ByteBuffer.wrap(bytes!!).double
 }
 
+/**
+ * A [MessageSerializer] for handling [Char].
+ */
 public actual class CharSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<Char> {
@@ -51,6 +69,9 @@ public actual class CharSerializer actual constructor(
     override suspend fun deserialize(bytes: ByteArray?): Char = ByteBuffer.wrap(bytes!!).char
 }
 
+/**
+ * A [MessageSerializer] for handling [String].
+ */
 public actual class StringSerializer actual constructor(
     override val messagePaths: Set<String>
 ) : MessageSerializer<String> {

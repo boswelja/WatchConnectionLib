@@ -5,6 +5,4 @@ Check out the platforms below for different smartwatches you can support!
 
 ## Platforms
 
-### [platform-tizen](https://github.com/boswelja/WatchConnectionLib/tree/main/mobile/platform-tizen)
-
 ### [platform-wearos](https://github.com/boswelja/WatchConnectionLib/tree/main/mobile/platform-wearos)
