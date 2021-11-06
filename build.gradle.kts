@@ -15,6 +15,7 @@ buildscript {
 plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.18.1"
+    id("org.jetbrains.kotlinx.kover") version "0.4.1"
 }
 
 allprojects {
@@ -28,6 +29,16 @@ allprojects {
         source = files("src")
         buildUponDefaultConfig = true
         parallel = true
+    }
+
+    tasks.koverVerify {
+        rule {
+            name = "75% Coverage"
+            bound {
+                minValue = 75
+                valueType = kotlinx.kover.api.VerificationValueType.COVERED_LINES_PERCENTAGE
+            }
+        }
     }
 }
 group = Publishing.groupId
