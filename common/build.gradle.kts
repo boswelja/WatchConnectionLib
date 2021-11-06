@@ -33,7 +33,7 @@ kotlin {
         val androidTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation(libs.robolectric)
+                implementation(libs.mockk.core)
             }
         }
     }
@@ -46,6 +46,9 @@ android {
         minSdk = Sdk.min
         targetSdk = Sdk.target
         consumerProguardFile("proguard-rules.pro")
+    }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
