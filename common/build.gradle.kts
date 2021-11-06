@@ -25,11 +25,9 @@ kotlin {
         val androidMain by getting {
             dependencies { }
         }
-        val androidTest by getting {
+        val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation(libs.mockk.core)
-                implementation(libs.robolectric)
+                implementation(kotlin("test"))
             }
         }
     }
