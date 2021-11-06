@@ -5,7 +5,6 @@ import com.boswelja.watchconnection.common.Phone
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.Capabilities
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.repeating
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
@@ -17,7 +16,10 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-public actual class DiscoveryClient(context: Context) : DiscoveryClient {
+/**
+ * A [WearDiscoveryClient] implementation for Android-powered Wearables.
+ */
+public class DiscoveryClient(context: Context) : WearDiscoveryClient {
 
     private val nodeClient = Wearable.getNodeClient(context.applicationContext)
     private val capabilityClient = Wearable.getCapabilityClient(context.applicationContext)
@@ -61,7 +63,7 @@ public actual class DiscoveryClient(context: Context) : DiscoveryClient {
     }
 
     override fun connectionModeFor(targetUid: String): Flow<ConnectionMode> = flow {
-        repeating(2000L) {
+        repeating(scanIntervalMilliseconds) {
             val connectedNodes = nodeClient.connectedNodes.await()
             val node = connectedNodes.firstOrNull { it.id == targetUid }
             val connectionMode = node?.let {
@@ -76,7 +78,7 @@ public actual class DiscoveryClient(context: Context) : DiscoveryClient {
         return try {
             capabilityClient.addLocalCapability(capability).await()
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // If we throw an exception, no changes were made
             false
         }
@@ -86,13 +88,13 @@ public actual class DiscoveryClient(context: Context) : DiscoveryClient {
         return try {
             capabilityClient.removeLocalCapability(capability).await()
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // If we throw an exception, no changes were made
             false
         }
     }
 
-    public actual suspend fun pairedPhone(): Phone? {
+    override suspend fun pairedPhone(): Phone? {
         // Try look up phone via capability
         val capableNode = capabilityClient
             .getCapability(Capabilities.ConnectionLibHost, CapabilityClient.FILTER_ALL)
@@ -105,7 +107,7 @@ public actual class DiscoveryClient(context: Context) : DiscoveryClient {
         )
     }
 
-    public actual suspend fun localWatch(): Watch {
+    override suspend fun localWatch(): Watch {
         val node = nodeClient.localNode.await()
         return Watch(
             node.displayName,
@@ -114,7 +116,7 @@ public actual class DiscoveryClient(context: Context) : DiscoveryClient {
         )
     }
 
-    public actual suspend fun allPhoneCapabilities(): Set<String> {
+    override suspend fun allPhoneCapabilities(): Set<String> {
         val pairedPhone = pairedPhone() ?: return emptySet()
         val allCapabilities = capabilityClient
             .getAllCapabilities(CapabilityClient.FILTER_ALL)
@@ -126,16 +128,19 @@ public actual class DiscoveryClient(context: Context) : DiscoveryClient {
             .toSet()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    public actual suspend fun phoneHasCapability(
+    override suspend fun phoneHasCapability(
         capability: String
     ): Flow<Boolean> = hasCapability(
         pairedPhone()!!.uid,
         capability
     )
 
-    public actual fun connectionMode(): Flow<ConnectionMode> = flow {
+    override fun connectionMode(): Flow<ConnectionMode> = flow {
         val phone = pairedPhone() ?: return@flow
         emitAll(connectionModeFor(phone.uid))
+    }
+
+    private companion object {
+        private const val scanIntervalMilliseconds = 2000L
     }
 }

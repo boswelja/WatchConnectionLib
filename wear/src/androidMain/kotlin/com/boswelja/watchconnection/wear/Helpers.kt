@@ -15,7 +15,7 @@ internal suspend fun repeating(
     initialDelay: Long = 0,
     action: suspend () -> Unit
 ) {
-    if (interval <= 0) throw IllegalArgumentException("interval must be greater than 0")
+    require(interval > 0) { "interval must be greater than 0" }
     if (initialDelay > 0) delay(initialDelay)
     while (true) {
         action()

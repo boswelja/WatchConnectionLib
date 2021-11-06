@@ -7,9 +7,9 @@ import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import kotlinx.coroutines.flow.Flow
 
 /**
- * A client to manage local watch capabilities, as well as paired phone capabilities and status.
+ * A Discovery Client interface tailored to Wearables.
  */
-public expect class DiscoveryClient : DiscoveryClient {
+public interface WearDiscoveryClient : DiscoveryClient {
 
     /**
      * Get the currently paired [Phone].
