@@ -1,24 +1,20 @@
 package com.boswelja.watchconnection.wearos.message
 
 import android.content.Context
+import app.cash.turbine.test
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.google.android.gms.wearable.MessageOptions
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.withTimeout
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 
-private const val TIMEOUT = 250L
+private const val TIMEOUT = 1000L
 
 public class WearOSMessagePlatformTest {
 
@@ -26,7 +22,7 @@ public class WearOSMessagePlatformTest {
     private lateinit var messageClient: DummyMessageClient
     private lateinit var messagePlatform: WearOSMessagePlatform
 
-    @BeforeEach
+    @Before
     public fun setUp() {
         context = mockk()
         messageClient = DummyMessageClient(context)
@@ -81,35 +77,24 @@ public class WearOSMessagePlatformTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    public fun `incomingMessages gets all messages received by OnMessageReceivedListener`() {
+    public fun `incomingMessages gets all messages received by OnMessageReceivedListener`(): Unit = runBlocking {
         val messageCount = 10
         val messages = createMessagesFor(messageCount, messagePlatform.platformIdentifier)
 
-        val scope = TestCoroutineScope()
-
         // Start collecting messages
-        val job = Job()
-        val collectedMessages = mutableListOf<ReceivedMessage<ByteArray?>>()
-        scope.launch(job) {
-            messagePlatform.incomingMessages().take(messageCount).collect {
-                collectedMessages.add(it)
-            }
-        }
-
-        // Send the dummy messages
-        messages.forEach { message ->
-            messageClient.listeners.forEach { listener ->
-                listener.onMessageReceived(
-                    DummyMessageEvent(
-                        message.sourceUid,
-                        message.path,
-                        message.data
+        messagePlatform.incomingMessages().take(messageCount).test(TIMEOUT) {
+            messages.forEach { message ->
+                messageClient.listeners.forEach { listener ->
+                    listener.onMessageReceived(
+                        DummyMessageEvent(
+                            message.sourceUid,
+                            message.path,
+                            message.data
+                        )
                     )
-                )
+                }
+                assertEquals(message, awaitItem())
             }
         }
-
-        // Make sure we got all the messages
-        assertEquals(messages, collectedMessages)
     }
 }

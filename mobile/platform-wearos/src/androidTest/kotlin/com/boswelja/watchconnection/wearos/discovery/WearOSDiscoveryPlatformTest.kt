@@ -5,8 +5,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
 
 private const val TIMEOUT = 250L
@@ -18,7 +18,7 @@ public class WearOSDiscoveryPlatformTest {
     private lateinit var capabilityClient: DummyCapabilityClient
     private lateinit var discoveryPlatform: WearOSDiscoveryPlatform
 
-    @BeforeEach
+    @Before
     public fun setUp() {
         context = mockk()
         nodeClient = DummyNodeClient(context)
