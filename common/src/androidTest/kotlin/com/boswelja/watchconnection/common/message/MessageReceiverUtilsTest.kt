@@ -7,7 +7,9 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkConstructor
+import io.mockk.unmockkAll
 import io.mockk.verify
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -23,6 +25,11 @@ public class MessageReceiverUtilsTest {
     public fun setUp() {
         context = mockk()
         every { context.packageName } returns packageName
+    }
+
+    @After
+    public fun tearDown() {
+        unmockkAll()
     }
 
     @Test

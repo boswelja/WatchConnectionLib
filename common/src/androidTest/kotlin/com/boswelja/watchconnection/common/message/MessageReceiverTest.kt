@@ -8,13 +8,20 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.spyk
+import io.mockk.unmockkAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
+import org.junit.After
 import org.junit.Test
 import kotlin.test.assertEquals
 
 public class MessageReceiverTest {
+
+    @After
+    public fun tearDown() {
+        unmockkAll()
+    }
 
     @Test
     public fun onReceive_ignoresIntentWithIncorrectAction() {
@@ -26,7 +33,9 @@ public class MessageReceiverTest {
         )
 
         mockkObject(MessageReceiverUtils)
-        every { MessageReceiverUtils.getReceivedMessageFromIntent(any()) } throws AssertionError()
+        every {
+            MessageReceiverUtils.getReceivedMessageFromIntent(any())
+        } throws AssertionError("getReceivedMessageFromIntent was called")
 
         ConcreteMessageReceiver().onReceive(mockk(), intent)
     }
