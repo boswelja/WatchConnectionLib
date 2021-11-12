@@ -33,9 +33,9 @@ allprojects {
 
     tasks.koverVerify {
         rule {
-            name = "75% Coverage"
+            name = "80% Coverage"
             bound {
-                minValue = 75
+                minValue = 80
                 valueType = kotlinx.kover.api.VerificationValueType.COVERED_LINES_PERCENTAGE
             }
         }
