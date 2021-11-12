@@ -28,6 +28,6 @@ public abstract class MessagePlatform : Platform {
         watchId: String,
         message: String,
         data: ByteArray? = null,
-        priority: Message.Priority
+        priority: Message.Priority = Message.Priority.LOW
     ): Boolean
 }
