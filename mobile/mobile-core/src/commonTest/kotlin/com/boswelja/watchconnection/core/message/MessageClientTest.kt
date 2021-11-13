@@ -1,7 +1,9 @@
 package com.boswelja.watchconnection.core.message
 
+import app.cash.turbine.test
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.createWatchesFor
 import com.boswelja.watchconnection.core.runBlockingTest
 import kotlin.test.BeforeTest
@@ -28,7 +30,7 @@ class MessageClientTest {
     }
 
     @Test
-    fun sendMessageSendsMessageCorrectly() = runBlockingTest {
+    fun sendMessage_sendsMessageWithData() = runBlockingTest {
         // Create a dummy message
         val expectedBytes = "data".encodeToByteArray()
         val message = Message(
@@ -53,7 +55,7 @@ class MessageClientTest {
     }
 
     @Test
-    fun sendMessageSendsMessageWithNullDataCorrectly() = runBlockingTest {
+    fun sendMessage_sendsMessageWithoutData() = runBlockingTest {
         // Create a dummy message
         val message = Message(
             "path",
@@ -76,35 +78,21 @@ class MessageClientTest {
         }
     }
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun incomingMessagesFlowsMessagesFromPlatforms() {
-//        // Start collecting incoming messages
-//        val receivedMessages = mutableListOf<ReceivedMessage<*>>()
-//        scope.launch {
-//            client.incomingMessages().collect { message ->
-//                receivedMessages.add(message)
-//            }
-//        }
-//
-//        // Mock sending messages
-//        val expectedMessages = mutableListOf<ReceivedMessage<*>>()
-//        scope.launch {
-//            platforms.forEach { platform ->
-//                val watches = dummyWatches[platform.platformIdentifier]!!
-//                watches.forEach { watch ->
-//                    val message = ReceivedMessage<ByteArray?>(
-//                        watch.uid,
-//                        "message",
-//                        null
-//                    )
-//                    platform.incomingMessages.emit(message)
-//                    expectedMessages.add(message)
-//                }
-//            }
-//        }
-//
-//        // Check all messages were received
-//        assertEquals(expectedMessages, receivedMessages)
-//    }
+    @Test
+    fun incomingMessages_flowsMessagesFromPlatforms() = runBlockingTest {
+        client.incomingMessages().test {
+            platforms.forEach { platform ->
+                val watches = dummyWatches[platform.platformIdentifier]!!
+                watches.forEach { watch ->
+                    val message = ReceivedMessage<ByteArray?>(
+                        watch.uid,
+                        "message",
+                        null
+                    )
+                    platform.incomingMessages.emit(message)
+                    assertEquals(message, awaitItem())
+                }
+            }
+        }
+    }
 }
