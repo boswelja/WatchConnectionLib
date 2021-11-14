@@ -3,29 +3,30 @@ package com.boswelja.watchconnection.core.discovery
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class ConcreteDiscoveryPlatform(
-    private val allWatches: List<Watch>,
-    private val capabilities: Set<String>,
-    private val connectionMode: ConnectionMode
+    var allWatches: MutableList<Watch>,
+    var capabilities: MutableSet<String>,
+    var connectionMode: ConnectionMode,
+    platform: String
 ) : DiscoveryPlatform() {
 
-    val localCapabilities = mutableListOf<String>()
+    val localCapabilities = mutableSetOf<String>()
 
-    override val platformIdentifier: String = PLATFORM
+    override val platformIdentifier: String = platform
 
-    override fun allWatches(): Flow<List<Watch>> = flowOf(allWatches)
+    override fun allWatches(): Flow<List<Watch>> = MutableStateFlow(allWatches)
 
     override suspend fun getCapabilitiesFor(watchId: String): Set<String> = capabilities
 
     override fun watchHasCapability(watchId: String, capability: String): Flow<Boolean> =
-        flow { emit(capabilities.contains(capability)) }
+        MutableStateFlow(capabilities.contains(capability))
 
     override fun watchesWithCapability(capability: String): Flow<List<Watch>> = allWatches()
 
-    override fun connectionModeFor(watchId: String): Flow<ConnectionMode> = flowOf(connectionMode)
+    override fun connectionModeFor(watchId: String): Flow<ConnectionMode> =
+        MutableStateFlow(connectionMode)
 
     override suspend fun addLocalCapability(capability: String): Boolean {
         return localCapabilities.add(capability)
@@ -34,8 +35,15 @@ class ConcreteDiscoveryPlatform(
     override suspend fun removeLocalCapability(capability: String): Boolean {
         return localCapabilities.remove(capability)
     }
+}
 
-    companion object {
-        const val PLATFORM = "platform"
+internal fun createPlatforms(count: Int): List<ConcreteDiscoveryPlatform> {
+    return (0 until count).map { id ->
+        ConcreteDiscoveryPlatform(
+            mutableListOf(),
+            mutableSetOf(),
+            ConnectionMode.Disconnected,
+            "platform$id"
+        )
     }
 }
