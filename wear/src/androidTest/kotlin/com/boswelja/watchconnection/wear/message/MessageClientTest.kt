@@ -1,47 +1,36 @@
-package com.boswelja.watchconnection.wearos.message
+package com.boswelja.watchconnection.wear.message
 
-import android.content.Context
 import app.cash.turbine.test
-import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageOptions
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import com.google.android.gms.wearable.MessageClient as WearMessageClient
 
 private const val TIMEOUT = 1000L
 
-public class WearOSMessagePlatformTest {
+public class MessageClientTest {
 
-    private lateinit var context: Context
+    private lateinit var wearMessageClient: WearMessageClient
     private lateinit var messageClient: MessageClient
-    private lateinit var messagePlatform: WearOSMessagePlatform
 
     @Before
     public fun setUp() {
-        context = mockk()
-        messageClient = mockk {
+        wearMessageClient = mockk {
             every { sendMessage(any(), any(), any(), any()) } returns Tasks.forResult(1)
         }
-        messagePlatform = WearOSMessagePlatform(messageClient)
-    }
-
-    @After
-    public fun tearDown() {
-        unmockkAll()
+        messageClient = MessageClient(wearMessageClient)
     }
 
     @Test
@@ -53,13 +42,13 @@ public class WearOSMessagePlatformTest {
         // Send the message
         val result = runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message, bytes)
+                messageClient.sendMessage(watchId, Message(message, bytes))
             }
         }
 
         // Verify the call was made
         verify {
-            messageClient.sendMessage(
+            wearMessageClient.sendMessage(
                 watchId,
                 message,
                 bytes,
@@ -78,13 +67,13 @@ public class WearOSMessagePlatformTest {
         // Send the message
         val result = runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message, bytes)
+                messageClient.sendMessage(watchId, Message(message, bytes))
             }
         }
 
         // Verify the call was made
         verify {
-            messageClient.sendMessage(
+            wearMessageClient.sendMessage(
                 watchId,
                 message,
                 bytes,
@@ -102,13 +91,16 @@ public class WearOSMessagePlatformTest {
         // Send the message
         runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message, priority = Message.Priority.HIGH)
+                messageClient.sendMessage(
+                    watchId,
+                    Message(message, null, Message.Priority.HIGH)
+                )
             }
         }
 
         // Verify the call was made
         verify {
-            messageClient.sendMessage(
+            wearMessageClient.sendMessage(
                 watchId,
                 message,
                 null,
@@ -125,13 +117,16 @@ public class WearOSMessagePlatformTest {
         // Send the message
         runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message, priority = Message.Priority.LOW)
+                messageClient.sendMessage(
+                    watchId,
+                    Message(message, null, Message.Priority.LOW)
+                )
             }
         }
 
         // Verify the call was made
         verify {
-            messageClient.sendMessage(
+            wearMessageClient.sendMessage(
                 watchId,
                 message,
                 null,
@@ -147,13 +142,13 @@ public class WearOSMessagePlatformTest {
 
         // Set up for failure
         every {
-            messageClient.sendMessage(any(), any(), any(), any())
+            wearMessageClient.sendMessage(any(), any(), any(), any())
         } throws ApiException(Status.RESULT_INTERNAL_ERROR)
 
         // Make the call
         val result = runBlocking {
             withTimeout(TIMEOUT) {
-                messagePlatform.sendMessage(watchId, message)
+                messageClient.sendMessage(watchId, Message(message, null))
             }
         }
 
@@ -163,21 +158,21 @@ public class WearOSMessagePlatformTest {
 
     @Test
     public fun incomingMessages_flowsAllReceivedMessages(): Unit = runBlocking {
-        val messages = createMessagesFor(25, messagePlatform.platformIdentifier)
+        val messages = createMessagesFor(25)
 
-        var listener: MessageClient.OnMessageReceivedListener? = null
-        every { messageClient.removeListener(any()) } returns Tasks.forResult(true)
-        every { messageClient.addListener(any()) } answers {
+        var listener: WearMessageClient.OnMessageReceivedListener? = null
+        every { wearMessageClient.removeListener(any()) } returns Tasks.forResult(true)
+        every { wearMessageClient.addListener(any()) } answers {
             listener = firstArg()
             Tasks.forResult(null)
         }
 
         // Start collecting messages
-        messagePlatform.incomingMessages().test(TIMEOUT) {
+        messageClient.incomingMessages().test {
             messages.forEach { message ->
                 listener!!.onMessageReceived(
                     DummyMessageEvent(
-                        Watch.getInfoFromUid(message.sourceUid).second,
+                        message.sourceUid,
                         message.path,
                         message.data
                     )

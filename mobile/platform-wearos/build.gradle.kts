@@ -33,9 +33,10 @@ kotlin {
         }
         val androidTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
+                implementation(kotlin("test-junit"))
                 implementation(libs.mockk.core)
                 implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.turbine)
             }
         }
     }

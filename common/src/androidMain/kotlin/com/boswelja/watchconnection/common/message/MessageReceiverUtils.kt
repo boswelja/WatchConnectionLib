@@ -14,9 +14,9 @@ public object MessageReceiverUtils {
     public const val MessageReceived: String =
         "com.boswelja.watchconnection.common.message.MessageReceived"
 
-    private const val SenderUid: String = "senderuid"
-    private const val MessagePath: String = "messagepath"
-    private const val MessageData: String = "messagedata"
+    internal const val SenderUid: String = "senderuid"
+    internal const val MessagePath: String = "messagepath"
+    internal const val MessageData: String = "messagedata"
 
     /**
      * Broadcast an intent containing the specified message details. Intents can be received by any
@@ -51,9 +51,9 @@ public object MessageReceiverUtils {
      */
     public fun getReceivedMessageFromIntent(source: Intent): ReceivedMessage<ByteArray?> {
         val senderUid = source.getStringExtra(SenderUid)
-        requireNotNull(senderUid) { "Didn't get a sender UID with message intent!" }
+        require(!senderUid.isNullOrBlank()) { "Didn't get a sender UID with message intent!" }
         val messagePath = source.getStringExtra(MessagePath)
-        requireNotNull(messagePath) { "Didn't get a message path with message intent!" }
+        require(!messagePath.isNullOrBlank()) { "Didn't get a message path with message intent!" }
         val messageData = source.getByteArrayExtra(MessageData)
         return ReceivedMessage(
             senderUid,

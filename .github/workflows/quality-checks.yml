@@ -21,7 +21,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Build
-        run: bash ./gradlew assemble --stacktrace
+        run: bash ./gradlew assemble
 
   test:
     name: Unit Tests
@@ -35,7 +35,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Unit tests
-        run: bash ./gradlew test --stacktrace
+        run: bash ./gradlew test
       - uses: actions/upload-artifact@v2.2.4
         if: failure()
         with:

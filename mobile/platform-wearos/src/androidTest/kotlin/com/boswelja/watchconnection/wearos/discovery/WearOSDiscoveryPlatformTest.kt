@@ -1,45 +1,203 @@
 package com.boswelja.watchconnection.wearos.discovery
 
-import android.content.Context
+import app.cash.turbine.test
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.NodeClient
+import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
+import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 import kotlin.test.assertEquals
-
-private const val TIMEOUT = 250L
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 public class WearOSDiscoveryPlatformTest {
 
-    private lateinit var context: Context
-    private lateinit var nodeClient: DummyNodeClient
-    private lateinit var capabilityClient: DummyCapabilityClient
+    private lateinit var nodeClient: NodeClient
+    private lateinit var capabilityClient: CapabilityClient
     private lateinit var discoveryPlatform: WearOSDiscoveryPlatform
 
-    @BeforeEach
+    @Before
     public fun setUp() {
-        context = mockk()
-        nodeClient = DummyNodeClient(context)
-        capabilityClient = DummyCapabilityClient(context)
+        nodeClient = mockk()
+        capabilityClient = mockk()
         discoveryPlatform = WearOSDiscoveryPlatform(
             nodeClient,
-            capabilityClient
+            capabilityClient,
+            scanRepeatInterval = 100
         )
     }
 
+    @After
+    public fun tearDown() {
+        unmockkAll()
+    }
+
     @Test
-    public fun `allWatches flows initial value immediately`() {
-        val nodes = createNodes(5)
-        nodeClient.connectedNodes.addAll(nodes)
+    public fun allWatches_flowsChanges(): Unit = runBlocking {
+        var count = 5
+        every { nodeClient.connectedNodes } returns Tasks.forResult(createNodes(count))
+        discoveryPlatform.allWatches().test {
+            // Check initial value
+            assertTrue { awaitItem().count() == count }
 
-        val watches = runBlocking {
-            withTimeout(TIMEOUT) {
-                discoveryPlatform.allWatches().first()
-            }
+            // Check reduced count
+            count = 3
+            every { nodeClient.connectedNodes } returns Tasks.forResult(createNodes(count))
+            assertTrue { awaitItem().count() == count }
+
+            // Check increased count
+            count = 7
+            every { nodeClient.connectedNodes } returns Tasks.forResult(createNodes(count))
+            assertTrue { awaitItem().count() == count }
         }
+    }
 
-        assertEquals(nodes.map { it.id }, watches.map { it.internalId })
+    @Test
+    public fun getCapabilitiesFor_returnsCapabilitiesForWatch(): Unit = runBlocking {
+        val capabilities = listOf("capability1", "capability2", "capability3")
+        val node = createNodes(1).first()
+        every {
+            capabilityClient.getAllCapabilities(any())
+        } returns Tasks.forResult(createDummyCapabilities(capabilities, setOf(node)))
+
+        val result = discoveryPlatform.getCapabilitiesFor(node.id)
+        assertTrue { result.containsAll(result) }
+    }
+
+    @Test
+    public fun getCapabilitiesFor_ignoresCapabilitiesForOtherNodes(): Unit = runBlocking {
+        val capabilities = listOf("capability1", "capability2", "capability3")
+        val node = createNodes(1).first()
+        every {
+            capabilityClient.getAllCapabilities(any())
+        } returns Tasks.forResult(createDummyCapabilities(capabilities, setOf(node)))
+
+        val result = discoveryPlatform.getCapabilitiesFor("other-node-id")
+        assertTrue { result.isEmpty() }
+    }
+
+    @Test
+    public fun watchHasCapability_flowsTrueWhenWatchHasCapability(): Unit = runBlocking {
+        val capability = "capability1"
+        val node = createNodes(1).first()
+
+        var listener: CapabilityClient.OnCapabilityChangedListener? = null
+        every {
+            capabilityClient.addListener(any(), capability)
+        } answers {
+            listener = firstArg()
+            Tasks.forResult(null)
+        }
+        every { capabilityClient.removeListener(any()) } returns Tasks.forResult(true)
+
+        discoveryPlatform.watchHasCapability(node.id, capability).test {
+            listener!!.onCapabilityChanged(DummyCapabilityInfo(capability, mutableSetOf(node)))
+            assertTrue(awaitItem())
+        }
+    }
+
+    @Test
+    public fun watchHasCapability_flowsFalseWhenWatchHasNoCapability(): Unit = runBlocking {
+        val capability = "capability1"
+        val node = createNodes(1).first()
+
+        var listener: CapabilityClient.OnCapabilityChangedListener? = null
+        every {
+            capabilityClient.addListener(any(), capability)
+        } answers {
+            listener = firstArg()
+            Tasks.forResult(null)
+        }
+        every { capabilityClient.removeListener(any()) } returns Tasks.forResult(true)
+
+        discoveryPlatform.watchHasCapability(node.id, capability).test {
+            listener!!.onCapabilityChanged(DummyCapabilityInfo(capability, mutableSetOf()))
+            assertFalse(awaitItem())
+        }
+    }
+
+    @Test
+    public fun watchHasCapability_removesListenerOnCancel(): Unit = runBlocking {
+        val capability = "capability1"
+        val node = createNodes(1).first()
+
+        every {
+            capabilityClient.addListener(any(), capability)
+        } returns Tasks.forResult(null)
+        every { capabilityClient.removeListener(any()) } returns Tasks.forResult(true)
+
+        discoveryPlatform.watchHasCapability(node.id, capability).test {
+            cancel()
+        }
+        verify { capabilityClient.removeListener(any()) }
+    }
+
+    @Test
+    public fun connectionModeFor_flowsBluetoothWhenNodeIsNearby(): Unit = runBlocking {
+        val node = createNodes(1, true).first()
+        every { nodeClient.connectedNodes } returns Tasks.forResult(listOf(node))
+        discoveryPlatform.connectionModeFor(node.id).test {
+            assertEquals(ConnectionMode.Bluetooth, awaitItem())
+        }
+    }
+
+    @Test
+    public fun connectionModeFor_flowsInternetWhenNodeIsNotNearby(): Unit = runBlocking {
+        val node = createNodes(1, false).first()
+        every { nodeClient.connectedNodes } returns Tasks.forResult(listOf(node))
+        discoveryPlatform.connectionModeFor(node.id).test {
+            assertEquals(ConnectionMode.Internet, awaitItem())
+        }
+    }
+
+    @Test
+    public fun connectionModeFor_flowsDisconnectedWhenNodeNotFound(): Unit = runBlocking {
+        every { nodeClient.connectedNodes } returns Tasks.forResult(listOf())
+        discoveryPlatform.connectionModeFor("some-node-id").test {
+            assertEquals(ConnectionMode.Disconnected, awaitItem())
+        }
+    }
+
+    @Test
+    public fun addLocalCapability_returnsTrueOnSuccess(): Unit = runBlocking {
+        val capability = "capability1"
+        every { capabilityClient.addLocalCapability(any()) } returns Tasks.forResult(null)
+
+        val result = discoveryPlatform.addLocalCapability(capability)
+        assertTrue(result)
+    }
+
+    @Test
+    public fun addLocalCapability_returnsFalseOnError(): Unit = runBlocking {
+        val capability = "capability1"
+        every { capabilityClient.addLocalCapability(any()) } throws Exception()
+
+        val result = discoveryPlatform.addLocalCapability(capability)
+        assertFalse(result)
+    }
+
+    @Test
+    public fun removeLocalCapability_returnsTrueOnSuccess(): Unit = runBlocking {
+        val capability = "capability1"
+        every { capabilityClient.removeLocalCapability(any()) } returns Tasks.forResult(null)
+
+        val result = discoveryPlatform.removeLocalCapability(capability)
+        assertTrue(result)
+    }
+
+    @Test
+    public fun removeLocalCapability_returnsFalseOnError(): Unit = runBlocking {
+        val capability = "capability1"
+        every { capabilityClient.removeLocalCapability(any()) } throws Exception()
+
+        val result = discoveryPlatform.removeLocalCapability(capability)
+        assertFalse(result)
     }
 }

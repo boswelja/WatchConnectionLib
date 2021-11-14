@@ -48,11 +48,13 @@ public data class Watch(
 
     public companion object {
 
+        private const val UidDelimiter = "|"
+
         /**
          * Get a pair containing the device platform and internal ID from the given UID.
          */
         public fun getInfoFromUid(uid: String): Pair<String, String> {
-            val (platform, internalId) = uid.split("|")
+            val (platform, internalId) = uid.split(UidDelimiter)
             return Pair(platform, internalId)
         }
 
@@ -61,6 +63,10 @@ public data class Watch(
          * @param platform The platform identifier for this watches platform.
          * @param platformId See [Watch.internalId].
          */
-        public fun createUid(platform: String, platformId: String): String = "$platform|$platformId"
+        public fun createUid(platform: String, platformId: String): String {
+            require(platform.isNotBlank()) { "platform cannot be blank or empty" }
+            require(platformId.isNotBlank()) { "platformId cannot be blank or empty" }
+            return "$platform$UidDelimiter$platformId"
+        }
     }
 }

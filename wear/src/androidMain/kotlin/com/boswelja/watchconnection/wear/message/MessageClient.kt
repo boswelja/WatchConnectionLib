@@ -3,7 +3,7 @@ package com.boswelja.watchconnection.wear.message
 import android.content.Context
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageClient as GmsMessageClient
 import com.google.android.gms.wearable.MessageOptions
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,16 +16,18 @@ import kotlinx.coroutines.tasks.await
  * A [com.boswelja.watchconnection.common.message.MessageClient] implementation for Android-powered
  * Wearables.
  */
-public class MessageClient(
-    context: Context
+public class MessageClient internal constructor(
+    private val wearableMessageClient: GmsMessageClient
 ) : com.boswelja.watchconnection.common.message.MessageClient {
 
-    private val wearableMessageClient = Wearable.getMessageClient(context.applicationContext)
+    public constructor(
+        context: Context
+    ) : this(Wearable.getMessageClient(context.applicationContext))
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun incomingMessages(): Flow<ReceivedMessage<ByteArray?>> = callbackFlow {
         // Create a message listener
-        val listener = MessageClient.OnMessageReceivedListener {
+        val listener = GmsMessageClient.OnMessageReceivedListener {
             val bytes: ByteArray? = it.data
             val receivedMessage = ReceivedMessage(
                 it.sourceNodeId, it.path, bytes

@@ -22,14 +22,18 @@ kotlin {
                 api(libs.kotlinx.coroutines.core)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
         val androidMain by getting {
             dependencies { }
         }
         val androidTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
+                implementation(kotlin("test-junit"))
                 implementation(libs.mockk.core)
-                implementation(libs.robolectric)
             }
         }
     }
@@ -42,6 +46,9 @@ android {
         minSdk = Sdk.min
         targetSdk = Sdk.target
         consumerProguardFile("proguard-rules.pro")
+    }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 

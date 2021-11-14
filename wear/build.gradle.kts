@@ -25,12 +25,20 @@ kotlin {
                 api(projects.common)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.mockk.core)
+                implementation(libs.turbine)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 implementation(libs.play.services.wearable)
                 implementation(libs.kotlinx.coroutines.playservices)
             }
         }
+        val androidTest by getting
     }
 }
 
