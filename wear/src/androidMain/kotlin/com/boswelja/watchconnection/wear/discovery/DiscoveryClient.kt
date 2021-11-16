@@ -112,7 +112,7 @@ public class DiscoveryClient(context: Context) : WearDiscoveryClient {
         return Watch(
             node.displayName,
             node.id,
-            ""
+            "WEAR_OS"
         )
     }
 
