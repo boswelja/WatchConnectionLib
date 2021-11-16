@@ -1,1 +1,15 @@
-<manifest package="com.boswelja.watchconnection.wear" />
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.boswelja.watchconnection.wear">
+
+    <application>
+        <service
+            android:name=".message.WearOSMessageReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
