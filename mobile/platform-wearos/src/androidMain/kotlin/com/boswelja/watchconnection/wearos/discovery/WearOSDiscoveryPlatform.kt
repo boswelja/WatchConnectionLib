@@ -67,6 +67,14 @@ public actual class WearOSDiscoveryPlatform(
             trySend(capabilityInfo.nodes.any { it.id == watchId })
         }
 
+        // Get the capability info immediately
+        val hasCapability = capabilityClient
+            .getCapability(capability, CapabilityClient.FILTER_ALL)
+            .await()
+            .nodes
+            .any { it.id == watchId }
+        send(hasCapability)
+
         capabilityClient.addListener(listener, capability)
 
         awaitClose {
@@ -82,6 +90,16 @@ public actual class WearOSDiscoveryPlatform(
             }
             trySend(watches)
         }
+
+        // Get the capability info immediately
+        val watchesWithCapability = capabilityClient
+            .getCapability(capability, CapabilityClient.FILTER_ALL)
+            .await()
+            .nodes
+            .map { node ->
+                Watch(node.displayName, node.id, WEAROS_PLATFORM)
+            }
+        send(watchesWithCapability)
 
         capabilityClient.addListener(listener, capability)
 

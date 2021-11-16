@@ -88,17 +88,17 @@ public class WearOSDiscoveryPlatformTest {
         val capability = "capability1"
         val node = createNodes(1).first()
 
-        var listener: CapabilityClient.OnCapabilityChangedListener? = null
+        // Mock CapabilityInfo without target node
+        every {
+            capabilityClient.getCapability(capability, any())
+        } returns Tasks.forResult(DummyCapabilityInfo(capability, mutableSetOf(node)))
+        // Mock listeners
         every {
             capabilityClient.addListener(any(), capability)
-        } answers {
-            listener = firstArg()
-            Tasks.forResult(null)
-        }
+        } returns Tasks.forResult(null)
         every { capabilityClient.removeListener(any()) } returns Tasks.forResult(true)
 
         discoveryPlatform.watchHasCapability(node.id, capability).test {
-            listener!!.onCapabilityChanged(DummyCapabilityInfo(capability, mutableSetOf(node)))
             assertTrue(awaitItem())
         }
     }
@@ -108,17 +108,17 @@ public class WearOSDiscoveryPlatformTest {
         val capability = "capability1"
         val node = createNodes(1).first()
 
-        var listener: CapabilityClient.OnCapabilityChangedListener? = null
+        // Mock CapabilityInfo without target node
+        every {
+            capabilityClient.getCapability(capability, any())
+        } returns Tasks.forResult(DummyCapabilityInfo(capability, mutableSetOf()))
+        // Mock listeners
         every {
             capabilityClient.addListener(any(), capability)
-        } answers {
-            listener = firstArg()
-            Tasks.forResult(null)
-        }
+        } returns Tasks.forResult(null)
         every { capabilityClient.removeListener(any()) } returns Tasks.forResult(true)
 
         discoveryPlatform.watchHasCapability(node.id, capability).test {
-            listener!!.onCapabilityChanged(DummyCapabilityInfo(capability, mutableSetOf()))
             assertFalse(awaitItem())
         }
     }
@@ -129,11 +129,16 @@ public class WearOSDiscoveryPlatformTest {
         val node = createNodes(1).first()
 
         every {
+            capabilityClient.getCapability(capability, any())
+        } returns Tasks.forResult(DummyCapabilityInfo(capability, mutableSetOf()))
+        every {
             capabilityClient.addListener(any(), capability)
         } returns Tasks.forResult(null)
         every { capabilityClient.removeListener(any()) } returns Tasks.forResult(true)
 
         discoveryPlatform.watchHasCapability(node.id, capability).test {
+            // We expect at least one item
+            awaitItem()
             cancel()
         }
         verify { capabilityClient.removeListener(any()) }
