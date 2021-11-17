@@ -36,22 +36,24 @@ public abstract class MessageReceiver<T>(
         // Get message details
         val message = MessageReceiverUtils.getReceivedMessageFromIntent(intent)
 
-        val pendingResult = goAsync()
-        coroutineScope.launch {
-            // Deserialize and pass message on
-            val deserializedData = serializer.deserialize(message.data)
-            try {
-                onMessageReceived(
-                    context,
-                    ReceivedMessage(
-                        message.sourceUid,
-                        message.path,
-                        deserializedData
+        if (serializer.messagePaths.contains(message.path)) {
+            val pendingResult = goAsync()
+            coroutineScope.launch {
+                // Deserialize and pass message on
+                val deserializedData = serializer.deserialize(message.data)
+                try {
+                    onMessageReceived(
+                        context,
+                        ReceivedMessage(
+                            message.sourceUid,
+                            message.path,
+                            deserializedData
+                        )
                     )
-                )
-            } finally {
-                pendingResult.finish()
-                coroutineScope.cancel()
+                } finally {
+                    pendingResult.finish()
+                    coroutineScope.cancel()
+                }
             }
         }
     }
