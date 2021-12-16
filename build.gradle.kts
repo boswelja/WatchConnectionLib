@@ -15,8 +15,8 @@ buildscript {
 
 plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-    id("io.gitlab.arturbosch.detekt") version "1.18.1"
-    id("org.jetbrains.kotlinx.kover") version "0.4.1"
+    id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    id("org.jetbrains.kotlinx.kover") version "0.4.4"
 }
 
 allprojects {
