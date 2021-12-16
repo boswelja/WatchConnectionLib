@@ -1,9 +1,10 @@
 buildscript {
-    val kotlinVersion = "1.5.31"
+    val kotlinVersion = "1.6.10"
 
     repositories {
         google()
         mavenCentral()
+        maven("https://androidx.dev/snapshots/builds/8003490/artifacts/repository")
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.2.0-alpha06")
@@ -23,6 +24,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven("https://androidx.dev/snapshots/builds/8003490/artifacts/repository")
     }
     detekt {
         config = files("$rootDir/config/detekt/detekt.yml")

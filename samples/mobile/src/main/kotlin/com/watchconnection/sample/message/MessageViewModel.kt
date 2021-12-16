@@ -15,7 +15,7 @@ import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.serialization.StringSerializer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,12 +35,12 @@ class MessageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            messageHandler.incomingMessages().collect {
+            messageHandler.incomingMessages().collectLatest {
                 incomingMessages.add(0, it)
             }
         }
         viewModelScope.launch {
-            discoveryClient.allWatches().collect {
+            discoveryClient.allWatches().collectLatest {
                 availableWatches.clear()
                 availableWatches.addAll(it)
                 if (selectedWatch == null) selectedWatch = it.firstOrNull()
