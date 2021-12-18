@@ -32,16 +32,6 @@ allprojects {
         buildUponDefaultConfig = true
         parallel = true
     }
-
-    tasks.koverVerify {
-        rule {
-            name = "80% Coverage"
-            bound {
-                minValue = 80
-                valueType = kotlinx.kover.api.VerificationValueType.COVERED_LINES_PERCENTAGE
-            }
-        }
-    }
 }
 group = Publishing.groupId
 version = Publishing.version ?: "0.1.0"
