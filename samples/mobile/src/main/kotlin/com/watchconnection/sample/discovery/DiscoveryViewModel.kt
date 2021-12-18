@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class DiscoveryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            discoveryClient.allWatches().collect {
+            discoveryClient.allWatches().collectLatest {
                 availableWatches.clear()
                 availableWatches.addAll(it)
                 it.forEach { watch ->
@@ -49,7 +49,7 @@ class DiscoveryViewModel @Inject constructor(
 
     fun refreshCapabilitiesFor(watch: Watch) {
         viewModelScope.launch {
-            val newCapabilities = discoveryClient.getCapabilitiesFor(watch)
+            val newCapabilities = discoveryClient.getCapabilitiesFor(watch.uid)
             watchCapabilities[watch] = newCapabilities
         }
     }

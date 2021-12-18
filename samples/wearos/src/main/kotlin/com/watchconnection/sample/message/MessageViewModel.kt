@@ -10,7 +10,7 @@ import com.boswelja.watchconnection.serialization.StringSerializer
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ class MessageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            messageHandler.incomingMessages().collect {
+            messageHandler.incomingMessages().collectLatest {
                 incomingMessages.add(0, it)
             }
         }

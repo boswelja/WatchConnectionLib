@@ -1,12 +1,13 @@
 buildscript {
-    val kotlinVersion = "1.5.31"
+    val kotlinVersion = "1.6.10"
 
     repositories {
         google()
         mavenCentral()
+        maven("https://androidx.dev/snapshots/builds/8003490/artifacts/repository")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.0-alpha05")
+        classpath("com.android.tools.build:gradle:7.2.0-alpha06")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.google.dagger:hilt-android-gradle-plugin:${libs.versions.hilt.get()}")
     }
@@ -14,8 +15,8 @@ buildscript {
 
 plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-    id("io.gitlab.arturbosch.detekt") version "1.18.1"
-    id("org.jetbrains.kotlinx.kover") version "0.4.1"
+    id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    id("org.jetbrains.kotlinx.kover") version "0.4.4"
 }
 
 allprojects {
@@ -29,16 +30,6 @@ allprojects {
         source = files("src")
         buildUponDefaultConfig = true
         parallel = true
-    }
-
-    tasks.koverVerify {
-        rule {
-            name = "80% Coverage"
-            bound {
-                minValue = 80
-                valueType = kotlinx.kover.api.VerificationValueType.COVERED_LINES_PERCENTAGE
-            }
-        }
     }
 }
 group = Publishing.groupId
