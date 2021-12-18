@@ -24,7 +24,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven("https://androidx.dev/snapshots/builds/8003490/artifacts/repository")
     }
     detekt {
         config = files("$rootDir/config/detekt/detekt.yml")
